@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>fDet TestSite</title>
+
+        <link rel="stylesheet" href="../static/css/style.css">
+
+        <script src="../static/js/functions.js"></script>
+        <script defer src="../static/js/main.js"></script>
+    </head>
+    <body>
+        
+        <section id="everything">
+            <h1 id="title">fDet Test sitec hue hue</h1>
+            <section id="input-section">
+                <textarea id="eval-input" name="text" placeholder="Enter text to evaluate by AI"></textarea>
+                <input name="evalButton" type="submit" id="eval-button" value="Evaluate">
+                {% csrf_token %}
+            <section id="output-section">
+                <h2 id="output-title">Output test</h2>
+                <p id="output-text" name="output_text"></p> <!-- Do tohohle dávej output-->        
+    </body>
+</html>

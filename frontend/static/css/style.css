@@ -1,0 +1,122 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    background-color: rgb(37, 38, 43);
+    color: rgb(238, 238, 238);
+    font-family: 'Roboto', sans-serif;
+
+}
+
+h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 22px;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+#everything {
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(55, 57, 65);
+
+    border-radius: 10px;
+    height: fit-content;
+    padding: 25px;
+    max-width: 550px;
+}
+
+#title {
+    margin: 0 auto 20px auto;
+    font-size: 30px;
+}
+
+#output-section {
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+}
+
+#output-text {
+    margin: 10px 0;
+    
+}
+
+#input-section {
+    margin: 0 auto 10px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#input-section #eval-input {
+    margin: 0 0 10px 0;
+    padding: 5px;
+
+    width: 400px;
+    max-width: 525px;
+    max-height: 250px;
+
+    min-width: 400px;
+    min-height: 50px;
+
+    border-radius: 5px;
+    border-width: 1px;
+    border-color: #bd2c2c8c;
+
+    background-color: rgba(0, 0, 0, 0.295);
+
+    font-size: 18px;
+    outline: none;
+
+    color: #E1F1FE;
+    font-family: 'roboto', sans-serif;
+}
+
+#input-section #eval-input::placeholder {
+    color: #8c9eac;
+}
+
+#input-section #eval-button {
+    margin: 0 0 10px 0;
+    padding: 5px;
+
+    width: 100px;
+
+    border-radius: 5px;
+    border: none;
+    font-size: 20px;
+
+    transition: 200ms;
+
+    /* background-image: linear-gradient(to right top, #2f40d8, #3444d9, #3848db, #3d4cdc, #4150dd, #4150dd, #4150dd, #4150dd, #3d4cdc, #3848db, #3444d9, #2f40d8); */
+    background-color: #2c36bd8c;
+    color: #E1F1FE;
+
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+
+#input-section #eval-button:hover#eval-button:enabled {
+    color: rgb(255, 255, 255);
+    width: 104px;
+    letter-spacing: 1px;
+}
+
+#input-section #eval-button:active#eval-button:enabled {
+    color: rgb(255, 255, 255);
+    width: 98px;
+    font-size: 19px;
+    letter-spacing: 0px;
+}
+
+#input-section #eval-button:disabled {
+    background-color: #bd2c2c8c;
+    background-image: none;
+    color: #be4940;
+}

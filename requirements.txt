@@ -1,0 +1,6 @@
+django
+fastapi
+matplotlib
+farm-haystack
+transformers
+yake
