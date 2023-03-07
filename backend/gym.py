@@ -1,19 +1,21 @@
 import time
 from time import strftime
 import torch
-
+import json
 
 class Gym_albert():
-    def __init__(self, model, tokenizer, name="Model") -> None:
+    def __init__(self, model, tokenizer, name="Model", epochs = 0, loss = 0) -> None:
         self.name = name
         self.model = model
+        self.epochs = epochs
         self.tokenizer = tokenizer
+        self.track = []
         self.modelPath = f"{name}.pth"
-        self.loss = None
-        self.acc = None
+        self.loss = loss
 
     def train(self, data_loader, loss_fn, optimizer) -> None:
         dataSize = len(data_loader.dataset)
+        train_track = {"epoch": len(self.track), "loss": [], "progress" :[]}
         self.model.train()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         for batch, (x, y) in enumerate(data_loader):
@@ -34,7 +36,9 @@ class Gym_albert():
             if batch % 100 == 0:
                 loss, progress = loss.item(), batch * len(y)
                 log = f"loss: {loss:>8f}, [{progress:>5f}/{dataSize:>5f}]\n"
+                train_track["loss"].append(loss), train_track["progress"].append(progress)
                 print(log)
+        self.track.append(train_track)
 
     def calculate_acc_loss_avg(self, corrects, loss, batch_num, lossFn, prediction, label):
         loss += lossFn(prediction.logits, label)
@@ -59,22 +63,15 @@ class Gym_albert():
         with torch.no_grad():
             for batch, x in enumerate(dataLoader):
 
-                evidence = x["evidence"]
-                claim = x["claim"]
-                y = x["label"]
-                x = self.tokenizer.encode_plus(
-                    claim, evidence, truncation="longest_first", max_length=512, padding="max_length", return_tensors="pt")
-
-                # x = x.to(device)
-                # y = y.to(device)
-
                 inputIDs = x["input_ids"].squeeze(1).to(device)
                 attention = x["attention_mask"].squeeze(1).to(device)
                 typeIds = x["token_type_ids"].squeeze(1).to(device)
 
+                y = y.to(device)
 
                 prediction = self.model(
                     input_ids=inputIDs, attention_mask=attention, token_type_ids=typeIds)
+
                 correct, loss = self.calculateAccLoss(
                     correct, loss, batch, loss_fn, prediction, y)
                 correct2, loss2 = self.calculateAccLossPress(
@@ -89,12 +86,12 @@ class Gym_albert():
         log = f"Results: \n Test Error: {(100*correct):>0.1f}%, Avg loss: {loss:>8f} \n My Accuracy: {(100*correct2):>0.1f}%, Avg loss: {loss2:>8f}\n"
         print(log)
 
-    def test_sqce(self, model, data_loaders, lossFn):
+    def test_sqce(self, data_loaders, lossFn):
         start_time = time.perf_counter()
         for i, data_loader in enumerate(data_loaders):
             EpochLog = f"\nTest {i + 1} \n---------------------------------\n"
             print(EpochLog)
-            self.test(model, data_loader, lossFn)
+            self.test(data_loader, lossFn)
             epochTime = f"--- {(time.perf_counter() - start_time)} seconds ---\n"
             print(epochTime)
             end = strftime(f"Test Ended!!! %H%M-%d-%m")
@@ -109,29 +106,24 @@ class Gym_albert():
             epochTime = f"--- {(time.perf_counter() - start_time)} seconds ---\n"
             print(epochTime)
             torch.save(self.model.state_dict(), "LastBackUp.pth")
-            end = strftime(f"LastBackUp{i} saved!!! %H%M-%d-%m")
-            print(end)
+        self.epochs += epochs
+        self.save_track()
+        self.save_model()
         self.test_sqce(self.model, test_data_loaders, lossFn)
-        self.saveModel(model=self.model, Epochs=epochs)
 
-    def saveModel(self, Epochs, loss=None, acc=None) -> None:
-        torch.save(self.model.state_dict(), "LastBackUp.pth")
-        if loss == None:
-            try:
-                loss = self.loss
-            except:
-                pass
-        if acc == None:
-            try:
-                acc = self.acc
-            except:
-                pass
+    def save_track(self):
+        with open("track.jsonl", "w") as f:
+            for i in self.track:
+                json.dump(i, f)
+                f.write("\n")
+
+
+    def save_model(self) -> None:
         torch.save(
             {
-                'epoch': Epochs,
+                'epoch': self.epochs,
                 'model_state_dict': self.model.state_dict(),
-                'loss': loss,
-                'accuracy': acc
+                'loss' : self.loss
             }, self.modelPath)
-        log = strftime(f"{self.name} saved!!! %H%M-%d-%m")
+        log = f"{self.name} saved!!!"
         print(log)

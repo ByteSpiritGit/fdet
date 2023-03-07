@@ -39,6 +39,7 @@ def train():
     batch_size = 2
     train_dataset = load_dataset("Dzeniks/fever_3way", split="train")
     
+    train_dataset = list(train_dataset)[:801]
 
     def collate_fn(data):
         tokens = {"input_ids":torch.zeros((len(data), 1, 512), dtype=torch.int64), "attention_mask":torch.zeros((len(data), 1, 512), dtype=torch.int64), "token_type_ids": torch.zeros((len(data), 1, 512), dtype=torch.int64)}
@@ -55,7 +56,8 @@ def train():
         dataset= train_dataset,
         batch_size=batch_size,
         sampler=RandomSampler(train_dataset),
-        collate_fn=collate_fn
+        collate_fn=collate_fn,
+        
         )
     
     test_dataset = load_dataset("Dzeniks/fever_3way", split="test")

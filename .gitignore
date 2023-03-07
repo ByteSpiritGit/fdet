@@ -1,6 +1,8 @@
 
 # Custom Dzeniks
-anlys.py
+*.pth
+*.bin
+track.jsonl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
