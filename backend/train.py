@@ -31,15 +31,15 @@ def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"You are using {device}")
 
-    tokenizer = transformers.AlbertTokenizerFast.from_pretrained('albert-base-v2', longest_first=False)
-    model = transformers.AlbertForSequenceClassification.from_pretrained('albert-base-v2', return_dict=True, num_labels=3)
-    
+    tokenizer = transformers.AlbertTokenizerFast.from_pretrained('xlm-roberta-base', longest_first=False)
+    model = transformers.AlbertForSequenceClassification.from_pretrained('xlm-roberta-base', return_dict=True, num_labels=2)
+    # model.load_state_dict(torch.load("TEST.pth")["model_state_dict"])
     model.to(device)
 
-    batch_size = 2
-    train_dataset = load_dataset("Dzeniks/fever_3way", split="train")
+    batch_size = 8
+    train_dataset = load_dataset("Dzeniks/Testing", split="train")
     
-    train_dataset = list(train_dataset)[:801]
+    # train_dataset = list(train_dataset)[:801]
 
     def collate_fn(data):
         tokens = {"input_ids":torch.zeros((len(data), 1, 512), dtype=torch.int64), "attention_mask":torch.zeros((len(data), 1, 512), dtype=torch.int64), "token_type_ids": torch.zeros((len(data), 1, 512), dtype=torch.int64)}
@@ -60,21 +60,40 @@ def train():
         
         )
     
-    test_dataset = load_dataset("Dzeniks/fever_3way", split="test")
+    test_dataset = load_dataset("Dzeniks/fever_2way", split="test")
     
     test_test = DataLoader(
-        dataset= test_dataset,
+        datastest_testet= test_dataset,
         batch_size=1,
         sampler=SequentialSampler(test_dataset),
         collate_fn=collate_fn
         )
+
+    test_dataset1 = load_dataset("Dzeniks/feverous_3way", split="test")
+    
+    test_test1 = DataLoader(
+        dataset= test_dataset1,
+        batch_size=1,
+        sampler=SequentialSampler(test_dataset1),
+        collate_fn=collate_fn
+        )
+
+    # # test_dataset2 = load_dataset("Dzeniks/hover", split="test")
+    
+    # # test_test2 = DataLoader(
+    # #     dataset= test_dataset2,
+    # #     batch_size=1,
+    # #     sampler=SequentialSampler(test_dataset2),
+    # #     collate_fn=collate_fn
+    # #     )
 
     optimizer = torch.optim.Adam(model.parameters(), lr = 2e-6, eps = 1e-8)
     lossFn = torch.nn.CrossEntropyLoss()
 
     gym_albert = Gym_albert(model, tokenizer, "TEST")
 
-    gym_albert.train_sqce(1, loader_test, [test_test], lossFn, optimizer)
+    gym_albert.train_sqce(3, loader_test, [test_test], lossFn, optimizer)
+    # gym_albert.test_sqce([test_test, test_test1], lossFn)
 
 
 train()

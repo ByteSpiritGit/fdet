@@ -55,3 +55,18 @@ def combine(file1, file2):
     newFile = file1 + file2
     random.shuffle(newFile)
     return newFile
+
+ok = load("track0.jsonl")
+all_loss = []
+all_prog = ok[0]["progress"]
+for i in ok:
+    all_loss += i["loss"]
+
+for j in range(1, len(ok)):
+    temp_inc = all_prog[-1]
+    for i in ok[j]["progress"]:
+        add = i + temp_inc
+        all_prog.append(add)
+
+show_grap_XY(all_prog, all_loss)
+print("END")
