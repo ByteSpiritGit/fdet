@@ -31,16 +31,14 @@ def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"You are using {device}")
 
-    tokenizer = transformers.AlbertTokenizerFast.from_pretrained('albert-base-v2', longest_first=False)
-    model = transformers.AlbertForSequenceClassification.from_pretrained('albert-base-v2', return_dict=True, num_labels=3)
+    tokenizer = transformers.AlbertTokenizerFast.from_pretrained('xlm-roberta-base', longest_first=False)
+    model = transformers.AlbertForSequenceClassification.from_pretrained('xlm-roberta-base', return_dict=True, num_labels=3)
     
     model.to(device)
 
     batch_size = 2
-    train_dataset = load_dataset("Dzeniks/fever_3way", split="train")
+    train_dataset = load_dataset("Dzeniks/Testing", split="train")
     
-    train_dataset = list(train_dataset)[:801]
-
     def collate_fn(data):
         tokens = {"input_ids":torch.zeros((len(data), 1, 512), dtype=torch.int64), "attention_mask":torch.zeros((len(data), 1, 512), dtype=torch.int64), "token_type_ids": torch.zeros((len(data), 1, 512), dtype=torch.int64)}
         labels = torch.zeros(len(data), dtype=torch.int64)

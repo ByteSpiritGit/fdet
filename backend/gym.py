@@ -2,6 +2,7 @@ import time
 from time import strftime
 import torch
 import json
+import os
 
 class Gym_albert():
     def __init__(self, model, tokenizer, name="Model", epochs = 0, loss = 0) -> None:
@@ -14,8 +15,8 @@ class Gym_albert():
         self.loss = loss
 
     def train(self, data_loader, loss_fn, optimizer) -> None:
-        dataSize = len(data_loader.dataset)
-        train_track = {"epoch": len(self.track), "loss": [], "progress" :[]}
+        data_size = len(data_loader.dataset)
+        train_track = {"epoch": len(self.track), "loss": [], "batch_size" : data_loader.batch_size, "dataset_size": data_size}
         self.model.train()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         for batch, (x, y) in enumerate(data_loader):
@@ -35,8 +36,8 @@ class Gym_albert():
             optimizer.step()
             if batch % 100 == 0:
                 loss, progress = loss.item(), batch * len(y)
-                log = f"loss: {loss:>8f}, [{progress:>5f}/{dataSize:>5f}]\n"
-                train_track["loss"].append(loss), train_track["progress"].append(progress)
+                log = f"loss: {loss:>8f}, [{progress:>5f}/{data_size:>5f}]\n"
+                train_track["loss"].append(loss)
                 print(log)
         self.track.append(train_track)
 
@@ -72,9 +73,9 @@ class Gym_albert():
                 prediction = self.model(
                     input_ids=inputIDs, attention_mask=attention, token_type_ids=typeIds)
 
-                correct, loss = self.calculateAccLoss(
+                correct, loss = self.calculate_acc_loss_avg(
                     correct, loss, batch, loss_fn, prediction, y)
-                correct2, loss2 = self.calculateAccLossPress(
+                correct2, loss2 = self.calculate_acc_loss_press(
                     correct2, loss2, loss_fn, prediction, y, batch)
 
         loss /= numBatches
@@ -112,7 +113,14 @@ class Gym_albert():
         self.test_sqce(self.model, test_data_loaders, lossFn)
 
     def save_track(self):
-        with open("track.jsonl", "w") as f:
+        n = 0
+        filename = f"track{n}.jsonl"
+        while (os.path.exists(filename)):
+            n += 1
+            filename = f"track{n}.jsonl"
+            print(n)
+        print(f"Track file saved as {filename}")
+        with open(filename, "w") as f:
             for i in self.track:
                 json.dump(i, f)
                 f.write("\n")
