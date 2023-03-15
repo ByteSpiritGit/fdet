@@ -15,12 +15,12 @@ class TextValidate():
         self.retriever = TextRetrieverV2()
         print(f"Loaded")
 
-    def main(self, text):
+    async def main(self, text):
         # Document retrieval
         results = []
         claims = text.split(".")
         claims = [item for item in claims if item != ""]
-        self.retriever.create_database(claims)
+        await self.retriever.create_database(claims)
         for claim in claims:
             evidence = self.retriever.extract_passage(claim, 3)
             if evidence == "":

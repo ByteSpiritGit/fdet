@@ -41,7 +41,7 @@ def train():
     
     def collate_fn(data):
         tokens = {"input_ids":torch.zeros((len(data), 1, 512), dtype=torch.int64), "attention_mask":torch.zeros((len(data), 1, 512), dtype=torch.int64), "token_type_ids": torch.zeros((len(data), 1, 512), dtype=torch.int64)}
-        labels = torch.zeros(len(data), dtype=torch.int64)
+        labels = torch.zeros(len(data), dtype=torch.long)
         for num, i in enumerate(data):
             token = tokenizer.encode_plus(i["claim"], i["evidence"], truncation="longest_first", max_length=512, padding="max_length", return_tensors="pt")
             tokens["input_ids"][num] = token["input_ids"]

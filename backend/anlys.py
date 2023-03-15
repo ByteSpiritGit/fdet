@@ -58,6 +58,18 @@ def divide(file, out_file, max=None, sup=True, ref=True, nei=True):
             NEI += 1
     print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}")
 
+def change_ID(file) -> list:
+    n = 2_500_000
+    for i in file:
+        try:
+            if type(i["id"]) == str:
+                i["id"] = n
+                n -= 1
+        except KeyError:
+            i["id"] = n
+            n -= 1
+    return file
+
 
 def combine(file1, file2):
     newFile = file1 + file2
