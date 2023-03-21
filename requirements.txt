@@ -1,5 +1,6 @@
 django
 fastapi
+uvicorn[standard]
 matplotlib
 farm-haystack
 transformers

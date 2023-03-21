@@ -10,7 +10,7 @@ class TextRetrieverV2():
         self.wiki = Wikipedia("en")
         self.kw_extractor = KeywordExtractor()
         self.document_store = InMemoryDocumentStore(embedding_dim=768, use_gpu=True)
-        self.loop = asyncio.get_event_loop()
+        # self.loop = asyncio.get_event_loop()
         self.retriever = DensePassageRetriever(
         document_store=self.document_store,
         query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
@@ -81,10 +81,9 @@ class TextRetrieverV2():
         evidence = evidence.replace("–present", "-2023")
         return evidence
     
-    def create_database(self, text) -> bool:
-        # Example usage
+    async def create_database(self, text) -> bool:
         keyWords = self.__extractKeyWords(text)
-        pages = self.loop.run_until_complete(self.__extract_wikipedia_pages(keyWords))
+        pages = await self.__extract_wikipedia_pages(keyWords)
         self.__storeDocuments(pages)
         return True
 

@@ -15,8 +15,8 @@ class Gym_albert():
         self.loss = loss
 
     def train(self, data_loader, loss_fn, optimizer) -> None:
-        dataSize = len(data_loader.dataset)
-        train_track = {"epoch": len(self.track), "loss": [], "progress" :[]}
+        data_size = len(data_loader.dataset)
+        train_track = {"epoch": len(self.track), "loss": [], "batch_size" : data_loader.batch_size, "dataset_size": data_size}
         self.model.train()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         for batch, (x, y) in enumerate(data_loader):
@@ -36,8 +36,8 @@ class Gym_albert():
             optimizer.step()
             if batch % 100 == 0:
                 loss, progress = loss.item(), batch * len(y)
-                log = f"loss: {loss:>8f}, [{progress:>5f}/{dataSize:>5f}]\n"
-                train_track["loss"].append(loss), train_track["progress"].append(progress)
+                log = f"loss: {loss:>8f}, [{progress:>5f}/{data_size:>5f}]\n"
+                train_track["loss"].append(loss)
                 print(log)
         self.track.append(train_track)
 
