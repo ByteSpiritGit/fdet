@@ -37,7 +37,7 @@ def train():
     model.to(device)
 
     batch_size = 2
-    train_dataset = load_dataset("Dzeniks/Testing", split="train")
+    train_dataset = load_dataset("Dzeniks/Test", split="train")
     
     def collate_fn(data):
         tokens = {"input_ids":torch.zeros((len(data), 1, 512), dtype=torch.int64), "attention_mask":torch.zeros((len(data), 1, 512), dtype=torch.int64), "token_type_ids": torch.zeros((len(data), 1, 512), dtype=torch.int64)}
@@ -55,11 +55,9 @@ def train():
         batch_size=batch_size,
         sampler=RandomSampler(train_dataset),
         collate_fn=collate_fn,
-        
         )
     
-    test_dataset = load_dataset("Dzeniks/fever_3way", split="test")
-    
+    test_dataset = load_dataset("Dzeniks/Test", split="test")
     test_test = DataLoader(
         dataset= test_dataset,
         batch_size=1,
@@ -67,12 +65,12 @@ def train():
         collate_fn=collate_fn
         )
 
-    optimizer = torch.optim.Adam(model.parameters(), lr = 2e-6, eps = 1e-8)
+    # optimizer = torch.optim.Adam(model.parameters(), lr = 2e-6, eps = 1e-8)
     lossFn = torch.nn.CrossEntropyLoss()
 
     gym_albert = Gym_albert(model, tokenizer, "TEST")
 
-    gym_albert.train_sqce(1, loader_test, [test_test], lossFn, optimizer)
+    gym_albert.test_sqce([test_test], lossFn)
 
 
 train()

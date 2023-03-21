@@ -62,7 +62,7 @@ class Gym_albert():
         self.model.eval()
         loss, correct, correct2, loss2 = 0, 0, 0, 0
         with torch.no_grad():
-            for batch, x in enumerate(dataLoader):
+            for batch, (x, y) in enumerate(dataLoader):
 
                 inputIDs = x["input_ids"].squeeze(1).to(device)
                 attention = x["attention_mask"].squeeze(1).to(device)

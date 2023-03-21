@@ -18,16 +18,22 @@ def save(file, path):
             f.write('\n')
 
 
-def show_grap_XY(X, Y):
-    plt.plot(X, Y)
-    plt.xlabel('X')
-    plt.ylabel('Y')
+def show_loss(load_track):
+    loss = []
+    progress = []
+    for i in load_track:
+        loss += i["loss"]
+    for i in range(len(loss)):
+        progress.append(i * load_track[0]["batch_size"] * 100)
+    plt.plot(progress, loss)
+    plt.xlabel('Progress')
+    plt.ylabel('Loss')
     plt.title('Graph')
     plt.show()
 
 
 def analyze(file):
-    SUP, REF, NEI = 0, 0, 0
+    SUP, REF, NEI, EI = 0, 0, 0, 0
     for i in file:
         if i["label"] == "SUPPORTS" or i["label"] == 0:
             SUP += 1
@@ -35,28 +41,45 @@ def analyze(file):
             REF += 1
         elif i["label"] == "NOT ENOUGH INFO" or i["label"] == 2:
             NEI += 1
-    print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}")
+        elif i["label"] == "ENOUGH INFO" or i["label"] == 2:
+            EI += 1
+    print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}\nEnough info {EI}")
     return SUP, REF, NEI
 
-
-def divide(file, out_file, max=None, sup=True, ref=True, nei=True):
+def divide(file, max=None, sup=True, ref=True, nei=True):
     if max == None:
         max = len(file)
     SUP, REF, NEI = 0, 0, 0
+    out_file = []
     for i in file:
         if i["label"] == 0 and SUP < max and sup:
-            json.dump(i, out_file)
-            out_file.write("\n")
+            out_file.append(i)
             SUP += 1
         if i["label"] == 1 and REF < max and ref:
-            json.dump(i, out_file)
-            out_file.write("\n")
+            out_file.append(i)
             REF += 1
         if i["label"] == 2 and NEI < max and nei:
-            json.dump(i, out_file)
-            out_file.write("\n")
+            out_file.append(i)
             NEI += 1
     print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}")
+    return out_file
+
+def delete(file, max=None, sup=True, ref=True, nei=True):
+    if max == None:
+        max = len(file)
+    SUP, REF, NEI = analyze(file)
+    for i in file:
+        if i["label"] == 0 and SUP > max and sup:
+            file.remove(i)
+            SUP -= 1
+        if i["label"] == 1 and REF > max and ref:
+            file.remove(i)
+            REF -= 1
+        if i["label"] == 2 and NEI > max and nei:
+            file.remove(i)
+            NEI -= 1
+    print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}")
+    return file
 
 def change_ID(file) -> list:
     n = 2_500_000
