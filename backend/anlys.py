@@ -110,6 +110,3 @@ for j in range(1, len(ok)):
     for i in ok[j]["progress"]:
         add = i + temp_inc
         all_prog.append(add)
-
-show_grap_XY(all_prog, all_loss)
-print("END")
