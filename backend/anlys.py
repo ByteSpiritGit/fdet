@@ -1,7 +1,8 @@
 import json
+from datasets import load_dataset
 import matplotlib.pyplot as plt
 import random
-
+import requests
 
 def load(path):
     file = []
@@ -10,6 +11,13 @@ def load(path):
             file.append(json.loads(line))
     return file
 
+def load_HG_url(url):
+    request = requests.get(url)
+    new_file = []
+    for line in request.text.splitlines():
+        data = json.loads(line)
+        new_file.append(data)
+    return new_file
 
 def save(file, path):
     with open(path, 'w', encoding="utf-8") as f:
@@ -99,14 +107,3 @@ def combine(file1, file2):
     random.shuffle(newFile)
     return newFile
 
-ok = load("track0.jsonl")
-all_loss = []
-all_prog = ok[0]["progress"]
-for i in ok:
-    all_loss += i["loss"]
-
-for j in range(1, len(ok)):
-    temp_inc = all_prog[-1]
-    for i in ok[j]["progress"]:
-        add = i + temp_inc
-        all_prog.append(add)
