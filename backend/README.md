@@ -1,7 +1,14 @@
-Plain text "/backend"
+FAST API start command
+    uvicorn main:app --reload
 
-Url for dummy function "/backend/dummy"
+Plain text 
+    "/backend"
 
-Url for evaluation "/backend/eval"
-when calling, append a parameter named text with text to check 
+Url for dummy function 
+    "/backend/dummy"
+
+Url for evaluation 
+    "/backend/eval"
+
+When you will call, append a parameter named text with text to check.
 

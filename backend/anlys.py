@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import requests
 
+
 def load(path):
     file = []
     with open(path, 'r') as f:
@@ -11,13 +12,15 @@ def load(path):
             file.append(json.loads(line))
     return file
 
-def load_HG_url(url):
+
+def load_from_url(url):
     request = requests.get(url)
     new_file = []
     for line in request.text.splitlines():
         data = json.loads(line)
         new_file.append(data)
     return new_file
+
 
 def save(file, path):
     with open(path, 'w', encoding="utf-8") as f:
@@ -51,8 +54,10 @@ def analyze(file):
             NEI += 1
         elif i["label"] == "ENOUGH INFO" or i["label"] == 2:
             EI += 1
-    print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}\nEnough info {EI}")
+    print(
+        f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}\nEnough info {EI}")
     return SUP, REF, NEI
+
 
 def divide(file, max=None, sup=True, ref=True, nei=True):
     if max == None:
@@ -72,6 +77,7 @@ def divide(file, max=None, sup=True, ref=True, nei=True):
     print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}")
     return out_file
 
+
 def delete(file, max=None, sup=True, ref=True, nei=True):
     if max == None:
         max = len(file)
@@ -88,6 +94,7 @@ def delete(file, max=None, sup=True, ref=True, nei=True):
             NEI -= 1
     print(f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}")
     return file
+
 
 def change_ID(file) -> list:
     n = 2_500_000
@@ -106,4 +113,3 @@ def combine(file1, file2):
     newFile = file1 + file2
     random.shuffle(newFile)
     return newFile
-

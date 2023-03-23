@@ -54,7 +54,7 @@ class TextRetrieverV2():
         dicts = []
         for i in documents:
             sentences = []
-            text =  i[1].split('.')
+            text =  i[1].split('. ')
             for line in text:
                 sentences.append(line)
             for num, line in enumerate(sentences):
