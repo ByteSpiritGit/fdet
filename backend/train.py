@@ -1,6 +1,6 @@
 import torch
 import transformers
-from gym import Gym_albert
+from mlm_gym import MLM_Gym
 from datasets import load_dataset
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
@@ -31,24 +31,22 @@ def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"You are using {device}")
 
-    tokenizer = transformers.AlbertTokenizerFast.from_pretrained('xlm-roberta-base', longest_first=False)
-    model = transformers.AlbertForSequenceClassification.from_pretrained('xlm-roberta-base', return_dict=True, num_labels=3)
-    
+    name = "albert-base-v2"
+    tokenizer = transformers.AlbertTokenizerFast.from_pretrained(name, longest_first=False)
+    model = transformers.AlbertForSequenceClassification.from_pretrained(name, return_dict=True, num_labels=3)
+    # model.load_state_dict(torch.load("albert.pth")["model_state_dict"])
     model.to(device)
 
-    batch_size = 2
-    train_dataset = load_dataset("Dzeniks/Test", split="train")
-    
+    batch_size = 3
+    train_dataset = load_dataset("Dzeniks/FactFusion", split="train")
+
     def collate_fn(data):
-        tokens = {"input_ids":torch.zeros((len(data), 1, 512), dtype=torch.int64), "attention_mask":torch.zeros((len(data), 1, 512), dtype=torch.int64), "token_type_ids": torch.zeros((len(data), 1, 512), dtype=torch.int64)}
-        labels = torch.zeros(len(data), dtype=torch.long)
-        for num, i in enumerate(data):
-            token = tokenizer.encode_plus(i["claim"], i["evidence"], truncation="longest_first", max_length=512, padding="max_length", return_tensors="pt")
-            tokens["input_ids"][num] = token["input_ids"]
-            tokens["attention_mask"][num] = token["attention_mask"]
-            tokens["token_type_ids"][num] = token["token_type_ids"]
-            labels[num] = i["label"]                                       
-        return tokens, labels
+        claims, evidences, labels = zip(*[(d['claim'], d['evidence'], d['label']) for d in data])
+        labels = torch.tensor(labels)
+        texts = [f"{c} {tokenizer.sep_token} {e}" for c, e in zip(claims, evidences)]
+        toks = tokenizer.batch_encode_plus(texts, truncation="longest_first", max_length=512, padding="max_length", return_tensors="pt")       
+        return toks, labels
+
 
     loader_test = DataLoader(
         dataset= train_dataset,
@@ -57,20 +55,19 @@ def train():
         collate_fn=collate_fn,
         )
     
-    test_dataset = load_dataset("Dzeniks/Test", split="test")
+    test_dataset = load_dataset("Dzeniks/FactFusion", split="test")
     test_test = DataLoader(
-        datastest_testet= test_dataset,
+        dataset= test_dataset,
         batch_size=1,
         sampler=SequentialSampler(test_dataset),
         collate_fn=collate_fn
         )
 
-    # optimizer = torch.optim.Adam(model.parameters(), lr = 2e-6, eps = 1e-8)
+    optimizer = torch.optim.Adam(model.parameters(), lr = 1e-6, eps = 1e-8)
     lossFn = torch.nn.CrossEntropyLoss()
 
-    gym_albert = Gym_albert(model, tokenizer, "TEST")
+    gym = MLM_Gym(model, tokenizer, name)
 
-    gym_albert.test_sqce([test_test], lossFn)
-
+    gym.train_sqce(1, loader_test, [test_test], lossFn, optimizer)
 
 train()

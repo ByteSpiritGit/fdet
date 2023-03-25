@@ -1,4 +1,5 @@
 import json
+import re
 from datasets import load_dataset
 import matplotlib.pyplot as plt
 import random
@@ -108,8 +109,18 @@ def change_ID(file) -> list:
             n -= 1
     return file
 
+def encode_to_utf16(file):
+    for i in file:
+        i["claim"] = i["claim"].encode('utf-16').decode('unicode_escape')
+        i["evidence"] = i["evidence"].encode('utf-16').decode('unicode_escape')
+    return file
+
+def preprocess_text(text):
+    cleaned_text = re.sub(r'\[\[.*?\|(.*?)\]\]', r'\1', text)
+    return cleaned_text
 
 def combine(file1, file2):
     newFile = file1 + file2
     random.shuffle(newFile)
     return newFile
+
