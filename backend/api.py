@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from main import TextValidate
@@ -20,3 +21,6 @@ async def dummy():
 async def eval(text: str):
     response = await validation.main(text) 
     return JSONResponse(content=response)
+
+if __name__ == "__main__":
+    uvicorn.run(app, port=8002)
