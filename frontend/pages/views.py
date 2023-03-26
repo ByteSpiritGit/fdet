@@ -1,11 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-
-import sys
-sys.path.append("../backend")
-from main import TextValidate
-
-TEXTVALIDATE_CLASS = TextValidate()
+import requests
 
 # Create your views here.
 def home_view(request, *args, **kwargs):
@@ -16,19 +11,26 @@ def home_view(request, *args, **kwargs):
 
 
 def evaluation_view(request, *args, **kwargs):
-    text = request.POST["text"]
-    validated_text = TEXTVALIDATE_CLASS.main(text)
-    
+    text = request.GET["text"]
+    validated_text = requests.get("http://127.0.0.1:8002/backend/eval", params={"text" : text}).json()
+
     context = {
-        "input_text" : text,
         "validated" : validated_text
     }
-    return render(request, "base.html", context)
+    return JsonResponse(context)
 
-
-def test_view(request):
+def dummy_fnc_view(request):
     text = request.GET["text"]
-    validated_text = TEXTVALIDATE_CLASS.main(text)
+    validated_text = [{"claim": "Dummy claim", "label" : 1, "supports" : 0.1457, "refutes" : 0.8543, "evidence" : "Dummy evidence"}]
+
+    context = {
+        "validated" : validated_text
+    }
+    return JsonResponse(context)
+
+def dummy_fnc_backend_view(request):
+    text = request.GET["text"]
+    validated_text = requests.get("http://127.0.0.1:8002/backend/dummy").json()
 
     context = {
         "validated" : validated_text

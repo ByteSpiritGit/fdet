@@ -30,7 +30,7 @@ async function fetchResult(text) {
     const csrfToken = getCookie('CSRF-TOKEN');
 
     const request = new Request(
-        `/test_view?text=${text}`, 
+        `/evaluation?text=${text}`, 
         {
         method: 'POST',
         headers: {
