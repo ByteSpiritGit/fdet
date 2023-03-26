@@ -1,5 +1,5 @@
 FAST API start command
-    uvicorn main:app --reload
+    ```uvicorn main:app --reload```
 
 Plain text 
     "/backend"
