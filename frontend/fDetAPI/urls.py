@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view, evaluation_view, dummy_fnc_view, dummy_fnc_backend_view
+from pages.views import home_view
+from evaluations.views import evaluation_view, dummy_fnc_view, dummy_fnc_backend_view
 
 urlpatterns = [
     path('evaluation', evaluation_view, name="evaluation"),

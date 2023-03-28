@@ -14,3 +14,5 @@ URLS:
 
 Notes!
 If public: Debug = False
+
+If changing models.py always run makemigrations & migrate
