@@ -1,10 +1,11 @@
 import torch
 import transformers
+import sys
 from mlm_gym import MLM_Gym
 from datasets import load_dataset
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 
-def test():
+def example():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"You are using {device}")
     
@@ -27,6 +28,43 @@ def test():
     print(f"ArgMax: {torch.argmax(prediction.logits)}\nSoftMax: {torch.softmax(prediction.logits, dim=1)}")
 
 
+def test():
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"You are using {device}")
+
+    name = "albert-base-v2"
+    tokenizer = transformers.AlbertTokenizerFast.from_pretrained(name, longest_first=False)
+    model = transformers.AlbertForSequenceClassification.from_pretrained(name, return_dict=True, num_labels=3)
+    # model.load_state_dict(torch.load("albert.pth")["model_state_dict"])
+    model.to(device)
+
+    def collate_fn(data):
+        claims, evidences, labels = zip(*[(d['claim'], d['evidence'], d['label']) for d in data])
+        labels = torch.tensor(labels)
+        texts = [f"{c} {tokenizer.sep_token} {e}" for c, e in zip(claims, evidences)]
+        toks = tokenizer.batch_encode_plus(texts, truncation="longest_first", max_length=512, padding="max_length", return_tensors="pt")       
+        return toks, labels
+    
+    test_dataset = load_dataset("Dzeniks/fever_3way", split="test")
+    test_loader = DataLoader(
+        dataset= test_dataset,
+        batch_size=1,
+        sampler=SequentialSampler(test_dataset),
+        collate_fn=collate_fn
+        )
+    
+    val_dataset = load_dataset("Dzeniks/fever_3way", split="validation")
+    val_loader = DataLoader(
+        dataset= val_dataset,
+        batch_size=1,
+        sampler=SequentialSampler(val_dataset),
+        collate_fn=collate_fn
+        )
+
+    gym = MLM_Gym(model, tokenizer, name)
+
+    gym.test_sqce([test_dataset,test_loader], test_loader, val_loader)
+
 def train():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"You are using {device}")
@@ -38,7 +76,6 @@ def train():
     model.to(device)
 
     batch_size = 3
-    train_dataset = load_dataset("Dzeniks/FactFusion", split="train")
 
     def collate_fn(data):
         claims, evidences, labels = zip(*[(d['claim'], d['evidence'], d['label']) for d in data])
@@ -48,26 +85,45 @@ def train():
         return toks, labels
 
 
-    loader_test = DataLoader(
+    train_dataset = load_dataset("Dzeniks/FactFusion", split="train")
+    train_loader = DataLoader(
         dataset= train_dataset,
         batch_size=batch_size,
         sampler=RandomSampler(train_dataset),
         collate_fn=collate_fn,
         )
     
-    test_dataset = load_dataset("Dzeniks/FactFusion", split="test")
-    test_test = DataLoader(
+    test_dataset = load_dataset("Dzeniks/fever_3way", split="test")
+    test_loader = DataLoader(
         dataset= test_dataset,
         batch_size=1,
         sampler=SequentialSampler(test_dataset),
         collate_fn=collate_fn
         )
+    
+    val_dataset = load_dataset("Dzeniks/fever_3way", split="validation")
+    val_loader = DataLoader(
+        dataset= val_dataset,
+        batch_size=1,
+        sampler=SequentialSampler(val_dataset),
+        collate_fn=collate_fn
+        )
 
     optimizer = torch.optim.Adam(model.parameters(), lr = 1e-6, eps = 1e-8)
-    lossFn = torch.nn.CrossEntropyLoss()
+    loss_fn = torch.nn.CrossEntropyLoss()
 
     gym = MLM_Gym(model, tokenizer, name)
 
-    gym.train_sqce(1, loader_test, [test_test], lossFn, optimizer)
+    gym.train_sqce_with_test(1, train_loader, test_loader, val_loader, optimizer, loss_fn, device, batch_size)
 
-train()
+
+
+if __name__ == "__main__":
+    args = sys.argv
+    if len(args) > 1:
+        if args[1] == "--train":
+            train()
+        elif args[1] == "--test":
+            test()
+        elif args[1] == "--example":
+            example()
