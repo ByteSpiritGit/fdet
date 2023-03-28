@@ -47,8 +47,14 @@ class MLM_Gym(Gym):
             loss.backward()
             optimizer.step()
             if batch % 100 == 0:
-                if (batch / train_loader.batch_size)  % test_step == 0:
-                    self.test(test_loaders, loss_fn)
+                step = (batch / train_loader.batch_size)
+                if step % test_step == 0 :
+                    print("Testing...")
+                    result = self.test(test_loaders, loss_fn)
+                    acc = result[2]
+                    if acc > 0.7:
+                        print("Saving model...")
+                        self.save_checkpoint(step, result[3])
                 loss, progress = loss.item(), batch * len(y)
                 log = f"loss: {loss:>8f}, [{progress:>5f}/{data_size:>5f}]\n"
                 train_track["loss"].append(loss)
@@ -84,6 +90,7 @@ class MLM_Gym(Gym):
         self.acc = correct
         log = f"Results: \n Test Error: {(100*correct):>0.1f}%, Avg loss: {loss:>8f} \n My Accuracy: {(100*correct2):>0.1f}%, Avg loss: {loss2:>8f}\n"
         print(log)
+        return correct, loss, correct2, loss2
 
     def test_sqce(self, test_loaders, lossFn):
         start_time = perf_counter()
@@ -114,7 +121,7 @@ class MLM_Gym(Gym):
         for i in range(epochs):
             EpochLog = f"\nEpoch {i + 1} \n---------------------------------\n"
             print(EpochLog)
-            self.train_with_test(train_loader, loss_fn, optimizer, scheduler, test_loader, step_test)
+            self.train_with_test(train_loader, test_loader, loss_fn, optimizer, scheduler, step_test)
             epochTime = f"--- {(perf_counter() - start_time)} seconds ---\n"
             print(epochTime)
         self.epochs += epochs

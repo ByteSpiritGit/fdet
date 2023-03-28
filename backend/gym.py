@@ -48,3 +48,14 @@ class Gym:
             }, self.modelPath)
         log = f"{self.name} saved!!!"
         print(log)
+
+    def save_checkpoint(self, checkpoint, accuracy) -> None:
+        torch.save(
+            {
+                'epoch': self.epochs,
+                'accuracy': accuracy,
+                'model_state_dict': self.model.state_dict(),
+                'loss' : self.loss
+            }, f"{self.modelPath}_{checkpoint}")
+        log = f"{self.name} saved!!!"
+        print(log)
