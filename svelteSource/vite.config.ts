@@ -7,7 +7,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
     base: "./",
     build: {
       emptyOutDir: true,
-      outDir: "../frontend/webBuild",
+      outDir: "../frontend/templates",
       assetsDir: "static"
     }
   }
