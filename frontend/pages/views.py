@@ -7,5 +7,5 @@ def home_view(request, *args, **kwargs):
     models = {
 
     }
-    return render(request, "base.html", models)
+    return render(request, "index.html", models)
 
