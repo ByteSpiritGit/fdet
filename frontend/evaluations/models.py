@@ -7,6 +7,6 @@ class Evaluation(models.Model):
     label = models.CharField(max_length=100)
     supports = models.FloatField()
     refutes = models.FloatField()
-    evidence = models.CharField(max_length=1000)
+    evidence = models.TextField()
     def __str__(self):
         return self.claim

@@ -1,8 +1,13 @@
 from django.db import models
+from evaluations.models import Evaluation
 
 # Create your models here.
-class Feedback(models.Model):
+class Evaluation_Feedback(models.Model):
     id = models.AutoField(primary_key=True)
-    # evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)	
-    feedback = models.TextField()
+    feedback = models.BooleanField()
+    evaluation = models.ForeignKey(Evaluation, on_delete=models.CASCADE)	
     # user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+# class User_Feedback(models.Model):
+#     id = models.AutoField(primary_key=True)
+#     feedback = models.TextField()
