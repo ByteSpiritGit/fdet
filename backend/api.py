@@ -14,7 +14,7 @@ async def root():
 
 @app.get("/backend/dummy")
 async def dummy():
-    response = [{"claim": "Dummy claim", "label" : 1, "supports" : 0.1457, "refutes" : 0.8543, "evidence" : "Dummy evidence"}]
+    response = [{"claim": "Dummy claim", "label" : "REFUTES", "supports" : 0.1457, "refutes" : 0.8543, "evidence" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum! Ullam, velit recusandae. Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!"}]
     return JSONResponse(content=response)
 
 @app.get("/backend/eval")

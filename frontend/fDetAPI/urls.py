@@ -16,13 +16,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view, evaluation_view, dummy_fnc_view, dummy_fnc_backend_view
+from pages.views import home_view
+from evaluations.views import evaluation_view, dummy_fnc_view, dummy_fnc_backend_view
+from feedbacks.views import eval_feedback_view
 
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', home_view, name="home"),
+
+    # *Evaluations
     path('evaluation', evaluation_view, name="evaluation"),
     path('dummy', dummy_fnc_view, name="dummy"),
     path('dummy_backend', dummy_fnc_backend_view, name="dummy_backend"),
-    path('', home_view, name="home"),
-    path('admin/', admin.site.urls),
     
+    # *Feedbacks
+    path('eval_feedback', eval_feedback_view, name="feedback"),
 ]
