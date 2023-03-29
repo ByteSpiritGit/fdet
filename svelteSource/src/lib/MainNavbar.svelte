@@ -1,5 +1,5 @@
 <script lang="ts">
-    import css from "../main.css"
+
 </script>
 
 <div class="navbar">
@@ -15,7 +15,6 @@
         flex-direction: row;
         justify-content: space-around;
 
-        background-color: yellow;
         margin: 0;
         padding: 10px;
 
