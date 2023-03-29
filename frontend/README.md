@@ -6,11 +6,12 @@ Superusers:
 
 
 URLS:
+    admin - "/admin"
     Homepage - ""
     Evaluation - "/evaluation"
     Dummy - "/dummy"
     Dummy backend - "/dummy_backend"
-    admin - "/admin"
+    Eval feedback - "/eval_feedback"
 
 Notes!
 If public: Debug = False

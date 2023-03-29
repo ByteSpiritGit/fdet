@@ -22,6 +22,8 @@ from feedbacks.views import eval_feedback_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # *Pages
     path('', home_view, name="home"),
 
     # *Evaluations
