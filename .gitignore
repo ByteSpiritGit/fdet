@@ -1,3 +1,6 @@
+# Custom Stefik
+*.local
+*.vscode
 
 # Custom Dzeniks
 *.pth
