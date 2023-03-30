@@ -2,8 +2,9 @@
   // import Counter from './lib/Counter.svelte'
   // import Navbar from './lib/MainNavbar.svelte'
 
-  let output = "";
-  
+  let output = false;
+  let evalued = [];
+
   async function getEvaluated() {
     
     let data = (<HTMLInputElement>document.getElementById("eval-input")).value;
@@ -31,19 +32,12 @@
     const btn = e.currentTarget;
     btn.disabled = true;
 
-    let evalued = await getEvaluated();
+    evalued = await getEvaluated();
     console.log(evalued)
 
     btn.disabled = false;
 
-    output = "";
-    evalued.forEach(ev => {
-      output += `<b>Claim:</b> ${ev.claim} (ID: ${ev.id})<br/>`;
-      output += `<b>Label:</b> ${ev.label}<br/>`;
-      output += `<b>Supports:</b> ${(ev.supports * 100).toFixed(2)}%<br/>`;
-      output += `<b>Refutes:</b> ${(ev.refutes * 100).toFixed(2) }%<br/>`;
-      output += `<b>Evidence:</b> <br/>${ev.evidence}<br/>`;
-    });
+    output = true;
   }
 </script>
 
@@ -61,7 +55,16 @@
     <section class="output-section">
       <h2 id="output-title">Output test</h2>
       <p id="output-text">
-        {@html output}
+        <!-- {@html output} -->
+        {#if output}
+          {#each evalued as ev}
+            <b>Claim:</b> {ev.claim} (ID: {ev.id})<br/>
+            <b>Label:</b> {ev.label}<br/>
+            <b>Supports:</b> {(ev.supports * 100).toFixed(2)}%<br/>
+            <b>Refutes:</b> {(ev.refutes * 100).toFixed(2) }%<br/>
+            <b>Evidence:</b> <br/>{ev.evidence}<br/>
+          {/each}
+        {/if}
       </p>
     </section>
 
