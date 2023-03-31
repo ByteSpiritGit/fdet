@@ -3,16 +3,15 @@
 
   let output = false;
   let evalued = [];
+  let data;
 
   async function getEvaluated() {
-    
-    let data = (<HTMLInputElement>document.getElementById("eval-input")).value;
-    let url = `/evaluation?text=${data}`
-
     console.log("Evaluating...");
 
+    data = (data ? data : `"Never Gonna Give You Up" is an Internet meme known as "rickrolling"`);
+
     const request = new Request(
-        `${url}`, 
+        `/evaluation?text=${data}`, 
         {
         method: 'GET',
         headers: {
@@ -22,9 +21,8 @@
         }
     });
 
-    const response = await fetch(request);
-    const jsoned = await response.json();
-    return jsoned.validated;
+    const response = (await (await fetch(request)).json()).validated;
+    return response;
   }
 
   async function evaluate(e) {
@@ -32,10 +30,8 @@
     btn.disabled = true;
 
     evalued = await getEvaluated();
-    console.log(evalued)
 
     btn.disabled = false;
-
     output = true;
   }
 </script>
@@ -46,7 +42,7 @@
     <h1 id="title">fDet beta0.1_noUI</h1>
     
     <section class="input-section">
-      <textarea id="eval-input" placeholder="Enter text to evaluate by AI"></textarea>
+      <textarea id="eval-input" placeholder="Enter text to evaluate by AI" bind:value={data}></textarea>
       <input type="submit" id="eval-button" value="Evaluate" on:click={evaluate}>
       
     </section>
@@ -181,7 +177,7 @@
     font-size: 30px;
   }
 
-  .output-section, .feedback-section {
+  .output-section{
       margin: 0;
       padding: 0;
 
@@ -190,11 +186,6 @@
 
   #output-text {
       margin: 10px 0;
-  }
-
-  #feedback-button {
-      margin: 0;
-      padding: 0;
   }
 
   h2 {

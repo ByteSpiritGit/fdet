@@ -10,3 +10,8 @@
     <b>Evidence:</b> <br/>{evaluedStatement.evidence}<br/>
 </section>
 
+<style>
+    .evaluation {
+        margin: 10px 0;
+    }
+</style>
