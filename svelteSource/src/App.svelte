@@ -1,6 +1,5 @@
 <script lang="ts">
-  // import Counter from './lib/Counter.svelte'
-  // import Navbar from './lib/MainNavbar.svelte'
+  import EvaluationOut from './lib/EvaluationOut.svelte'
 
   let output = false;
   let evalued = [];
@@ -58,11 +57,7 @@
         <!-- {@html output} -->
         {#if output}
           {#each evalued as ev}
-            <b>Claim:</b> {ev.claim} (ID: {ev.id})<br/>
-            <b>Label:</b> {ev.label}<br/>
-            <b>Supports:</b> {(ev.supports * 100).toFixed(2)}%<br/>
-            <b>Refutes:</b> {(ev.refutes * 100).toFixed(2) }%<br/>
-            <b>Evidence:</b> <br/>{ev.evidence}<br/>
+            <EvaluationOut evaluedStatement={ev} />
           {/each}
         {/if}
       </p>
