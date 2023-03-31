@@ -47,19 +47,19 @@ class MLM_Gym(Gym):
             loss.backward()
             optimizer.step()
             if batch % 100 == 0:
-                step = (batch / train_loader.batch_size)
-                if step % test_step == 0 :
-                    print("Testing...")
-                    result = self.test(test_loaders, loss_fn)
-                    acc = result[2]
-                    if acc > 0.7:
-                        print("Saving model...")
-                        self.save_checkpoint(step, result[3])
                 loss, progress = loss.item(), batch * len(y)
                 log = f"loss: {loss:>8f}, [{progress:>5f}/{data_size:>5f}]\n"
                 train_track["loss"].append(loss)
                 scheduler.step()
                 print(log)
+                if batch % test_step == 0 :
+                    print("Testing...")
+                    result = self.test(test_loaders, loss_fn)
+                    acc = result[2]
+                    if acc > self.accuracy:
+                        self.accuracy = acc 
+                        print("Saving model...")
+                        self.save_checkpoint(batch, result[3])
         self.track.append(train_track)
 
     def test(self, data_loader, loss_fn) -> None:
