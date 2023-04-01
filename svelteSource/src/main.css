@@ -1,29 +1,41 @@
 :root {
-  /* --color-primary: #eeeeee;
-  --color-secondary: #e8d5c4;
-  --color-tertiary: #3a98b9; */
+   /*
+   --color-primary: #eeeeee;
+   --color-secondary: #e8d5c4;
+   --color-tertiary: #3a98b9;
+   --color-text: #2c2c2c;
+   */
 
-  --color-primary: #2c2c2c;
-  --color-secondary: #e8d5c4;
-  --color-tertiary: #3a98b9;
-  --color-text: rgba(255, 255, 255, 0.87);
+   --color-primary: #222831; 
+   --color-secondary: #393E46;
+   --color-tertiary: #D65A31;
+   --color-text: #EEEEEE;
+  
+   /* --color-primary: #2D2424;
+   --color-secondary: #5C3D2E;
+   --color-tertiary: #C68B59;
+   --color-text: #D7B19D; */
 
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+   line-height: 1.5;
+   font-weight: 400;
 
-  color-scheme: light dark;
-  color: var(--color-text);
-  background-color: var(--color-primary);
+   color-scheme: light dark;
+   color: var(--color-text);
+   background-color: var(--color-primary);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+   font-synthesis: none;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   -webkit-text-size-adjust: 100%;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+   margin: 0;
+   padding: 0;
+}
+
+* {
+   box-sizing: border-box;
 }
