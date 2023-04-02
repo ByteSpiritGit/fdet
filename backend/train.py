@@ -15,22 +15,26 @@ def example():
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         name, longest_first=True)
     model = transformers.AutoModelForSequenceClassification.from_pretrained(
-        name, return_dict=True, num_labels=3)
-    model.load_state_dict(torch.load(r"C:\Users\Dzeniks\Project\FACTFUCSION\Hover\checkpoint-0.pth")["model_state_dict"])
+        name, return_dict=True, num_labels=2)
+    model.load_state_dict(torch.load(r"../roberta-NEI-fever.pth")["model_state_dict"])
     
     # model.load_state_dict(torch.load("checkpoint-100.pth")["model_state_dict"])
     model.to(device)
-    claim = "Albert Einstein work in the field of computer science"
+    # claim = "Albert Einstein work in the field of computer science"
     # claim = "Albert Einstein was theoretical physicist"
-    evidence = "Albert Einstein (14 March 1879 – 18 April 1955) was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time."
+    # evidence = "Albert Einstein (14 March 1879 – 18 April 1955) was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time."
 
     # claim = "Germany won world war II."
     # claim = "Germany lost world war II."
     # claim = "Hitler was gay."
-    # evidence = "Following Hitler's suicide during the Battle of Berlin, Germany signed the surrender document on 8 May 1945, ending World War II in Europe and Nazi Germany\n"
+    claim = "What the fuck"
+    evidence = "Following Hitler's suicide during the Battle of Berlin, Germany signed the surrender document on 8 May 1945, ending World War II in Europe and Nazi Germany\n"
     model.to(device)
     x = tokenizer.encode_plus(claim, evidence, truncation="longest_first",
                               max_length=512, padding="max_length", return_tensors="pt")
+    model.save_pretrained("../roberta-nei-fever")
+    tokenizer.save_pretrained("../roberta-nei-fever")
+
     model.eval()
     with torch.no_grad():
         x = x.to(device)

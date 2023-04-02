@@ -1,7 +1,6 @@
-from torch import no_grad, argmax, softmax, device, cuda, load
+from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification, logging
 from retriever import TextRetrieverV2
-from anlys import preprocess_text, convert_to_ASCII
 logging.set_verbosity_error()
 
 class TextValidate():
@@ -12,12 +11,12 @@ class TextValidate():
         self.tokenizer = RobertaTokenizerFast.from_pretrained('Dzeniks/roberta-fact-check', longest_first=True)
         self.model = RobertaForSequenceClassification.from_pretrained('Dzeniks/roberta-fact-check', return_dict=True, num_labels=2)
         self.model.to(self.device)
-        self.nei = RobertaForSequenceClassification.from_pretrained('roberta-base', return_dict=True, num_labels=2)
+        self.nei = RobertaForSequenceClassification.from_pretrained('Dzeniks/roberta-nei-fact-check', return_dict=True, num_labels=2)
         self.nei.to(self.device)
         self.retriever = TextRetrieverV2()
         print(f"Loaded")
 
-    async def main_debug(self, text):
+    async def main(self, text):
         # Document retrieval
         results = []
         claims = text.split(". ")

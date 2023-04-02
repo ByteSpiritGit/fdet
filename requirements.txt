@@ -4,4 +4,5 @@ uvicorn[standard]
 matplotlib
 farm-haystack
 transformers
+datasets
 yake
