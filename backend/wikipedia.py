@@ -51,7 +51,6 @@ class Wikipedia:
                     'format': 'json',
                     'utf8': 1,
         }
-
         response = requests.get(self.url, params=params).json()[
             'query']['pages']
         for key in response:
