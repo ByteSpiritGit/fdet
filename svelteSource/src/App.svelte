@@ -1,84 +1,90 @@
 <script lang="ts">
-   import OldEvaluationPage from "./lib/OldEvaluationPage.svelte";
-   import NewEvaluationPage from "./lib/NewEvaluationPage.svelte";
-   let page;
+   import Navbar from "./lib/Navbar.svelte";
+   import Button from "./lib/Button.svelte";
+    import { text } from "svelte/internal";
+
+   let toEvaluate;
+   let textarea;
+
+   function whenclk() {
+      console.log("clicked");
+   }
+
+   function checkSize() {
+      textarea.style.height = textarea.scrollHeight + "px";
+   }
 </script>
 
 <!-- * HTML -->
 <main>
-   <input type="checkbox" bind:checked={page} class="whichSwitch" />
+   <Navbar />   
 
-   {#if page}
-      <OldEvaluationPage />
-   {:else if !page}
-      <NewEvaluationPage />
-   {/if}
+   <section class="title-section">
+      <h1>Fake statement detector powered by AI</h1>
+   </section>
 
+   <section class="input-section">
+      <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
+      <!-- <textarea bind:this={textarea} on:keydown={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea> -->
+      <Button text="Evaluate" whenClicked={whenclk} disabled={false}/>
+   </section>
 </main>
 
 <!-- * css -->
 <style>
-   main {
-      margin: 0;
-      padding: 0;
+   @import "./main.css";
+
+   /* title section */
+   .title-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      height: 100px;
+      background-color: var(--color-secondary);
+
+      margin-top: 100px;
    }
 
-   .whichSwitch {
-      visibility: hidden;
-      position: absolute;
-      left: -20px;
-      top: -20px;
-      
-      margin: 0;
-      cursor: pointer;
+   .input-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      height: fit-content;
+      background-color: var(--color-secondary);
+
+      margin-top: 100px;
+
+      padding: 20px;
    }
 
-   .whichSwitch::before {
-      left: 25px;
-      top: 25px;
+   .input-section > .input {
+      background-color: var(--color-primary);
+      color: var(--color-text);
 
-      content: "";
-      /* visibility: visible; */
-      display: block;
+      width: 50%;
+      height: 3em;
 
-      position: absolute;
+      max-width: 700px;
 
-      width: 40px;
-      height: 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2em;
+      font-weight: 500;
+      text-transform: uppercase;
+      cursor: text;
 
-      background-color: #1f1f20;
-      border-radius: 5px;
+      margin-bottom: 20px;
+      padding: 5px;
 
-      z-index: 50;
+      resize: none;
+      text-transform: none;
    }
 
-   .whichSwitch::after {
-      left: 25px;
-      top: 25px;
-
-      content: "0";
-      /* visibility: visible; */
-      display: block;
-
-      position: absolute;
-
-      width: 20px;
-      height: 20px;
-
-      background-color: rgb(199, 199, 199);
-      border-radius: 5px;
-
-      z-index: 51;
-      transition: 0.2s;
-
-      color: #1f1f20;
-      font-size: 1.2rem;
-      text-align: center;
+   .input-section > .input:focus {
+      outline: none;
    }
-
-   .whichSwitch:checked::after {
-      margin-left: 20px;
-      content: "1";
-   }
-
 </style>

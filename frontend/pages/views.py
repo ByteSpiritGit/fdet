@@ -9,3 +9,9 @@ def home_view(request, *args, **kwargs):
     }
     return render(request, "index.html", models)
 
+def old_eval_view(request, *args, **kwargs):
+
+    models = {
+
+    }
+    return render(request, "./pages/oldEval.html", models)

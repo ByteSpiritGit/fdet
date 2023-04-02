@@ -1,5 +1,5 @@
 <script lang="ts">
-   import EvaluationOut from "./EvaluationOut.svelte";
+   import EvaluationOut from "./OldEvaluationOut.svelte";
 
    let output = false;
    let evalued = [];
@@ -99,7 +99,8 @@
       margin: 2% auto;
       padding: 30px;
 
-      background-color: #1f1f20;
+      /* background-color: #1f1f20; */
+      background-color: var(--color-secondary);
 
       border-radius: 15px;
    }
@@ -157,8 +158,9 @@
       transition: 200ms;
 
       /* background-image: linear-gradient(to right top, #2f40d8, #3444d9, #3848db, #3d4cdc, #4150dd, #4150dd, #4150dd, #4150dd, #3d4cdc, #3848db, #3444d9, #2f40d8); */
-      background-color: #2c36bd8c;
-      color: #e1f1fe;
+      /* background-color: #2c36bd8c; */
+      background-color: var(--color-tertiary);
+      color: #e1f1fe;   
 
       box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
    }
