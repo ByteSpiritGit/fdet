@@ -22,5 +22,11 @@ async def eval(text: str):
     response = await validation.main(text) 
     return JSONResponse(content=response)
 
+@app.get("/backend/eval_debug")
+async def eval(text: str):
+    response = await validation.main_debug(text) 
+    return JSONResponse(content=response)
+
+
 if __name__ == "__main__":
     uvicorn.run(app, port=8002)

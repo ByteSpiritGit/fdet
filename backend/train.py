@@ -15,14 +15,18 @@ def example():
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         name, longest_first=True)
     model = transformers.AutoModelForSequenceClassification.from_pretrained(
-        name, return_dict=True, num_labels=2)
-    model.load_state_dict(torch.load("checkpoint-400.pth")["model_state_dict"])
+        name, return_dict=True, num_labels=3)
+    model.load_state_dict(torch.load(r"C:\Users\Dzeniks\Project\FACTFUCSION\Hover\checkpoint-0.pth")["model_state_dict"])
+    
+    # model.load_state_dict(torch.load("checkpoint-100.pth")["model_state_dict"])
     model.to(device)
     claim = "Albert Einstein work in the field of computer science"
     # claim = "Albert Einstein was theoretical physicist"
     evidence = "Albert Einstein (14 March 1879 – 18 April 1955) was a German-born theoretical physicist, widely acknowledged to be one of the greatest and most influential physicists of all time."
 
     # claim = "Germany won world war II."
+    # claim = "Germany lost world war II."
+    # claim = "Hitler was gay."
     # evidence = "Following Hitler's suicide during the Battle of Berlin, Germany signed the surrender document on 8 May 1945, ending World War II in Europe and Nazi Germany\n"
     model.to(device)
     x = tokenizer.encode_plus(claim, evidence, truncation="longest_first",
@@ -31,7 +35,6 @@ def example():
     with torch.no_grad():
         x = x.to(device)
         prediction = model(**x)
-
     print(
         f"ArgMax: {torch.argmax(prediction.logits)}\nSoftMax: {torch.softmax(prediction.logits, dim=1)}")
 
@@ -45,7 +48,7 @@ def test():
         name, longest_first=True)
     model = transformers.AutoModelForSequenceClassification.from_pretrained(
         name, return_dict=True, num_labels=2)
-    model.load_state_dict(torch.load("deepset.pth")["model_state_dict"])
+    model.load_state_dict(torch.load("roberta-NEI-fever.pth")["model_state_dict"])
     model.to(device)
 
     def collate_fn(data):
@@ -58,22 +61,25 @@ def test():
             texts, truncation="longest_first", max_length=512, padding="max_length", return_tensors="pt")
         return toks, labels
 
-    train_dataset = load_dataset("Dzeniks/fever_2way", split="train")
+    quick_dataset = load_dataset("Dzeniks/FactFusion", split="test")
 
-    train_dataset[:10_000]
-    print(train_dataset)
-    print(anlys.analyze(train_dataset))
+    nei = anlys.load("NEI.jsonl")
 
-    train_dataset = anlys.clean(train_dataset)
-    train_loader = DataLoader(
-        dataset=train_dataset,
+    for n,i in enumerate(nei):
+        print(n)
+        quick_dataset = quick_dataset.add_item(i)
+
+    quick_dataset = anlys.divide(quick_dataset, 50)
+    # quick_dataset = anlys.clean(quick_dataset)
+    quick_loader = DataLoader(
+        dataset=quick_dataset,
         batch_size=1,
-        sampler=RandomSampler(train_dataset),
-        collate_fn=collate_fn,
+        sampler=SequentialSampler(quick_dataset),
+        collate_fn=collate_fn
     )
 
-
-    test_dataset = load_dataset("Dzeniks/fever_2way", split="test")
+    test_dataset = load_dataset("Dzeniks/FactFusion", split="test")
+    # test_dataset = anlys.clean(test_dataset)
     test_loader = DataLoader(
         dataset=test_dataset,
         batch_size=1,
@@ -81,7 +87,8 @@ def test():
         collate_fn=collate_fn
     )
 
-    val_dataset = load_dataset("Dzeniks/fever_2way", split="validation")
+    val_dataset = load_dataset("Dzeniks/FactFusion", split="validation")
+    # val_dataset = anlys.clean(val_dataset)
     val_loader = DataLoader(
         dataset=val_dataset,
         batch_size=1,
@@ -91,7 +98,7 @@ def test():
 
     gym = MLM_Gym(model, tokenizer, name)
     loss_fn = torch.nn.CrossEntropyLoss()
-    gym.test_sqce([val_loader, test_loader, train_loader], loss_fn)
+    gym.test_sqce([quick_loader, val_loader, test_loader], loss_fn)
 
 
 def train():
@@ -172,4 +179,4 @@ if __name__ == "__main__":
         elif args[1] == "example":
             example()
     else:
-        train()
+        test()

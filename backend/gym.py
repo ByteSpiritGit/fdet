@@ -2,8 +2,9 @@ import torch
 import json
 import os
 
+
 class Gym:
-    def __init__(self, model, tokenizer, name="Model", epochs = 0, loss = 0) -> None:
+    def __init__(self, model, tokenizer, name="Model", epochs=0, loss=0) -> None:
         self.name = name.split("/")[0]
         self.model = model
         self.epochs = epochs
@@ -45,7 +46,7 @@ class Gym:
             {
                 'epoch': self.epochs,
                 'model_state_dict': self.model.state_dict(),
-                'loss' : self.loss
+                'loss': self.loss
             }, self.name + ".pth")
         log = f"{self.name} saved!!!"
         print(log)
@@ -56,7 +57,7 @@ class Gym:
                 'epoch': self.epochs,
                 'accuracy': accuracy,
                 'model_state_dict': self.model.state_dict(),
-                'loss' : self.loss
+                'loss': self.loss
             }, f"checkpoint-{checkpoint}.pth")
         log = f"{self.name} saved!!!"
         print(log)
