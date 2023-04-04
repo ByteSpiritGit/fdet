@@ -3,7 +3,7 @@
    import Button from "./lib/Button.svelte";
     import { text } from "svelte/internal";
 
-   let toEvaluate;
+   let toEvaluate
    let textarea;
 
    function whenclk() {
@@ -11,7 +11,8 @@
    }
 
    function checkSize() {
-      textarea.style.height = textarea.scrollHeight + "px";
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
    }
 </script>
 
@@ -25,7 +26,7 @@
 
    <section class="input-section">
       <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
-      <!-- <textarea bind:this={textarea} on:keydown={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea> -->
+
       <Button text="Evaluate" whenClicked={whenclk} disabled={false}/>
    </section>
 </main>
@@ -65,6 +66,7 @@
       background-color: var(--color-primary);
       color: var(--color-text);
 
+      max-width: 700px;
       width: 50%;
       height: 3em;
 
