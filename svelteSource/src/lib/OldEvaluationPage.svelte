@@ -5,6 +5,46 @@
    let evalued = [];
    let data;
 
+   var xhr = new XMLHttpRequest();
+
+   // Set up a callback function to handle the response
+   xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+         if (xhr.status === 200) {
+            // Save the response text as a cookie
+            console.log(JSON.parse(xhr.responseText).csrf_token);
+            document.cookie =
+               "csrftoken=" +
+               encodeURIComponent(JSON.parse(xhr.responseText).csrf_token) +
+               "; path=/";
+         } else {
+            console.log("Request failed");
+         }
+      }
+   };
+
+   // Open a new request with the GET method and a URL
+   xhr.open("GET", "http://127.0.0.1:8000/csrf_view");
+
+   // Send the request
+   xhr.send();
+
+   function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+         const cookies = document.cookie.split(';');
+         for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+               break;
+            }
+         }
+      }
+      return cookieValue;
+   }
+
    async function getEvaluated() {
       console.log("Evaluating...");
 
@@ -25,15 +65,16 @@
 
       let url = `/evaluation?text=${data}`;
       // let url = `/dummy?text=${data}`;
+      const csrftoken = getCookie('csrftoken');
 
-      const request = new Request(url, {
-         method: "GET",
-         headers: {
-            "Content-Type": "application/json",
-            // 'X-CSRFToken': csrfToken,
-            mode: "same-origin",
-         },
-      });
+      const request = new Request(
+         url, 
+         {
+            method: 'POST',
+            headers: {'X-CSRFToken': csrftoken},
+            mode: 'same-origin'
+         }
+      );
 
       const response = (await (await fetch(request)).json()).validated;
       return response;
