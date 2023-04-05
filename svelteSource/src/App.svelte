@@ -5,6 +5,31 @@
    let output = false;
    let evalued = [];
 
+   // Create a new XMLHttpRequest object
+   var xhr = new XMLHttpRequest();
+
+   // Set up a callback function to handle the response
+   xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+         if (xhr.status === 200) {
+            // Save the response text as a cookie
+            console.log(JSON.parse(xhr.responseText).csrf_token);
+            document.cookie =
+               "csrftoken=" +
+               encodeURIComponent(JSON.parse(xhr.responseText).csrf_token) +
+               "; path=/";
+         } else {
+            console.log("Request failed");
+         }
+      }
+   };
+
+   // Open a new request with the GET method and a URL
+   xhr.open("GET", "http://127.0.0.1:8000/csrf_view");
+
+   // Send the request
+   xhr.send();
+
    function getCookie(name) {
       let cookieValue = null;
       if (document.cookie && document.cookie !== "") {
