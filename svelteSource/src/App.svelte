@@ -68,9 +68,8 @@
 
       max-width: 700px;
       width: 50%;
-      height: 3em;
-
-      max-width: 700px;
+      height: fit-content;
+      max-height: 200px;
 
       border: none;
       border-radius: 10px;
@@ -89,4 +88,25 @@
    .input-section > .input:focus {
       outline: none;
    }
+
+   /* .input-section > .input::-webkit-scrollbar {
+      width: 7px;
+   }
+
+   .input-section > .input::-webkit-scrollbar-thumb {
+      background-color: var(--color-tertiary);
+      border-radius: 10px;
+   }
+
+   .input-section > .input::-webkit-scrollbar-track {
+      background-color: var(--color-primary);
+      border-radius: 10px;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--color-primary);
+   }
+
+   .input-section > .input::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-text);
+   } */
 </style>
