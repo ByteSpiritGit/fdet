@@ -2,15 +2,16 @@ import torch
 import json
 import os
 
+
 class Gym:
-    def __init__(self, model, tokenizer, name="Model", epochs = 0, loss = 0) -> None:
-        self.name = name
+    def __init__(self, model, tokenizer, name="Model", epochs=0, loss=0) -> None:
+        self.name = name.split("/")[0]
         self.model = model
         self.epochs = epochs
         self.tokenizer = tokenizer
         self.track = []
-        self.modelPath = f"{name}.pth"
         self.loss = loss
+        self.accuracy = 0
 
     def calculate_acc_loss_avg(self, corrects, loss, batch_num, lossFn, prediction, label):
         loss += lossFn(prediction.logits, label)
@@ -40,12 +41,13 @@ class Gym:
                 f.write("\n")
 
     def save_model(self) -> None:
+        torch.save(self.model.state_dict(), "BackUp.pth")
         torch.save(
             {
                 'epoch': self.epochs,
                 'model_state_dict': self.model.state_dict(),
-                'loss' : self.loss
-            }, self.modelPath)
+                'loss': self.loss
+            }, self.name + ".pth")
         log = f"{self.name} saved!!!"
         print(log)
 
@@ -55,7 +57,7 @@ class Gym:
                 'epoch': self.epochs,
                 'accuracy': accuracy,
                 'model_state_dict': self.model.state_dict(),
-                'loss' : self.loss
-            }, f"{self.modelPath}_{checkpoint}")
+                'loss': self.loss
+            }, f"checkpoint-{checkpoint}.pth")
         log = f"{self.name} saved!!!"
         print(log)

@@ -1,19 +1,19 @@
-To start the server
-    python manage.py runserver
+# Starting the server
+```py
+python manage.py runserver
+```
+## Superusers: <br>
+1. Fdet
+<br>
+## URLS: 
+admin - "/admin" <br>
+Homepage - "" <br>
+Evaluation - "/evaluation" <br>
+Dummy - "/dummy" <br>
+Dummy backend - "/dummy_backend" <br>
+Eval feedback - "/eval_feedback" <br>
 
-Superusers:
-    1. Fdet
-
-
-URLS:
-    admin - "/admin"
-    Homepage - ""
-    Evaluation - "/evaluation"
-    Dummy - "/dummy"
-    Dummy backend - "/dummy_backend"
-    Eval feedback - "/eval_feedback"
-
-Notes!
+### **Notes!** <br>
 If public: Debug = False
 
-If changing models.py always run makemigrations & migrate
+**If changing models.py always run makemigrations & migrate**
