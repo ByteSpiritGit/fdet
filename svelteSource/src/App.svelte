@@ -1,9 +1,11 @@
 <script lang="ts">
    import Navbar from "./lib/Navbar.svelte";
    import Button from "./lib/Button.svelte";
-    import { text } from "svelte/internal";
+   import Footer from "./lib/Footer.svelte";
+   import WhatWeDo from "./lib/WhatWeDo.svelte";
 
-   let toEvaluate
+   let toEvaluate;
+   
    let textarea;
 
    function whenclk() {
@@ -20,15 +22,20 @@
 <main>
    <Navbar />   
 
-   <section class="title-section">
-      <h1>Fake statement detector powered by AI</h1>
+   <section class="content-section">
+      <section class="title-section">
+         <h1>Fake statement detector powered by AI</h1>
+      </section>
+   
+      <WhatWeDo />
+   
+      <section class="input-section">
+         <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
+         <Button text="Evaluate" whenClicked={whenclk} disabled={false}/>
+      </section>
    </section>
 
-   <section class="input-section">
-      <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
-
-      <Button text="Evaluate" whenClicked={whenclk} disabled={false}/>
-   </section>
+   <Footer />
 </main>
 
 <!-- * css -->
@@ -57,7 +64,7 @@
       height: fit-content;
       background-color: var(--color-secondary);
 
-      margin-top: 100px;
+      margin-top: 80px;
 
       padding: 20px;
    }
@@ -89,7 +96,7 @@
       outline: none;
    }
 
-   /* .input-section > .input::-webkit-scrollbar {
+   .input-section > .input::-webkit-scrollbar {
       width: 7px;
    }
 
@@ -108,5 +115,5 @@
 
    .input-section > .input::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-text);
-   } */
+   }
 </style>
