@@ -1,6 +1,8 @@
 <script lang="ts">
    export let text: string;
-   export let whenClicked: () => void;
+   export let whenClicked: () => void = () => {
+      console.log("clicked2");
+   };
    export let disabled: boolean = false;
 </script>
 
@@ -15,6 +17,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
+
+      user-select: none;
    }
 
    .button > button {
@@ -32,9 +36,17 @@
    }
 
    .button > button:disabled {
-      background-color: red;
-      opacity: 0.5;
-      cursor: grabbing;
+      background-color: var(--color-disabled);
+      cursor: not-allowed;
+      color: var(--color-tertiary-hover);
    }
+   .button > button:disabled:hover {
+      background-color: var(--color-disabled);
+      color: var(--color-tertiary-hover);
+   }
+   .button > button:hover {
+      background-color: var(--color-tertiary-hover);
+   }
+
 
 </style>

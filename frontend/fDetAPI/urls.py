@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view, old_eval_view
+from pages.views import home_view, old_eval_view, evalOutput
 from evaluations.views import evaluation_view, dummy_fnc_view, dummy_fnc_backend_view, csrf_view
 from feedbacks.views import eval_feedback_view
 
@@ -26,6 +26,7 @@ urlpatterns = [
     # *Pages
     path('', home_view, name="home"),
     path('oldEval', old_eval_view, name="old_eval"),
+    path('evalOutput', evalOutput, name="eval_output"),
 
     # *Evaluations
     path('evaluation', evaluation_view, name="evaluation"),

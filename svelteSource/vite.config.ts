@@ -13,6 +13,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
             input: {
                main: './index.html',
                oldEval: './pages/oldEval.html',
+               evalOutput: './pages/evalOutput.html',
             },
          },
       }

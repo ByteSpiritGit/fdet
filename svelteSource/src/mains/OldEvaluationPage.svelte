@@ -1,5 +1,5 @@
 <script lang="ts">
-   import EvaluationOut from "./OldEvaluationOut.svelte";
+   import EvaluationOut from "../lib/OldEvaluationOut.svelte";
 
    let output = false;
    let evalued = [];

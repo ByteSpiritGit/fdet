@@ -3,13 +3,38 @@
    import Button from "./lib/Button.svelte";
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
+   import Warning from "./lib/Warning.svelte";
 
    let toEvaluate;
    
    let textarea;
 
+   let warnings;
+   let buttonDisabled: boolean = false;
+
    function whenclk() {
-      console.log("clicked");
+      toEvaluate = textarea.value;
+      if (toEvaluate) {
+         window.location.href = "/evalOutput?text=" + toEvaluate;
+         return;
+      };
+
+      if (warnings.children.length >= 1) {
+         setTimeout(() => {
+            warnings.children[0].remove()
+         }, 500);
+      }
+
+      new Warning({
+         target: warnings,
+         props: {
+            name: "Text missing",
+            description: "There is nothing to evaluate",
+            iconType: "Warning",
+            duration: 5000
+         }
+      });
+      return;
    }
 
    function checkSize() {
@@ -18,7 +43,6 @@
    }
 </script>
 
-<!-- * HTML -->
 <main>
    <Navbar />   
 
@@ -31,14 +55,14 @@
    
       <section class="input-section">
          <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
-         <Button text="Evaluate" whenClicked={whenclk} disabled={false}/>
+         <Button text="Evaluate" whenClicked={whenclk} disabled={buttonDisabled} />
       </section>
    </section>
 
    <Footer />
+   <section class="warning-section" bind:this={warnings}></section>
 </main>
 
-<!-- * css -->
 <style>
    @import "./main.css";
 
@@ -64,7 +88,7 @@
       height: fit-content;
       background-color: var(--color-secondary);
 
-      margin-top: 80px;
+      margin-top: 75px;
 
       padding: 20px;
    }
@@ -115,5 +139,13 @@
 
    .input-section > .input::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-text);
+   }
+
+   .warning-section {
+      position: absolute;
+      bottom: 85px;
+      right: 0;
+
+      overflow: hidden;
    }
 </style>

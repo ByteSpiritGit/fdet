@@ -11,7 +11,8 @@
 <style>
    .mask {
       background-color: var(--color-text);
-      width: 50%;
+      width: 45%;
+      min-width: 700px;
       margin: 0px auto;
 
       margin-top: 70px;
@@ -29,7 +30,8 @@
    .mask img {
       /* display: none; */
       opacity: 0;
-      /* height: 100%; */
+      
       width: 100%;
+      height: 100%;
    }
 </style>
