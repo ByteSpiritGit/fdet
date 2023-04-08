@@ -1,3 +1,4 @@
+import nltk
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification, logging
 from retriever import TextRetrieverV2
@@ -19,11 +20,12 @@ class TextValidate():
     async def main(self, text):
         # Document retrieval
         results = []
-        claims = text.split(". ")
+        nltk.download('punkt')
+        claims = nltk.sent_tokenize(text)
         claims = [item for item in claims if item != ""]
         await self.retriever.create_database(claims)
         for claim in claims:
-            evidence = self.retriever.extract_passage(claim, 1)
+            evidence = self.retriever.extract_passage(claim, 3)
             if evidence == "":
                 print("NOT ENOUGH INFO")
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
@@ -54,7 +56,7 @@ class TextValidate():
                     results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, "evidence" : evidence})
                 else:
                     print("NOT ENOUGH INFO")
-                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : evidence})
+                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "ei" : ei, "nei" : nei, "evidence" : evidence})
 
         self.retriever.delete_database()
         print(results)
@@ -64,11 +66,12 @@ class TextValidate():
     async def main_debug(self, text):
         # Document retrieval
         results = []
-        claims = text.split(". ")
+        nltk.download('punkt')
+        claims = nltk.sent_tokenize(text)
         claims = [item for item in claims if item != ""]
         await self.retriever.create_database(claims)
         for claim in claims:
-            evidence = self.retriever.extract_passage(claim, 1)
+            evidence = self.retriever.extract_passage(claim, 3)
             if evidence == "":
                 print("NOT ENOUGH INFO")
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
