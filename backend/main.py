@@ -1,11 +1,12 @@
+import nltk
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification, logging
 from retriever import TextRetrieverV2
 logging.set_verbosity_error()
-
 class TextValidate():
     def __init__(self) -> None:
         print(f"Loading text validator")
+        nltk.download('punkt')
         self.device = device("cuda" if cuda.is_available() else "cpu")
         print(f"You are using {self.device}")
         self.tokenizer = RobertaTokenizerFast.from_pretrained('Dzeniks/roberta-fact-check', longest_first=True)
@@ -19,8 +20,7 @@ class TextValidate():
     async def main(self, text):
         # Document retrieval
         results = []
-        claims = text.split(". ")
-        claims = [item for item in claims if item != ""]
+        claims = nltk.sent_tokenize(text)
         await self.retriever.create_database(claims)
         for claim in claims:
             evidence = self.retriever.extract_passage(claim, 1)
