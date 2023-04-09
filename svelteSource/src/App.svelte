@@ -52,7 +52,7 @@
       </section>
    
       <WhatWeDo />
-   
+
       <section class="input-section">
          <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
          <Button text="Evaluate" whenClicked={whenclk} disabled={buttonDisabled} />
@@ -60,6 +60,7 @@
    </section>
 
    <Footer />
+
    <section class="warning-section" bind:this={warnings}></section>
 </main>
 
@@ -138,7 +139,7 @@
    }
 
    .input-section > .input::-webkit-scrollbar-thumb:hover {
-      background-color: var(--color-text);
+      background-color: var(--color-tertiary-hover);
    }
 
    .warning-section {

@@ -43,19 +43,21 @@
    }
 
    $: if (svgElements) {
-      maskSvg(svgElements);
+      if (svgElements.length == links.length) { 
+         maskSvg(svgElements);
+      }
    }
 </script>
 
-<section class="footer-section">
+<footer class="footer-section">
    <section class="link-section">
       {#each links as link}
-            <a href="{link.link}" class="mask" bind:this={svgElements[links.indexOf(link)]} data-png="{link.icon}">
-               <img src="{link.icon}" alt="{link.name}">
-            </a>
+         <a href="{link.link}" class="mask" bind:this={svgElements[links.indexOf(link)]} data-png="{link.icon}">
+            <img src="{link.icon}" alt="{link.name}">
+         </a>
       {/each}
    </section>
-</section>
+</footer>
 
 <style>
    @import "../main.css";

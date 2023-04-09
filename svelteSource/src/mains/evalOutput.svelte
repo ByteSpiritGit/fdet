@@ -52,7 +52,8 @@
 
    async function getEvaluated() {
       const csrftoken = getCookie('csrftoken');
-      let url = `/dummy?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+      // let url = `/dummy?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+      let url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
 
       const request = new Request(
          url, 
