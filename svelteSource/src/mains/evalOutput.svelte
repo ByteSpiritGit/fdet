@@ -3,13 +3,17 @@
    import Navbar from "../lib/Navbar.svelte";
    import Footer from "../lib/Footer.svelte";
    import Loading from "../lib/Loading.svelte";
-
-   // import Navbar from "./lib/Navbar.svelte";
-   // import Footer from "./lib/Footer.svelte";
-   // import Loading from "./lib/Loading.svelte";
+   import ClaimBlock from "../lib/validationOutput/ClaimBlock.svelte";
+   import Warning from "../lib/Warning.svelte";
 
    let loading: boolean;
-   let evalued: Object;
+   let evalued: Array<{
+      claim: string,
+      evidence: string,
+      label: string,
+      refutes: number,
+      supports: number
+   }>;
 
    function getCsrfToken() {
       var xhr = new XMLHttpRequest();
@@ -50,10 +54,27 @@
       return cookieValue;
    }
 
-   async function getEvaluated() {
+   async function getEvaluated(type="") {
+      let url: string;
+
+      switch (type) {
+         case "Dummy":
+            url = `/dummy?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+            break;
+         case "Evaluation":
+            url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+            break;
+         case "NoServer":
+            return [
+               {"claim": "The world is flat", "label": "Refutes", "supports": 0.0, "refutes": 1.0, "evidence": "The world is round"}, 
+               {"claim": "The world is round", "label": "Supports", "supports": 1.0, "refutes": 0.0, "evidence": "The world is round"}
+            ];
+         default:
+            url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+            break;
+      }
+      
       const csrftoken = getCookie('csrftoken');
-      // let url = `/dummy?text=${(new URLSearchParams(window.location.search)).get("text")}`;
-      let url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
 
       const request = new Request(
          url, 
@@ -64,16 +85,20 @@
          }
       );
 
-      const response = (await (await fetch(request)).json()).validated;
-      return response;
+      try {
+         const response = (await (await fetch(request)).json()).validated;
+         return response;
+      }
+      catch (error) {
+         console.log(error);
+
+         return null;
+      }
    }
 
    async function evaluate() {
-      loading = true;
+      evalued = await getEvaluated("NoServer");
 
-      evalued = await getEvaluated();
-
-      loading = false;
       console.log(evalued);
    }
    evaluate();
@@ -81,20 +106,16 @@
 
 <section>
    <Navbar />
+
    {#if evalued}
-      <p>{evalued[0].claim}</p>
-      <p>{evalued[0].label}</p>
-      <p>{evalued[0].supports}</p>
-      <p>{evalued[0].refutes}</p>
-      <p>{evalued[0].evidence}</p>
-   {/if}
-   
-   {#if loading} 
+      <ClaimBlock claims={evalued} />
+   {:else if !evalued}
       <div class="loading">
          <Loading />
          <p>Calculating the universe</p>
       </div>
    {/if}
+
    <Footer />
 </section>
 

@@ -4,6 +4,8 @@
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
    import Warning from "./lib/Warning.svelte";
+    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
+    import { bind } from "svelte/internal";
 
    let toEvaluate;
    
@@ -19,22 +21,15 @@
          return;
       };
 
-      if (warnings.children.length >= 1) {
-         setTimeout(() => {
-            warnings.children[0].remove()
-         }, 500);
-      }
-
-      new Warning({
+      const notification = new Warning({
          target: warnings,
          props: {
-            name: "Text missing",
-            description: "There is nothing to evaluate",
-            iconType: "Warning",
+            name: 'Text missing',
+            description: 'There is nothing to evaluate',
+            iconType: 'Warning',
             duration: 5000
          }
       });
-      return;
    }
 
    function checkSize() {
@@ -61,7 +56,8 @@
 
    <Footer />
 
-   <section class="warning-section" bind:this={warnings}></section>
+   <!-- <section class="warning-section" bind:this={warnings}></section> -->
+   <NotificationBlock bind:theComponent={warnings} notificationNumber={3}  />
 </main>
 
 <style>
@@ -140,13 +136,5 @@
 
    .input-section > .input::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-tertiary-hover);
-   }
-
-   .warning-section {
-      position: absolute;
-      bottom: 85px;
-      right: 0;
-
-      overflow: hidden;
    }
 </style>
