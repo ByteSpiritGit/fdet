@@ -97,7 +97,7 @@
    }
 
    async function evaluate() {
-      evalued = await getEvaluated("NoServer");
+      evalued = await getEvaluated("Evaluation");
 
       console.log(evalued);
    }

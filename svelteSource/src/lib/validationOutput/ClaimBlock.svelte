@@ -20,7 +20,8 @@
          new Sentence({
             target: claimSection,
             props: {
-               text: claim.claim
+               text: claim.claim,
+               id: claim.claim
             }
          })
 
@@ -39,14 +40,42 @@
 </script>
 
 <output>
-   <section class="claim-section" bind:this={claimSection}></section>
+   <section class="claim-section" bind:this={claimSection}>
+      <p>Claim: </p>
+   </section>
    <section class="validation-section" bind:this={validationSection}></section>
 </output>
 
 <style>
    .claim-section {
       display: flex;
-      width: 50%;
-      height: 100%;
+      justify-content: flex-start;
+      
+      overflow: auto;
+
+      padding: 0.6em;
+   }
+
+   .claim-section p {
+      margin: 0;
+      padding: 0;
+
+      color: var(--color-text);
+      text-decoration: none;
+      font-size: 1em;
+      font-weight: 300;
+
+      -webkit-user-select: none;
+      user-select: none;
+   }
+
+   .validation-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      
+      overflow: auto;
+
+      padding: 0.7em;
    }
 </style>

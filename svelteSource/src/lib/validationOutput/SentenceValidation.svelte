@@ -9,18 +9,15 @@
    
 </script>
 
-<section class="output-validation-section" data-shown="{show}" on:click={() => {
-   show = !show;
-   console.log(show);
-}}>
-   <h3 >{claim}</h3>
+<button class="output-validation-section" data-shown="{show}" on:click={() => { show = !show; }}>
+   <h3>{claim}</h3>
    <div class="dropdown">
       <p>Label: {label}</p>
       <p>Supports: {supports}</p>
       <p>Refutes: {refutes}</p>
       <p>Evidence: <br />{evidence}</p>
    </div>
-</section>
+</button>
 
 <style>
    p {
@@ -35,8 +32,23 @@
 
    .output-validation-section {
       background-color: var(--color-secondary);
-      margin: 20px;
+      
+      border: none;
+      outline: none;
+      cursor: pointer;
+
+      -webkit-user-select: none;
+      user-select: none;
+
+      margin-bottom: 10px;
       padding: 10px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      
+      color: var(--color-text);
+      font-size: 1em;
    }
 
    .dropdown {
@@ -44,6 +56,14 @@
    }
 
    .output-validation-section[data-shown="true"] .dropdown {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+
+      margin-top: 10px;
+
+      color: var(--color-text);
+
+      font-size: 1em;
    }
 </style>

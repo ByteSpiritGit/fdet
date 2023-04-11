@@ -12,12 +12,12 @@
 
       margin-left: 0.15em;
       margin-right: 0.15em;
-   
+      
       color: var(--color-text);
       text-decoration: none;
 
       cursor: pointer;
-
+      
       font-size: 1em;
       font-weight: 300;
 
