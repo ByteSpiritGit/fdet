@@ -4,7 +4,7 @@
    import Footer from "../lib/Footer.svelte";
    import Loading from "../lib/Loading.svelte";
    import ClaimBlock from "../lib/validationOutput/ClaimBlock.svelte";
-   import Warning from "../lib/Warning.svelte";
+   import Warning from "../lib/notifications/Warning.svelte";
 
    let loading: boolean;
    let evalued: Array<{
@@ -66,8 +66,8 @@
             break;
          case "NoServer":
             return [
-               {"claim": "The world is flat", "label": "Refutes", "supports": 0.0, "refutes": 1.0, "evidence": "The world is round"}, 
-               {"claim": "The world is round", "label": "Supports", "supports": 1.0, "refutes": 0.0, "evidence": "The world is round"}
+               {"claim": "The world is flat", "label": "Refutes", "supports": 38.42, "refutes": 61.58, "evidence": "The world is round"}, 
+               {"claim": "The world is round", "label": "Supports", "supports": 69.2, "refutes": 30.8, "evidence": "The world is round"}
             ];
          default:
             url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;

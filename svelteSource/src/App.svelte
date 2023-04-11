@@ -3,7 +3,7 @@
    import Button from "./lib/Button.svelte";
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
-   import Warning from "./lib/Warning.svelte";
+   import Warning from "./lib/notifications/Warning.svelte";
     import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
     import { bind } from "svelte/internal";
 
@@ -57,7 +57,7 @@
    <Footer />
 
    <!-- <section class="warning-section" bind:this={warnings}></section> -->
-   <NotificationBlock bind:theComponent={warnings} notificationNumber={3}  />
+   <NotificationBlock bind:theComponent={warnings} notificationNumber={1}  />
 </main>
 
 <style>

@@ -1,7 +1,9 @@
 <script lang="ts">
-   import warningIcon from "../assets/icons/warning-sign-color.png";
-   import errorIcon from "../assets/icons/error-color.png";
-   import notFoundIcon from "../assets/icons/404-color.png";
+   import { onDestroy } from "svelte";
+
+   import warningIcon from "../../assets/icons/warning-sign-color.png";
+   import errorIcon from "../../assets/icons/error-color.png";
+   import notFoundIcon from "../../assets/icons/404-color.png";
 
    export let name: string;
    export let iconType: string = null;
@@ -31,6 +33,10 @@
    setTimeout(() => {
       whole.remove();
    }, duration);
+
+   onDestroy(() => {
+      console.log("Notification deleted.");
+   });
 </script>
 
 <div class="whole" bind:this={whole}>

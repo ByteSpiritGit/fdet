@@ -1,7 +1,11 @@
 <script lang="ts">
+   import { onMount } from "svelte";
+
    import Sentence from "./Sentence.svelte";
+   import SentenceValidation from "./SentenceValidation.svelte";
    
    let claimSection;
+   let validationSection;
 
    export let claims: Array<{
       claim: string,
@@ -11,7 +15,7 @@
       supports: number
    }>;
 
-   $: if (claimSection) {
+   onMount(() => {
       claims.forEach(claim => {
          new Sentence({
             target: claimSection,
@@ -19,13 +23,24 @@
                text: claim.claim
             }
          })
+
+         new SentenceValidation({
+            target: validationSection,
+            props: {
+               claim: claim.claim,
+               evidence: claim.evidence,
+               label: claim.label,
+               refutes: claim.refutes,
+               supports: claim.supports
+            }
+         })
       });
-   }
+   })
 </script>
 
 <output>
    <section class="claim-section" bind:this={claimSection}></section>
-   <section class="validation-section"></section>
+   <section class="validation-section" bind:this={validationSection}></section>
 </output>
 
 <style>
