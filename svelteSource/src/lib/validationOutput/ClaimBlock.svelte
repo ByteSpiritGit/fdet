@@ -51,6 +51,7 @@
 <style>
    .claim-section {
       display: block;
+      position: sticky;
 
       background-color: var(--color-secondary);
 
@@ -85,6 +86,7 @@
 
       margin: 10px;
       margin-bottom: 80px;
+      margin-bottom: 800px;
    }
 
    .gradient {
