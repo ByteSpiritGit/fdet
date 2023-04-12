@@ -21,7 +21,7 @@
             target: claimSection,
             props: {
                text: claim.claim,
-               id: claim.claim
+               id: `${claims.indexOf(claim)}`
             }
          })
 
@@ -32,7 +32,8 @@
                evidence: claim.evidence,
                label: claim.label,
                refutes: claim.refutes,
-               supports: claim.supports
+               supports: claim.supports,
+               id: `${claims.indexOf(claim)}`
             }
          })
       });
@@ -44,16 +45,21 @@
       <p>Claim: </p>
    </section>
    <section class="validation-section" bind:this={validationSection}></section>
+   <div class="gradient"></div>
 </output>
 
 <style>
    .claim-section {
-      display: flex;
-      justify-content: flex-start;
+      display: block;
+
+      background-color: var(--color-secondary);
+
+      border-radius: 10px;
       
       overflow: auto;
 
-      padding: 0.6em;
+      margin: 10px;
+      padding: 10px;
    }
 
    .claim-section p {
@@ -63,7 +69,7 @@
       color: var(--color-text);
       text-decoration: none;
       font-size: 1em;
-      font-weight: 300;
+      font-weight: 500;
 
       -webkit-user-select: none;
       user-select: none;
@@ -71,11 +77,22 @@
 
    .validation-section {
       display: flex;
+      /* flex-wrap: wrap; */
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: center;
       
       overflow: auto;
 
-      padding: 0.7em;
+      margin: 10px;
+      margin-bottom: 80px;
+   }
+
+   .gradient {
+      position: fixed;
+      bottom: 50px;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(rgba(0, 0, 0, 0) 0%, var(--color-primary-alpha) 75%, var(--color-primary) 100%);
    }
 </style>

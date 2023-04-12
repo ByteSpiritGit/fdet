@@ -1,4 +1,3 @@
-
 <script lang="ts">
    import Navbar from "../lib/Navbar.svelte";
    import Footer from "../lib/Footer.svelte";
@@ -66,8 +65,91 @@
             break;
          case "NoServer":
             return [
-               {"claim": "The world is flat", "label": "Refutes", "supports": 38.42, "refutes": 61.58, "evidence": "The world is round"}, 
-               {"claim": "The world is round", "label": "Supports", "supports": 69.2, "refutes": 30.8, "evidence": "The world is round"}
+               {
+        "claim": "The sky is blue",
+        "label": "Supports",
+        "supports": 85.0,
+        "refutes": 15.0,
+        "evidence": "The sky appears blue due to the scattering of light."
+    },
+    {
+        "claim": "Humans need water to survive",
+        "label": "Supports",
+        "supports": 100.0,
+        "refutes": 0.0,
+        "evidence": "Water is essential for many bodily functions, including regulating body temperature and transporting nutrients."
+    },
+    {
+        "claim": "All birds can fly",
+        "label": "Refutes",
+        "supports": 20.0,
+        "refutes": 80.0,
+        "evidence": "Some birds, such as ostriches and penguins, are flightless."
+    },
+    {
+        "claim": "The moon is made of cheese",
+        "label": "Refutes",
+        "supports": 0.0,
+        "refutes": 100.0,
+        "evidence": "This is a myth and has been debunked by scientific studies."
+    },
+    {
+        "claim": "Electric cars are better for the environment than gas cars",
+        "label": "Supports",
+        "supports": 95.0,
+        "refutes": 5.0,
+        "evidence": "Electric cars produce less greenhouse gas emissions and have lower operating costs than gas cars."
+    },
+    {
+        "claim": "The earth is flat",
+        "label": "Refutes",
+        "supports": 0.0,
+        "refutes": 100.0,
+        "evidence": "This claim has been debunked by scientific evidence and observations, including satellite imagery."
+    },
+    {
+        "claim": "Exercise is good for your health",
+        "label": "Supports",
+        "supports": 100.0,
+        "refutes": 0.0,
+        "evidence": "Regular exercise has been shown to improve physical and mental health."
+    },
+    {
+        "claim": "Cats are better pets than dogs",
+        "label": "Refutes",
+        "supports": 30.0,
+        "refutes": 70.0,
+        "evidence": "This is subjective and depends on individual preferences and lifestyle."
+    },
+    {
+        "claim": "The earth revolves around the sun",
+        "label": "Supports",
+        "supports": 100.0,
+        "refutes": 0.0,
+        "evidence": "This has been proven by scientific observations and experiments."
+    },
+    {
+        "claim": "Chocolate is bad for dogs",
+        "label": "Supports",
+        "supports": 90.0,
+        "refutes": 10.0,
+        "evidence": "Chocolate contains theobromine, which is toxic to dogs and can cause various health problems."
+    },
+    {
+        "claim": "Climate change is a hoax",
+        "label": "Refutes",
+        "supports": 5.0,
+        "refutes": 95.0,
+        "evidence": "This claim has been widely debunked by scientific studies and evidence."
+    },
+    {
+        "claim": "The Great Wall of China is visible from space",
+        "label": "Refutes",
+        "supports": 0.0,
+        "refutes": 100.0,
+        "evidence": "This is a common misconception, but scientific studies and observations have shown that the Great Wall of China is not visible from space without aid."
+    }
+
             ];
          default:
             url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
@@ -97,7 +179,7 @@
    }
 
    async function evaluate() {
-      evalued = await getEvaluated("Evaluation");
+      evalued = await getEvaluated("NoServer");
 
       console.log(evalued);
    }

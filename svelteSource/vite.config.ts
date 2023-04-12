@@ -20,7 +20,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
                chunkFileNames: 'static/js/[name]-[hash].js',
                assetFileNames: ({ name }) => {
                   if (/\.(gif|jpe?g|png|svg)$/.test(name ?? '')) {
-                     return 'static/images/[name]-[hash].[ext]';
+                     return 'static/images/[name].[ext]';
                   }
 
                   if (/\.css$/.test(name ?? '')) {
