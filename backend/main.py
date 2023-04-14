@@ -31,11 +31,7 @@ class TextValidate():
         claims = nltk.sent_tokenize(text)
         await self.retriever.create_database_DPR(claims)
         for claim in claims:
-<<<<<<< HEAD
             evidence, text = self.retriever.extract_passage_str_DPR(claim, 1)
-=======
-            evidence = self.retriever.extract_passage(claim, 3)
->>>>>>> development
             if evidence == "":
                 print("NOT ENOUGH INFO")
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
@@ -109,11 +105,7 @@ class TextValidate():
                     results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence})
                 else:
                     print("NOT ENOUGH INFO")
-<<<<<<< HEAD
                     results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : evidence})
-=======
-                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "ei" : ei, "nei" : nei, "evidence" : evidence})
->>>>>>> development
 
         self.retriever.delete_database()
         print(results)
@@ -123,19 +115,12 @@ class TextValidate():
     async def main_debug(self, text):
         # Document retrieval
         results = []
-<<<<<<< HEAD
-        claims = nltk.sent_tokenize(text)
-        await self.retriever.create_database_DPR(claims)
-        for claim in claims:
-            evidence = self.retriever.extract_passage_str_DPR(claim, 1)
-=======
         nltk.download('punkt')
         claims = nltk.sent_tokenize(text)
         claims = [item for item in claims if item != ""]
         await self.retriever.create_database(claims)
         for claim in claims:
             evidence = self.retriever.extract_passage(claim, 3)
->>>>>>> development
             if evidence == "":
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
             elif evidence != "":

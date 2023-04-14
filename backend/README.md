@@ -21,5 +21,10 @@ Url for evaluation <br>
 Url for text input <br>
     "/backend/eval_debug"
 
+
+Url for text input <br>
+    "/backend/eval_fast"
+    
+
 When you call the function, append a parameter named text with text to check. <br>
 Example file in backend/test.py
