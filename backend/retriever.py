@@ -1,10 +1,12 @@
+import nltk
 from wikipedia import Wikipedia
 from haystack.document_stores import InMemoryDocumentStore
 from haystack.nodes import DensePassageRetriever
 from yake import KeywordExtractor
 import asyncio
 import re
-
+import logging
+logging.getLogger('nltk').setLevel(logging.CRITICAL)
 class TextRetrieverV2():
     def __init__(self) -> None:
         self.wiki = Wikipedia("en")
@@ -53,8 +55,8 @@ class TextRetrieverV2():
     def __storeDocuments(self, documents):        
         dicts = []
         for i in documents:
-            sentences = []
-            text =  i[1].split('. ')
+            sentences = []           
+            text = nltk.sent_tokenize(i[1])
             for line in text:
                 sentences.append(line)
             for num, line in enumerate(sentences):
