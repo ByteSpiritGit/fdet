@@ -1,17 +1,27 @@
 import json
 import re
-from datasets import load_dataset
 import matplotlib.pyplot as plt
 import random
 import requests
+import re
+
+STOP_WORDS = ["a", "an", "the", "o"]
+def remove_stop_words(text):
+    text = text.split()
+    for i in range(len(text)):
+        if text[i] in STOP_WORDS:
+            text[i] = ""
+    text = " ".join(text)
+    return text
 
 
 def load(path):
     file = []
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding="utf-8") as f:
         for line in f:
             file.append(json.loads(line))
     return file
+
 
 
 def load_from_url(url):
@@ -56,7 +66,7 @@ def analyze(file):
         elif i["label"] == "ENOUGH INFO" or i["label"] == 2:
             EI += 1
     print(
-        f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}\nEnough info {EI}")
+        f"Support {SUP}\nRefutes {REF}\nNot enough info {NEI}\n")
     return SUP, REF, NEI
 
 
@@ -109,18 +119,47 @@ def change_ID(file) -> list:
             n -= 1
     return file
 
+
 def encode_to_utf16(file):
     for i in file:
         i["claim"] = i["claim"].encode('utf-16').decode('unicode_escape')
         i["evidence"] = i["evidence"].encode('utf-16').decode('unicode_escape')
     return file
 
+
+def convert_to_ASCII(text):
+    return "".join([char for char in text if ord(char) < 128])
+
+
 def preprocess_text(text):
-    cleaned_text = re.sub(r'\[\[.*?\|(.*?)\]\]', r'\1', text)
-    return cleaned_text
+    text = re.sub(r'[^\w\s]', '', str(text).lower().strip())
+    return text.lower()
+
+
+def clean(file):
+    for i in file:
+        i["claim"] = preprocess_text(i["claim"])
+        i["evidence"] = preprocess_text(i["evidence"])
+        i["claim"] = convert_to_ASCII(i["claim"])
+        i["evidence"] = convert_to_ASCII(i["evidence"])
+    return file
+
 
 def combine(file1, file2):
     newFile = file1 + file2
     random.shuffle(newFile)
     return newFile
 
+
+def split(file, train=0.8, test=0.1, val=0.1):
+    train = int(len(file) * train)
+    test = int(len(file) * test)
+    val = int(len(file) * val)
+    train_file = file[:train]
+    test_file = file[train:train + test]
+    val_file = file[train + test:train + test + val]
+    return train_file, test_file, val_file
+
+
+if __name__ == "__main__":
+    print("Anlys.py")

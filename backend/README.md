@@ -1,14 +1,30 @@
-FAST API start command
-    ```uvicorn api:app --reload```
+# Backend api function guide
 
-Plain text 
+## FAST API start command
+```
+uvicorn api:app --reload
+```
+or
+```
+py api.py 
+```
+
+Plain text <br>
     "/backend"
 
-Url for dummy function 
+Url for dummy function <br>
     "/backend/dummy"
 
-Url for evaluation 
+Url for evaluation <br>
     "/backend/eval"
 
-When you will call, append a parameter named text with text to check.
+Url for text input <br>
+    "/backend/eval_debug"
 
+
+Url for text input <br>
+    "/backend/eval_fast"
+    
+
+When you call the function, append a parameter named text with text to check. <br>
+Example file in backend/test.py

@@ -8,6 +8,8 @@ templates
 *.bin
 *.json
 *.jsonl
+*.txt
+*.csv
 track.jsonl
 
 # Byte-compiled / optimized / DLL files
