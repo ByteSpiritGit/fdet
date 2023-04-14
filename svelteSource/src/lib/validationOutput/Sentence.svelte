@@ -11,7 +11,7 @@
       sentences[i].setAttribute("data-shown", "false");
    }
    element.dataset.shown = "true";
-}}>{text}.</a>
+}}>{text}</a>
 
 <style>
    a {
