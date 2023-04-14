@@ -33,7 +33,8 @@
                label: claim.label,
                refutes: claim.refutes,
                supports: claim.supports,
-               id: `${claims.indexOf(claim)}`
+               id: `${claims.indexOf(claim)}`,
+               show: false
             }
          })
       });
@@ -86,7 +87,7 @@
 
       margin: 10px;
       margin-bottom: 80px;
-      margin-bottom: 800px;
+      /* margin-bottom: 800px; */
    }
 
    .gradient {

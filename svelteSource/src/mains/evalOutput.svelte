@@ -5,7 +5,6 @@
    import ClaimBlock from "../lib/validationOutput/ClaimBlock.svelte";
    import Warning from "../lib/notifications/Warning.svelte";
 
-   let loading: boolean;
    let evalued: Array<{
       claim: string,
       evidence: string,
@@ -13,6 +12,11 @@
       refutes: number,
       supports: number
    }>;
+
+   let text: string;
+   if (new URLSearchParams(window.location.search).get("text")) {
+      text = new URLSearchParams(window.location.search).get("text");
+   }
 
    function getCsrfToken() {
       var xhr = new XMLHttpRequest();
@@ -35,7 +39,7 @@
       // Send the request
       xhr.send();
    }
-   // getCsrfToken();
+   getCsrfToken();
    
    function getCookie(name) {
       let cookieValue = null;
@@ -56,19 +60,17 @@
    async function getEvaluated(type="") {
       let url: string;
 
-      if (!(new URLSearchParams(window.location.search).get("text")) && (new URLSearchParams(window.location.search).get("evalued"))) {
-         const fromBase64 = atob((new URLSearchParams(window.location.search)).get("evalued"));
-         console.log(decodeURIComponent(fromBase64));
-         console.log("From base64")
-         return JSON.parse(decodeURIComponent(fromBase64));
+      if (window.sessionStorage.getItem("evalued") && !text) {
+         console.log("from sessionStorage")
+         return JSON.parse(window.sessionStorage.getItem("evalued"));
       }
 
       switch (type) {
          case "Dummy":
-            url = `/dummy?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+            url = `/dummy?text=${text}`;
             break;
          case "Evaluation":
-            url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+            url = `/evaluation?text=${text}`;
             break;
          case "NoServer":
             return [
@@ -82,8 +84,8 @@
                {
                   "claim": "Humans need water to survive",
                   "label": "Supports",
-                  "supports": 100.0,
-                  "refutes": 0.0,
+                  "supports": 2.0,
+                  "refutes": 98.0,
                   "evidence": "Water is essential for many bodily functions, including regulating body temperature and transporting nutrients."
                },
                {
@@ -158,7 +160,7 @@
                }
             ];
          default:
-            url = `/evaluation?text=${(new URLSearchParams(window.location.search)).get("text")}`;
+            url = `/evaluation?text=${text}`;
             break;
       }
       
@@ -185,17 +187,18 @@
    }
 
    async function evaluate() {
-      evalued = await getEvaluated("Evaluation");
-      console.log(evalued);
+      
+      if (text) {
+         evalued = await getEvaluated("Evaluation");
+         window.sessionStorage.setItem("evalued", JSON.stringify(evalued));
+      }
+      else {
+         evalued = await getEvaluated("NoServer");
+      }
 
       const urlParams = new URLSearchParams(window.location.search);
       urlParams.delete("text");
-      const base64Objects = btoa(encodeURI(JSON.stringify(evalued)));
-      urlParams.set('evalued', base64Objects);
       window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
-
-      // console.log(btoa(JSON.stringify(evalued)))
-
    }
    evaluate();
 </script>
