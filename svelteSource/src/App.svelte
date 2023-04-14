@@ -16,8 +16,14 @@
 
    function whenclk() {
       toEvaluate = textarea.value;
+      
+      let urlText = "";
+      toEvaluate.split("\n").forEach(claim => {
+         urlText += claim + " ";
+      });
+
       if (toEvaluate) {
-         window.location.href = "/evalOutput?text=" + toEvaluate;
+         window.location.href = "/evalOutput?text=" + encodeURIComponent(urlText);
          return;
       };
 
