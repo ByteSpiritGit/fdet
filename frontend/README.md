@@ -8,19 +8,20 @@ python manage.py runserver
 
 ## URLS: 
 admin - "/admin" <br>
-# PAGES
+### PAGES
 Homepage - "" <br>
 OldEvaluation - "/old_eval" <br>
 EvalOutput - "/eval_output" <br>
 
-# EVALUATIONS
+### EVALUATIONS
 Evaluation - "/evaluation" <br>
 Dummy - "/dummy" <br>
 Dummy backend - "/dummy_backend" <br>
 CSRF - "/csrf_view" <br>
 
-# FEEDBACKS
+### FEEDBACKS
 Eval feedback - "/eval_feedback" <br>
+
 ### **Notes!** <br>
 If public: Debug = False
 
