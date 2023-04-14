@@ -5,6 +5,7 @@ from haystack.nodes import DensePassageRetriever, BM25Retriever
 from yake import KeywordExtractor
 import asyncio
 import re
+import anlys
 import logging
 logging.getLogger('nltk').setLevel(logging.CRITICAL)
 class TextRetrieverV2():
@@ -21,7 +22,6 @@ class TextRetrieverV2():
         document_store=self.document_store,
         query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
         passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base",
-        similarity_function="cosine",
         batch_size=256,
         use_gpu=True,
         use_fast_tokenizers=True
@@ -65,35 +65,25 @@ class TextRetrieverV2():
             sentences = []           
             text = nltk.sent_tokenize(i[1])
             for line in text:
-                sentences.append(line)
+                if "References" not in line or "External links" not in line:
+                    sentences.append(line)
             for num, line in enumerate(sentences):
                 dicts.append(
                 {
-                'content': line,
-                'meta': {'title': i[0], "ID" : num}
+                'content': anlys.remove_stop_words(line.lower()),
+                'meta': {'title': i[0], "ID" : num, 'text': line}
                 }
                 )
         self.document_store.write_documents(dicts)
-        self.document_store.update_embeddings(self.DPR)
         return self.document_store
     
+    def __storeDocuments_DPR(self, documents):
+        self.__storeDocuments(documents)
+        self.document_store.update_embeddings(self.DPR)
+        return self.document_store
 
     def __storeDocuments_BM25(self, documents):        
-        dicts = []
-        for i in documents:
-            sentences = []           
-            text = nltk.sent_tokenize(i[1])
-            for line in text:
-                sentences.append(line)
-            for num, line in enumerate(sentences):
-                dicts.append(
-                {
-                'content': line,
-                'meta': {'title': i[0], "ID" : num}
-                }
-                )
-        self.document_store.write_documents(dicts)
-        return self.document_store
+        return self.__storeDocuments(documents)
 
     def __extract_passage_str(self, retriever, claim, top_k) -> str:
         candidate_documents = retriever.retrieve(
@@ -106,7 +96,15 @@ class TextRetrieverV2():
             content = re.sub("since (\d+)", r"since \1 to 2023", content)
             evidence += f"{content}\n"
         evidence = evidence.replace("–present", "-2023")
-        return evidence
+        
+        text = ""
+        for i in candidate_documents:
+            content = i.meta["text"].replace('\n', '')
+            content = re.sub("since (\d+)", r"since \1 to 2023", content)
+            text += f"{content}\n"
+        text = text.replace("–present", "-2023")
+
+        return evidence, text
     
     def __extract_passage_list(self, retriever, claim, top_k) -> list:
         candidate_documents = retriever.retrieve(
@@ -119,6 +117,13 @@ class TextRetrieverV2():
             content = re.sub("since (\d+)", r"since \1 to 2023", content)
             content = content.replace("–present", "-2023")
             evidence.append(content)
+
+        text = []
+        for i in candidate_documents:
+            content = i.text.replace('\n', '')
+            content = re.sub("since (\d+)", r"since \1 to 2023", content)
+            content = content.replace("–present", "-2023")
+            text.append(content)
         return evidence
     
     def extract_passage_str_DPR(self,claim, top_k) -> str:
@@ -136,7 +141,7 @@ class TextRetrieverV2():
     async def create_database_DPR(self, text) -> bool:
         keyWords = self.__extractKeyWords(text)
         pages = await self.__extract_wikipedia_pages(keyWords)
-        self.__storeDocuments(pages)
+        self.__storeDocuments_DPR(pages)
         return True
 
     async def create_database_BM25(self, text) -> bool:

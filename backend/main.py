@@ -1,5 +1,6 @@
 import nltk
 import requests
+import anlys
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification, logging
 from retriever import TextRetrieverV2
@@ -30,12 +31,12 @@ class TextValidate():
         claims = nltk.sent_tokenize(text)
         await self.retriever.create_database_DPR(claims)
         for claim in claims:
-            evidence = self.retriever.extract_passage_str_DPR(claim, 1)
+            evidence, text = self.retriever.extract_passage_str_DPR(claim, 1)
             if evidence == "":
                 print("NOT ENOUGH INFO")
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
             elif evidence != "":
-                tokens = self.tokenizer.encode_plus(claim, evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
+                tokens = self.tokenizer.encode_plus(anlys.remove_stop_words(claim.lower()), evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
                 self.nei.eval()
                 with no_grad(): 
@@ -58,10 +59,10 @@ class TextValidate():
                     supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
                     print(f"Claim is {out}\nSupports {100*supports:>0.1f} %, \tRefutes {100*refutes:>0.1f} %")
                     print(f"Evidence:\n{evidence}")
-                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, "evidence" : evidence})
+                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, "evidence" : text})
                 else:
                     print("NOT ENOUGH INFO")
-                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : evidence})
+                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : text})
 
         self.retriever.delete_database()
         print(results)

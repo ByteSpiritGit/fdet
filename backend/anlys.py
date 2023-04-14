@@ -5,6 +5,15 @@ import random
 import requests
 import re
 
+STOP_WORDS = ["a", "an", "the", "o"]
+def remove_stop_words(text):
+    text = text.split()
+    for i in range(len(text)):
+        if text[i] in STOP_WORDS:
+            text[i] = ""
+    text = " ".join(text)
+    return text
+
 
 def load(path):
     file = []
@@ -12,6 +21,7 @@ def load(path):
         for line in f:
             file.append(json.loads(line))
     return file
+
 
 
 def load_from_url(url):
