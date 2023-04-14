@@ -1,7 +1,11 @@
 from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.middleware.csrf import get_token
 from django.shortcuts import render
 from .models import Evaluation
 import requests
+from django.views.decorators.csrf import csrf_protect
+
 
 # Create your views here.
 def evaluation_view(request, *args, **kwargs):
@@ -62,6 +66,7 @@ def evaluation_view(request, *args, **kwargs):
     }
     return JsonResponse(context)
 
+
 def dummy_fnc_view(request):
     text = request.GET["text"]
     validated_text = [{"claim": "Dummy claim", "label" : "REFUTES", "supports" : 0.1457, "refutes" : 0.8543, "evidence" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum! Ullam, velit recusandae. Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!"}]
@@ -79,3 +84,7 @@ def dummy_fnc_backend_view(request):
         "validated" : validated_text
     }
     return JsonResponse(context)
+
+
+def csrf_view(request):
+    return JsonResponse({"csrf_token": get_token(request)})
