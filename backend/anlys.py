@@ -8,7 +8,7 @@ import re
 
 def load(path):
     file = []
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding="utf-8") as f:
         for line in f:
             file.append(json.loads(line))
     return file
