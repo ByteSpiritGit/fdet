@@ -59,11 +59,10 @@ class TextValidate():
                     supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
                     print(f"Claim is {out}\nSupports {100*supports:>0.1f} %, \tRefutes {100*refutes:>0.1f} %")
                     print(f"Evidence:\n{evidence}")
-                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, "evidence" : text})
+                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence})
                 else:
                     print("NOT ENOUGH INFO")
                     results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : text})
-
         self.retriever.delete_database()
         print(results)
         return results
