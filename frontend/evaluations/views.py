@@ -10,7 +10,7 @@ from django.middleware.csrf import get_token
 def evaluation_view(request, *args, **kwargs):
     text = request.GET["text"]
 
-    validated_text = requests.get("http://127.0.0.1:8002/backend/eval", params={"text" : text}).json()
+    validated_text = requests.get("http://127.0.0.1:8002/backend/eval_fast", params={"text" : text}).json()
     
     # //print(type(validated_text[0]["label"]))
 
@@ -19,27 +19,19 @@ def evaluation_view(request, *args, **kwargs):
     new_evaluation_block = Evaluation_block.objects.create(claims=whole_claim)
 
     for evaluation in validated_text:
-        if Evaluation.objects.filter(claim=evaluation["claim"]).exists():
-            Evaluation.objects.filter(claim=evaluation["claim"]).update(
-                label=evaluation.get("label"), 
-                supports=evaluation.get("suppoers"), 
-                refutes=evaluation.get("refutes"),
-                evidence=evaluation.get("evidence")
-            )
-        else:
-            new_evaluation = Evaluation.objects.create(
-                evaluation_block=new_evaluation_block,
+        new_evaluation = Evaluation.objects.create(
+            evaluation_block=new_evaluation_block,
 
-                claim=evaluation.get("claim"),
-                label=evaluation.get("label"), 
-                supports=evaluation.get("suppoers"), 
-                refutes=evaluation.get("refutes"),
-                ei=evaluation.get("ei"),
-                nei=evaluation.get("nei"),
-                evidence=evaluation.get("evidence")
-            )
-            evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app
-            evaluation["evaluation_block"] = new_evaluation_block.id
+            claim=evaluation.get("claim"),
+            label=evaluation.get("label"), 
+            supports=evaluation.get("supports"), 
+            refutes=evaluation.get("refutes"),
+            ei=evaluation.get("ei"),
+            nei=evaluation.get("nei"),
+            evidence=evaluation.get("evidence")
+        )
+        evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app
+        evaluation["evaluation_block"] = new_evaluation_block.id
 
     context = {
         "validated" : validated_text
