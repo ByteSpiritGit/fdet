@@ -1,0 +1,52 @@
+<script lang="ts">
+   export let text: string;
+   export let whenClicked: () => void = () => {
+      console.log("clicked2");
+   };
+   export let disabled: boolean = false;
+</script>
+
+<div class="button">
+   <button on:click={whenClicked} disabled={disabled}>{text}</button>
+</div>
+
+<style>
+   @import "../main.css";
+
+   .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      user-select: none;
+   }
+
+   .button > button {
+      background-color: var(--color-tertiary);
+      color: var(--color-text);
+      border: none;
+      border-radius: 10px;
+
+      padding: 8px 20px;
+      font-size: 1.2em;
+      font-weight: 500;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: 0.1s;
+   }
+
+   .button > button:disabled {
+      background-color: var(--color-disabled);
+      cursor: not-allowed;
+      color: var(--color-tertiary-hover);
+   }
+   .button > button:disabled:hover {
+      background-color: var(--color-disabled);
+      color: var(--color-tertiary-hover);
+   }
+   .button > button:hover {
+      background-color: var(--color-tertiary-hover);
+   }
+
+
+</style>
