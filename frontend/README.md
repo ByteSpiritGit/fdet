@@ -22,7 +22,7 @@ CSRF - "/csrf_view" <br>
 ### FEEDBACKS
 Eval feedback - "/eval_feedback" <br>
 
-### **Notes!** <br>
+# **Notes!** <br>
 If public: Debug = False
 
 **If changing models.py always run makemigrations & migrate**
