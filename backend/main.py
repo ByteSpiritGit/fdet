@@ -31,7 +31,7 @@ class TextValidate():
         claims = nltk.sent_tokenize(text)
         await self.retriever.create_database_DPR(claims)
         for claim in claims:
-            evidence, text = self.retriever.extract_passage_str_DPR(claim, 1)
+            evidence, text, url = self.retriever.extract_passage_str_DPR(claim, 1)
             if evidence == "":
                 print("NOT ENOUGH INFO")
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
@@ -59,7 +59,7 @@ class TextValidate():
                     supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
                     print(f"Claim is {out}\nSupports {100*supports:>0.1f} %, \tRefutes {100*refutes:>0.1f} %")
                     print(f"Evidence:\n{evidence}")
-                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence})
+                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence, "url": url})
                 else:
                     print("NOT ENOUGH INFO")
                     results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : text})
@@ -101,7 +101,7 @@ class TextValidate():
                     supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
                     print(f"Claim is {out}\nSupports {100*supports:>0.1f} %, \tRefutes {100*refutes:>0.1f} %")
                     print(f"Evidence:\n{text}")
-                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : text})
+                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : text, "url": url})
                 else:
                     print("NOT ENOUGH INFO")
                     results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : text})
@@ -140,7 +140,7 @@ class TextValidate():
                 if argmax(prediction.logits) == 1: out = "REFUTES"
                 softMax = softmax(prediction.logits, dim=1)
                 supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
-                results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : text})
+                results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : text, "url": url})
 
         self.retriever.delete_database()
         print(results)
