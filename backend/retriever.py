@@ -51,7 +51,7 @@ class TextRetrieverV2():
                 break
         if len(wikiPages) > 0 and page != None:
             return (page[0] ,self.wiki.extract_page(title=page[0]))
-        return (wikiPages[0], self.wiki.extract_page(title=wikiPages[0]))
+        return (wikiPages[0], self.wiki.extract_page(title=wikiPages[0]), self.wiki.open_search(title=wikiPages[0])[0   ][1])
 
     async def __extract_wikipedia_pages(self, titles):
         tasks = [self.__fetch_wikipedia_page(title) for title in titles]
@@ -71,7 +71,7 @@ class TextRetrieverV2():
                 dicts.append(
                 {
                 'content': anlys.remove_stop_words(line.lower()),
-                'meta': {'title': i[0], "ID" : num, 'text': line}
+                'meta': {'title': i[0], "ID" : num, 'text': line, 'url': i[2]}
                 }
                 )
         self.document_store.write_documents(dicts)
@@ -103,8 +103,8 @@ class TextRetrieverV2():
             content = re.sub("since (\d+)", r"since \1 to 2023", content)
             text += f"{content}\n"
         text = text.replace("–present", "-2023")
-
-        return evidence, text
+        url =  i.meta["url"]
+        return evidence, text, url
     
     def __extract_passage_list(self, retriever, claim, top_k) -> list:
         candidate_documents = retriever.retrieve(
