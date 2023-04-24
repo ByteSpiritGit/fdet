@@ -10,7 +10,7 @@ from django.middleware.csrf import get_token
 def evaluation_view(request, *args, **kwargs):
     text = request.GET["text"]
 
-    validated_text = requests.get("http://127.0.0.1:8002/backend/eval_fast", params={"text" : text}).json()
+    validated_text = requests.get("http://127.0.0.1:8002/backend/eval", params={"text" : text}).json()
     
     # //print(type(validated_text[0]["label"]))
 

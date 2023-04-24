@@ -1,6 +1,7 @@
 <script lang="ts">
    import { onMount } from "svelte";
     import type { HtmlTag } from "svelte/internal";
+    import Button from "../Button.svelte";
 
    let firstName: string;
    let lastName: string;
@@ -12,7 +13,7 @@
    let user;
 
    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-   const usernameRegex = /^[a-zA-Z0-9]{3,}$/;
+   const usernameRegex = /^[a-zA-Z0-9_-]{3,}$/;
    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$/;
    const firstNameRegex = /^[\p{L}'-]{2,}$/u;
    const lastNameRegex = /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u;
@@ -42,6 +43,7 @@
       else if (e instanceof Event) {
        toCheck = (<HTMLInputElement>e.target)
       }
+
       switch (toCheck.name) {
          case "email":
             check(toCheck, emailRegex)
@@ -84,10 +86,11 @@
 
    function check(what:HTMLInputElement, how:RegExp) {
       if (how.test(what.value)) {
-         what.style.border = "2px solid green";
+         what.style.borderBottom = "2px solid green";
+
          return;
       }
-      what.style.border = "2px solid red";
+      what.style.borderBottom = "2px solid red";
    }
 </script>
 
@@ -117,7 +120,7 @@
       <label for="confirmPassword">Confirm password</label>
       <input type="password" placeholder="Confirm password" bind:value={confirmPassword} name="confirmPassword" />
    </div>
-   <button on:click={register}>Register</button>
+   <button on:click={register} disabled>Register</button>
 </section>
 
 <style>
@@ -164,11 +167,42 @@
       height: 2rem;
 
       padding: 0.5rem;
-      border: 2px solid var(--color-primary);
+      border: 1px solid var(--color-primary);
       border-radius: 0.25rem;
       font-size: 1rem;
       font-family: inherit;
-      /* box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); */
-      transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+      box-shadow: inset 1px 1px 3px var(--color-primary);
+      transition: border-color 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+   }
+
+   .line > input:focus {
+      outline: none;
+      border-color: var(--color-tertiary);
+   }
+
+   button {
+      width: 300px;
+      height: 2rem;
+
+      margin-top: 1rem;
+
+      border: none;
+      border-radius: 0.25rem;
+      background-color: var(--color-primary);
+      color: var(--color-text);
+      font-size: 1rem;
+      font-family: inherit;
+      box-shadow: 1px 1px 3px var(--color-primary);
+      transition: background-color 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
+   }
+
+   button:hover {
+      background-color: var(--color-tertiary);
+      box-shadow: 1px 1px 3px var(--color-tertiary);
+   }
+
+   button:active {
+      background-color: var(--color-secondary);
+      box-shadow: 1px 1px 3px var(--color-secondary);
    }
 </style>

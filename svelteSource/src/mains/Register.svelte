@@ -1,7 +1,7 @@
 <script lang="ts">
    import { onMount } from "svelte";
-    import Navbar from "../lib/Navbar.svelte";
-    import Footer from "../lib/Footer.svelte";
+    import type { HtmlTag } from "svelte/internal";
+    import Button from "../lib/Button.svelte";
 
    let firstName: string;
    let lastName: string;
@@ -14,6 +14,9 @@
 
    const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
    const usernameRegex = /^[a-zA-Z0-9_-]{3,}$/;
+   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$/;
+   const firstNameRegex = /^[\p{L}'-]{2,}$/u;
+   const lastNameRegex = /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u;
 
    $: user = {
       firstName: firstName,
@@ -48,9 +51,18 @@
          case "username":
             check(toCheck, usernameRegex)
             break;
+         case "password":
+            check(toCheck, passwordRegex)
+            break;
          case "confirmPassword":
             const passwordConfirmRegex = `^${password}$`;
             check(toCheck, new RegExp(passwordConfirmRegex))
+            break;
+         case "firstName":
+            check(toCheck, firstNameRegex)
+            break;
+         case "lastName":
+            check(toCheck, lastNameRegex)
             break;
          default:
             break;
@@ -82,22 +94,34 @@
    }
 </script>
 
-<Navbar />
-
 <section class="registration">
-   <h1>Login</h1>
+   <h1>Register</h1>
+   <div class="line">
+      <label for="firstName">First name</label>
+      <input type="text" placeholder="First name" bind:value={firstName} name="firstName" />
+   </div>
+   <div class="line">
+      <label for="lastName">Last name</label>
+      <input type="text" placeholder="Last name" bind:value={lastName} name="lastName" />
+   </div>
    <div class="line">
       <label for="email">Email</label>
       <input type="text" placeholder="Email" bind:value={email} name="email" />
    </div>
    <div class="line">
+      <label for="username">Username</label>
+      <input type="text" placeholder="Username" bind:value={username} name="username" />
+   </div>
+   <div class="line">
       <label for="password">Password</label>
       <input type="password" placeholder="Password" bind:value={password} name="password" />
    </div>
-   <button on:click={register} disabled>Login</button>
+   <div class="line">
+      <label for="confirmPassword">Confirm password</label>
+      <input type="password" placeholder="Confirm password" bind:value={confirmPassword} name="confirmPassword" />
+   </div>
+   <button on:click={register} disabled>Register</button>
 </section>
-
-<Footer />
 
 <style>
    .registration {
@@ -164,12 +188,12 @@
 
       border: none;
       border-radius: 0.25rem;
-      background-color: var(--color-tertiary);
+      background-color: var(--color-primary);
       color: var(--color-text);
       font-size: 1rem;
       font-family: inherit;
       box-shadow: 1px 1px 3px var(--color-primary);
-      transition: background-color 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+      transition: background-color 0.1s ease-in-out, box-shadow 0.2s ease-in-out;
    }
 
    button:hover {
@@ -178,7 +202,7 @@
    }
 
    button:active {
-      background-color: var(--color-tertiary-hover);
-      box-shadow: 1px 1px 3px var(--color-tertiary-hover);
+      background-color: var(--color-secondary);
+      box-shadow: 1px 1px 3px var(--color-secondary);
    }
 </style>

@@ -25,7 +25,6 @@ urlpatterns = [
 
     # *Pages
     path('', home_view, name="home"),
-    path('oldEval', old_eval_view, name="old_eval"),
     path('evalOutput', evalOutput, name="eval_output"),
 
     # *Evaluations
