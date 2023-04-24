@@ -22,6 +22,7 @@ class Evaluation(models.Model):
     ei = models.FloatField(null=True)
     nei = models.FloatField(null=True)
     evidence = models.TextField(null=True)
+    justify = models.TextField(null=True)
 
     def __str__(self):
         return self.claim
