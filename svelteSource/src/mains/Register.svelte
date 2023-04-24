@@ -2,6 +2,8 @@
    import { onMount } from "svelte";
     import type { HtmlTag } from "svelte/internal";
     import Button from "../lib/Button.svelte";
+    import Navbar from "../lib/Navbar.svelte";
+    import Footer from "../lib/Footer.svelte";
 
    let firstName: string;
    let lastName: string;
@@ -94,6 +96,8 @@
    }
 </script>
 
+<Navbar />
+
 <section class="registration">
    <h1>Register</h1>
    <div class="line">
@@ -122,6 +126,8 @@
    </div>
    <button on:click={register} disabled>Register</button>
 </section>
+
+<Footer />
 
 <style>
    .registration {
