@@ -140,11 +140,11 @@ class TextRetrieverV2():
         return self.__extract_passage_list(self.BM25, claim, top_k)
     
     def extract_passage_str_DPR_RAG(self,claim, top_k=3, max_tokens=350) -> str:
-        evidence = self.extract_passage_str_DPR(claim, top_k)
+        evidence, text, url = self.extract_passage_str_DPR(claim, top_k)
         while len(evidence[0]) > max_tokens and top_k > 1:
             top_k -= 1
-            evidence = self.extract_passage_str_DPR(claim, top_k)
-        return evidence
+            evidence, text, url = self.extract_passage_str_DPR(claim, top_k)
+        return evidence, text, url
     
     async def create_database_DPR(self, text) -> bool:
         keyWords = self.__extractKeyWords(text)

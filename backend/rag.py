@@ -24,13 +24,13 @@ class RAG:
         claims = nltk.sent_tokenize(text)
         await self.retriever.create_database_DPR(claims)
         for claim in claims:
-            evidence, text = self.retriever.extract_passage_str_DPR(claim, 3)
+            evidence, text, url = self.retriever.extract_passage_str_DPR(claim, 3)
             if evidence == "":
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
             elif evidence != "":
                 justify = await self.generate(claim, evidence)
                 label, percent = await self.numerical_evaluation(justify)
-                results.append({"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : evidence, "justify" : justify})
+                results.append({"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : evidence, "justify" : justify, "url" : url})
         self.retriever.delete_database()
         return results
     
@@ -43,7 +43,7 @@ class RAG:
         label = torch.argmax(logits[0], dim=1).item()
         per = torch.nn.functional.softmax(logits[0], dim=1).tolist()[0]
         label_map = {0: "SUPPORTS", 1: "REFUTES", 2: "NOT ENOUGH INFO"}
-        return label, per
+        return label_map[label], per
 
     async def generate(self, claim, evidence) -> str:
         prompt_template = f"claim: {claim} evidence: {evidence}"
