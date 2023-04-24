@@ -12,8 +12,9 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
          rollupOptions: {
             input: {
                main: './index.html',
-               oldEval: './pages/oldEval.html',
                evalOutput: './pages/evalOutput.html',
+               login: './pages/login.html',
+               register: './pages/register.html',
             },
             output: {
                entryFileNames: 'static/js/[name]-[hash].js',

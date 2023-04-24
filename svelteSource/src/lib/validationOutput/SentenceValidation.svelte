@@ -10,9 +10,10 @@
 
    export let show: boolean = false;
    
+   export let color: string = "var(--color-secondary)";
 </script>
 
-<button class="output-validation-section" data-shown="{show}" on:click={() => { show = !show; }} id={id}>
+<button style="background-color: {color};" class="output-validation-section" data-shown="{show}" on:click={() => { show = !show; }} id={id}>
    <h3>{claim}</h3>
    <div class="dropdown">
       <p class="label">Label: {label}</p>
@@ -41,7 +42,7 @@
 
    .output-validation-section {
       width: 100%;
-      background-color: var(--color-secondary);
+      /* background-color: var(--color-secondary); */
       
       border: none;
       outline: none;
