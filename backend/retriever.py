@@ -23,7 +23,7 @@ class TextRetrieverV2():
         document_store=self.document_store,
         query_embedding_model="facebook/dpr-question_encoder-single-nq-base",
         passage_embedding_model="facebook/dpr-ctx_encoder-single-nq-base",
-        batch_size=256,
+        batch_size=32,
         use_gpu=True,
         use_fast_tokenizers=True
         )
