@@ -10,7 +10,8 @@
       evidence: string,
       label: string,
       refutes: number,
-      supports: number
+      supports: number,
+      justify: string,
    }>;
 
    let text: string;
@@ -70,7 +71,7 @@
             url = `/dummy?text=${text}`;
             break;
          case "Evaluation":
-            url = `/evaluation?text=${text}`;
+            url = `/rag_evaluation?text=${text}`;
             break;
          case "NoServer":
             return [

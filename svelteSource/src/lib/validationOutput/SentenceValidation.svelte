@@ -6,6 +6,7 @@
    export let label: string;
    export let refutes: number;
    export let supports: number;
+   export let justify: string;
    export let id: string;
 
    export let show: boolean = false;
@@ -23,6 +24,11 @@
       <div class="evidence">
          <p>Evidence:</p>
          <p>{evidence}</p>
+      </div>
+
+      <div class="evidence">
+         <p>Justification:</p>
+         <p>{justify}</p>
       </div>
    </div>
 </button>

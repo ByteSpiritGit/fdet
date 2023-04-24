@@ -1,5 +1,7 @@
 <script lang="ts">
-   import EvaluationOut from "../lib/OldEvaluationOut.svelte";
+   import Footer from "../lib/Footer.svelte";
+import Navbar from "../lib/Navbar.svelte";
+import EvaluationOut from "../lib/OldEvaluationOut.svelte";
 
    let output = false;
    let evalued = [];
@@ -91,6 +93,8 @@
    }
 </script>
 
+<Navbar />
+
 <section class="everything">
    <h1 id="title">fDet beta0.1_noUI</h1>
 
@@ -120,6 +124,8 @@
       </p>
    </section>
 </section>
+
+<Footer />
 
 <style>
    @import "../main.css";
