@@ -9,7 +9,6 @@ from django.middleware.csrf import get_token
 # Create your views here.
 def evaluation_view(request, *args, **kwargs):
     text = request.GET["text"]
-
     validated_text = requests.get("http://127.0.0.1:8002/backend/v1/eval", params={"text" : text}).json()
     
     # //print(type(validated_text[0]["label"]))
