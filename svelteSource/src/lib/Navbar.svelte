@@ -5,9 +5,9 @@
    <section class="menu-section">
       <a href="/">Home</a>
       <a href="/evaluation?text=The sky is blue">About us</a>
-      <a href="/oldEval">Learn</a>
+      <a href="/">Learn</a>
       <a href="https://github.com/fdet/fDet">Github</a>
-      <a href="https://github.com/fdet/fDet">History</a>
+      <a href="/">History</a>
    </section>
    <section class="profile-section">
       <a href="/#/login">**profile**</a>

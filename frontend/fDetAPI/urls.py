@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view, old_eval_view, evalOutput
+from pages.views import home_view, evalOutput
 from evaluations.views import *
 from feedbacks.views import eval_feedback_view
 
