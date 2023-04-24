@@ -31,7 +31,7 @@ class main():
             evidence, text, url = self.retriever.extract_passage_str_DPR(claim, 1)
             if evidence == "":
                 print("NOT ENOUGH INFO")
-                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
+                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None,"ei":None, "evidence" : None})
             elif evidence != "":
                 tokens = self.tokenizer.encode_plus(anlys.remove_stop_words(claim.lower()), evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
@@ -59,7 +59,7 @@ class main():
                     results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence, "url": url})
                 else:
                     print("NOT ENOUGH INFO")
-                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : text})
+                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : text})
         self.retriever.delete_database()
         print(results)
         return results
@@ -70,10 +70,10 @@ class main():
         claims = nltk.sent_tokenize(text)
         await self.retriever.create_database_BM25(claims)
         for claim in claims:
-            evidence, text = self.retriever.extract_passage_str_BM25(claim, 1)
+            evidence, text, url = self.retriever.extract_passage_str_BM25(claim, 1)
             if evidence == "":
                 print("NOT ENOUGH INFO")
-                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': None, "nei": None, "evidence" : None})
+                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "nei": None, 'ei': None, "evidence" : None})
             elif evidence != "":
                 tokens = self.tokenizer.encode_plus(claim, evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
@@ -116,9 +116,9 @@ class main():
         claims = [item for item in claims if item != ""]
         await self.retriever.create_database(claims)
         for claim in claims:
-            evidence, text = self.retriever.extract_passage(claim, 3)
+            evidence, text, url = self.retriever.extract_passage(claim, 3)
             if evidence == "":
-                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
+                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None, 'ei': None, "evidence" : None})
             elif evidence != "":
                 tokens = self.tokenizer.encode_plus(claim, evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
