@@ -1,11 +1,10 @@
 import nltk
-import requests
 import anlys
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification, logging
 from retriever import TextRetrieverV2
 logging.set_verbosity_error()
-class TextValidate():
+class main():
     def __init__(self) -> None:
         print(f"Loading text validator")
         nltk.download('punkt')
@@ -21,8 +20,6 @@ class TextValidate():
         self.nei.to(self.device)
         self.retriever = TextRetrieverV2()
 
-        self.API = "AIzaSyDUeOlRcaTFeUNzEw8QTDb7G6zv4QXgaMs"
-        self.search_endpoint = "https://factchecktools.googleapis.com/v1alpha1/claims:search"
         print(f"Loaded")
 
     async def main(self, text):
@@ -146,22 +143,4 @@ class TextValidate():
         print(results)
         return results
 
-    async def main_google(self, text):
-        # Document retrieval
-        results = []
-        claims = nltk.sent_tokenize(text)
-        for i in claims:
-            results.append(await self.google_api(i))
-        return results
-
-    async def google_api(self, text):
-        response = requests.get(self.search_endpoint, params={"key": self.API,"query": text, "languageCode": "en-US"})
-        if response.status_code == 200:
-            response = response.json()
-            label = response["claims"][0]["claimReview"][0]["textualRating"]
-            evidence = response["claims"][0]["claimReview"][0]["claimReviewed"]
-            return {"claim": text, "label": label, "supports" : None, "refutes" : None, "evidence" : evidence}
-        else:            
-            print(f"Error with API request: {response.status_code}")
-        return None
 

@@ -1,5 +1,6 @@
 import nltk
 from wikipedia import Wikipedia
+from haystack.utils import clean_wiki_text, convert_files_to_docs, fetch_archive_from_http
 from haystack.document_stores import InMemoryDocumentStore
 from haystack.nodes import DensePassageRetriever, BM25Retriever
 from yake import KeywordExtractor
@@ -61,13 +62,13 @@ class TextRetrieverV2():
 
     def __storeDocuments(self, documents):        
         dicts = []
-        for i in documents:
-            sentences = []           
-            text = nltk.sent_tokenize(i[1])
-            for line in text:
-                if "References" not in line or "External links" not in line:
-                    sentences.append(line)
-            for num, line in enumerate(sentences):
+        for i in documents:         
+            text = i[1].split("== References ==")[0].split("== External links ==")[0]
+            text = re.sub(r'  ', r' ', text)
+            text = re.sub(r'(\n)+', r'\n', text)
+
+            text = nltk.sent_tokenize(text)
+            for num, line in enumerate(text):
                 dicts.append(
                 {
                 'content': anlys.remove_stop_words(line.lower()),
@@ -94,16 +95,15 @@ class TextRetrieverV2():
         for i in candidate_documents:
             content = i.content.replace('\n', '')
             content = re.sub("since (\d+)", r"since \1 to 2023", content)
-            evidence += f"{content}\n"
+            evidence += f"{content}"
         evidence = evidence.replace("–present", "-2023")
-        
+
         text = ""
         for i in candidate_documents:
             content = i.meta["text"].replace('\n', '')
             content = re.sub("since (\d+)", r"since \1 to 2023", content)
-            text += f"{content}\n"
+            text += f"{content}"
         text = text.replace("–present", "-2023")
-
         return evidence, text
     
     def __extract_passage_list(self, retriever, claim, top_k) -> list:
@@ -137,7 +137,14 @@ class TextRetrieverV2():
 
     def extract_passage_list_BM25(self,claim, top_k) -> list:
         return self.__extract_passage_list(self.BM25, claim, top_k)
-     
+    
+    def extract_passage_str_DPR_RAG(self,claim, top_k=3, max_tokens=350) -> str:
+        evidence = self.extract_passage_str_DPR(claim, top_k)
+        while len(evidence[0]) > max_tokens and top_k > 1:
+            top_k -= 1
+            evidence = self.extract_passage_str_DPR(claim, top_k)
+        return evidence
+    
     async def create_database_DPR(self, text) -> bool:
         keyWords = self.__extractKeyWords(text)
         pages = await self.__extract_wikipedia_pages(keyWords)
