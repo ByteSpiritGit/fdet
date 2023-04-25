@@ -35,7 +35,7 @@
       };
    
       // Open a new request with the GET method and a URL
-      xhr.open("GET", "http://127.0.0.1:8000/csrf_view");
+      xhr.open("GET", "/csrf_view");
    
       // Send the request
       xhr.send();

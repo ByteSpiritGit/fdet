@@ -36,7 +36,6 @@
                supports: claim.supports,
                id: `${claims.indexOf(claim)}`,
                show: false,
-               color: claims.indexOf(claim) % 2 == 0 ? "var(--color-secondary-v2)" : "var(--color-secondary)",
                justify: claim.justify
             }
          })
