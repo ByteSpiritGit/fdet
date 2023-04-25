@@ -5,7 +5,6 @@
    import WhatWeDo from "./lib/WhatWeDo.svelte";
    import Warning from "./lib/notifications/Warning.svelte";
     import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
-    import { bind } from "svelte/internal";
 
    let toEvaluate;
    
@@ -79,7 +78,7 @@
       height: 100px;
       background-color: var(--color-secondary);
 
-      margin-top: 100px;
+      margin-top: 125px;
    }
 
    .input-section {
@@ -120,7 +119,7 @@
    }
 
    .input-section > .input:focus {
-      outline: none;
+      outline: var(--color-tertiary) solid 2px;
    }
 
    .input-section > .input::-webkit-scrollbar {
@@ -142,5 +141,35 @@
 
    .input-section > .input::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-tertiary-hover);
+   }
+
+   @media (max-width: 768px) {
+      .input-section > .input {
+         width: 90%;
+      }
+
+      .input-section {
+         position: fixed;
+         bottom: 50px;
+         left: 0;
+
+         width: 100%;
+      }
+
+      /* .title-section {
+         display: none;
+      } */
+   }
+
+   @media (max-height: 770px) and (max-width: 768px) {
+      .title-section {
+         display: none;
+      }
+   }
+
+   @media (max-height: 640px) and (min-width: 768px) {
+      .title-section {
+         display: none;
+      }
    }
 </style>

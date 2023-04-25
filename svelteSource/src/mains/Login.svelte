@@ -1,7 +1,7 @@
 <script lang="ts">
    import { onMount } from "svelte";
-    import Navbar from "../lib/Navbar.svelte";
-    import Footer from "../lib/Footer.svelte";
+   import Navbar from "../lib/Navbar.svelte";
+   import Footer from "../lib/Footer.svelte";
 
    let firstName: string;
    let lastName: string;
@@ -82,9 +82,9 @@
    }
 </script>
 
-<Navbar />
+<!-- <Navbar /> -->
 
-<section class="registration">
+<section class="login-section">
    <h1>Login</h1>
    <div class="line">
       <label for="email">Email</label>
@@ -97,17 +97,18 @@
    <button on:click={register} disabled>Login</button>
 </section>
 
-<Footer />
+<!-- <Footer /> -->
 
 <style>
-   .registration {
+   .login-section {
+
       display: flex;
       flex-direction: column;
       align-items: center;
 
       width: fit-content;
 
-      margin: 0 auto;
+      margin: 0;
       margin-top: 5em;
       padding: 1.25rem;
 
@@ -116,7 +117,7 @@
 
    }
 
-   .registration > h1 {
+   .login-section > h1 {
       margin: 0;
       padding: 0;
    }
