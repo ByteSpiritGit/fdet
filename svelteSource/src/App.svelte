@@ -4,7 +4,7 @@
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
    import Warning from "./lib/notifications/Warning.svelte";
-    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
+   import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
 
    let toEvaluate;
    
