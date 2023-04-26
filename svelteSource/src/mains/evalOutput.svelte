@@ -4,6 +4,7 @@
    import Loading from "../lib/Loading.svelte";
    import ClaimBlock from "../lib/validationOutput/ClaimBlock.svelte";
    import Warning from "../lib/notifications/Warning.svelte";
+   import { onMount } from "svelte";
 
    let evalued: Array<{
       claim: string,
@@ -14,19 +15,12 @@
       justify: string,
    }>;
 
-   let text: string;
-   if (new URLSearchParams(window.location.search).get("text")) {
-      text = new URLSearchParams(window.location.search).get("text");
-   }
-
    function getCsrfToken() {
       var xhr = new XMLHttpRequest();
-   
       // Set up a callback function to handle the response
       xhr.onreadystatechange = function () {
          if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-               // Save the response text as a cookie
                document.cookie = "csrftoken=" + encodeURIComponent(JSON.parse(xhr.responseText).csrf_token) + "; path=/";
             } else {
                console.log("Request failed");
@@ -34,13 +28,9 @@
          }
       };
    
-      // Open a new request with the GET method and a URL
       xhr.open("GET", "/csrf_view");
-   
-      // Send the request
       xhr.send();
    }
-   getCsrfToken();
    
    function getCookie(name) {
       let cookieValue = null;
@@ -58,7 +48,7 @@
       return cookieValue;
    }
 
-   async function getEvaluated(type="") {
+   async function getEvaluated(text: string, type="") {
       let url: string;
 
       if (window.sessionStorage.getItem("evalued") && !text) {
@@ -187,39 +177,54 @@
       }
    }
 
-   async function evaluate() {
+   async function evaluate(text: string) {
       
       if (text) {
-         evalued = await getEvaluated("Evaluation");
+         evalued = await getEvaluated(text, "Evaluation");
          window.sessionStorage.setItem("evalued", JSON.stringify(evalued));
       }
       else {
-         evalued = await getEvaluated("NoServer");
+         evalued = await getEvaluated(text, "NoServer");
       }
 
       const urlParams = new URLSearchParams(window.location.search);
       urlParams.delete("text");
       window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
    }
-   evaluate();
+
+   onMount(() => {
+      let text: string;
+      if (new URLSearchParams(window.location.search).get("text")) {
+         text = new URLSearchParams(window.location.search).get("text");
+      }
+
+      getCsrfToken();
+      evaluate(text);
+   })
 </script>
 
 <section>
    <Navbar />
 
-   {#if evalued}
+   <!-- {#if evalued}
       <ClaimBlock claims={evalued} />
    {:else if !evalued}
       <div class="loading">
          <Loading />
          <p>Calculating the universe</p>
       </div>
-   {/if}
+   {/if} -->
+
+   <section class="input-section">
+      
+   </section>
 
    <Footer />
 </section>
 
 <style>
+
+
    .loading {
       position: fixed;
       top: 48%;
