@@ -4,7 +4,6 @@ from django.middleware.csrf import get_token
 from django.shortcuts import render
 from .models import Evaluation_block, Evaluation
 import requests
-from django.middleware.csrf import get_token
 
 # Create your views here.
 def evaluation_view(request, *args, **kwargs):
@@ -112,7 +111,3 @@ def rag_dummy_fnc_backend_view(request):
 
     return JsonResponse({"validated" : validated_text})
 
-
-
-def csrf_view(request):
-    return JsonResponse({"csrf_token": get_token(request)})

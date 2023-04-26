@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view, evalOutput
+from pages.views import *
 from evaluations.views import *
 from feedbacks.views import eval_feedback_view
+from userExtensions.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,9 +27,16 @@ urlpatterns = [
     # *Pages
     path('', home_view, name="home"),
     path('evalOutput', evalOutput, name="eval_output"),
+    path('registerPage', registerPage, name="registerPage"),
+    path('loginPage', loginPage, name="loginPage"),
+    path('csrf_view', csrf_view, name="csrf_view"),
+
+    # *User Extensions
+    path('registration', registration_view, name="registration"),
+    path('login', login_view, name="login"),
+    path('authentication', authentication_view, name="authentication"),
 
     # *Evaluations
-    path('csrf_view', csrf_view, name="csrf_view"),
     # V1
     path('evaluation', evaluation_view, name="evaluation"),
     path('evaluation_fast', evaluation_fast_view, name="evaluation_fast"),
