@@ -7,13 +7,12 @@ import asyncio
 import re
 import anlys
 import logging
-logging.getLogger('nltk').setLevel(logging.CRITICAL)
+from datetime import datetime
 class wiki_document_store():
     def __init__(self) -> None:
         self.wiki = Wikipedia("en")
         self.kw_extractor = KeywordExtractor()
         self.document_store = InMemoryDocumentStore(
-            embedding_dim=1024,                                       
             use_bm25= True,
             use_gpu=True,
         )
@@ -69,13 +68,14 @@ class wiki_document_store():
         evidence = ""
         text = ""
         url = []
+        current_year = datetime.now().year
         for i in candidate_documents:
             content = i.content.replace('\n', '')
-            content = re.sub("since (\d+)", r"since \1 to 2023", content)
+            content = re.sub(r"since (\d+)", f"since \\1 to {current_year}", content)
             evidence += f"{content}"
             url.append(i.meta.get("url"))
             content = i.meta["text"].replace('\n', '')
-            content = re.sub("since (\d+)", r"since \1 to 2023", content)
+            content = re.sub(r"since (\d+)", f"since \\1 to {current_year}", content)
             text += f"{content}"
         evidence = evidence.replace("–present", "-2023")
         text = text.replace("–present", "-2023")

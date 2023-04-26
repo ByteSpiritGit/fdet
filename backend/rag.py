@@ -15,7 +15,6 @@ class RAG:
         self.num_model = transformers.RobertaForSequenceClassification.from_pretrained("Dzeniks/justification-analyst")
         self.num_model.to(self.device)
         openai.api_key = os.getenv('openAI_API_KEY')
-        print("RAG Initialized")
 
     def main(self, text, data):
         return asyncio.run(self.async_main(text, data))
@@ -52,7 +51,7 @@ class RAG:
         model="gpt-3.5-turbo",
         max_tokens=50,
         messages=[
-                {"role": "system", "content": "Classify if the claim is supports, not enough info, refutes and justify."},
+                {"role": "system", "content": "Classify if the claim is supports, not enough info or refutes and justify. Use evidence and knowledge base."},
                 {"role": "user", "content": prompt_template},
             ]
         )
