@@ -146,6 +146,8 @@
 </section>
 
 <style>
+
+
    .loading {
       position: fixed;
       top: 48%;
