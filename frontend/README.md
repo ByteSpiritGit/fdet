@@ -10,11 +10,17 @@ python manage.py runserver
 admin - "/admin" <br>
 ### PAGES
 Homepage - "" <br>
-OldEvaluation - "/old_eval" <br>
 EvalOutput - "/eval_output" <br>
+RegisterPage - "/registerPage" <br>
+LoginPage - "/loginPage" <br>
+CSRF - "/csrf_view" <br>
+
+### USERS EXT
+Registration - "/registration" <br>
+Login - "/login" <br>
+authentication - "/authentication" <br>
 
 ### EVALUATIONS
-CSRF - "/csrf_view" <br>
 
 Evaluation - "/evaluation" <br>
 Evaluation fast - "/evaluation_fast" <br>
