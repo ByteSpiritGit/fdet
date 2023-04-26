@@ -64,6 +64,8 @@
 
       margin: 10px;
       padding: 10px;
+
+      margin-top: 60px;
    }
 
    .claim-section p {
