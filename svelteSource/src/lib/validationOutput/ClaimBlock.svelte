@@ -48,7 +48,7 @@
       <p>Claim: </p>
    </section>
    <section class="validation-section" bind:this={validationSection}></section>
-   <div class="gradient"></div>
+   <!-- <div class="gradient"></div> -->
 </output>
 
 <style>
@@ -102,4 +102,10 @@
       height: 40px;
       background: linear-gradient(rgba(0, 0, 0, 0) 0%, var(--color-primary-alpha) 75%, var(--color-primary) 100%);
    }
+
+   @media (max-width: 768px) {
+      .claim-section {
+         margin-top: 115px;
+      }
+   } 
 </style>
