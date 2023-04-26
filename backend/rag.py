@@ -1,6 +1,6 @@
-from retriever import TextRetrieverV2
 import transformers
 import torch
+import asyncio
 from torch import device, cuda
 import nltk
 import openai
@@ -8,30 +8,31 @@ import os
 from dotenv import load_dotenv
 
 class RAG:
-    def __init__(self):
+    def __init__(self) -> None:
         load_dotenv()
-        self.retriever = TextRetrieverV2()
         self.device = device("cuda" if cuda.is_available() else "cpu")
         self.num_tokenizer = transformers.RobertaTokenizerFast.from_pretrained("Dzeniks/justification-analyst")
         self.num_model = transformers.RobertaForSequenceClassification.from_pretrained("Dzeniks/justification-analyst")
         self.num_model.to(self.device)
-        nltk.download('punkt')
         openai.api_key = os.getenv('openAI_API_KEY')
+        print("RAG Initialized")
 
-    async def main(self, text:str) -> list:
-        # Document retrieval
-        results = []
+    def main(self, text, data):
+        return asyncio.run(self.async_main(text, data))
+
+    async def async_main(self, text:str, data) -> list:
         claims = nltk.sent_tokenize(text)
-        await self.retriever.create_database_DPR(claims)
-        for claim in claims:
-            evidence, text, url = self.retriever.extract_passage_str_DPR(claim, 3)
+        async def process_claim(claim, data):
+            evidence, text, url = data
             if evidence == "":
-                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
-            elif evidence != "":
+                return {"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None}
+            else:
                 justify = await self.generate(claim, evidence)
                 label, percent = await self.numerical_evaluation(justify)
-                results.append({"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : evidence, "justify" : justify, "url" : url})
-        self.retriever.delete_database()
+                return {"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : text, "justify" : justify, "url" : url}
+
+        tasks = [process_claim(claim, data) for claim in claims]
+        results = await asyncio.gather(*tasks)
         return results
     
     async def numerical_evaluation(self, justify) -> tuple:
@@ -49,9 +50,9 @@ class RAG:
         prompt_template = f"claim: {claim} evidence: {evidence}"
         response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        max_tokens=100,
+        max_tokens=50,
         messages=[
-                {"role": "system", "content": "You are a fact checking specialist. Justify if the claim is supports, not enough info, refutes. Use your knowledge and evidence."},
+                {"role": "system", "content": "Classify if the claim is supports, not enough info, refutes and justify."},
                 {"role": "user", "content": prompt_template},
             ]
         )
