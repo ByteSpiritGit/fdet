@@ -4,6 +4,9 @@
    import Loading from "../lib/Loading.svelte";
    import ClaimBlock from "../lib/validationOutput/ClaimBlock.svelte";
    import Warning from "../lib/notifications/Warning.svelte";
+   import Button from "../lib/Button.svelte";
+   import NotificationBlock from "../lib/notifications/NotificationBlock.svelte";
+
    import { onMount } from "svelte";
 
    let evalued: Array<{
@@ -21,7 +24,12 @@
       xhr.onreadystatechange = function () {
          if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 200) {
-               document.cookie = "csrftoken=" + encodeURIComponent(JSON.parse(xhr.responseText).csrf_token) + "; path=/";
+               try {
+                  document.cookie = "csrftoken=" + encodeURIComponent(JSON.parse(xhr.responseText).csrf_token) + "; path=/";
+               }
+               catch(error) {
+                  console.log(error);
+               }
             } else {
                console.log("Request failed");
             }
@@ -51,10 +59,10 @@
    async function getEvaluated(text: string, type="") {
       let url: string;
 
-      if (window.sessionStorage.getItem("evalued") && !text) {
-         console.log("from sessionStorage")
-         return JSON.parse(window.sessionStorage.getItem("evalued"));
-      }
+      // if (window.sessionStorage.getItem("evalued") && !text) {
+      //    console.log("from sessionStorage")
+      //    return JSON.parse(window.sessionStorage.getItem("evalued"));
+      // }
 
       switch (type) {
          case "Dummy":
@@ -201,25 +209,44 @@
       getCsrfToken();
       evaluate(text);
    })
+
+
+   let toEvaluate;
+   
+   let textarea;
+
+   let warnings;
+   let buttonDisabled: boolean = false;
+
+   function whenclk() {
+
+   }
+
+   function checkSize() {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+   }
 </script>
 
 <section>
    <Navbar />
 
-   <!-- {#if evalued}
+   {#if evalued}
       <ClaimBlock claims={evalued} />
    {:else if !evalued}
       <div class="loading">
          <Loading />
          <p>Calculating the universe</p>
       </div>
-   {/if} -->
+   {/if}
 
    <section class="input-section">
-      
+      <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
+      <Button text="Evaluate" whenClicked={whenclk} disabled={buttonDisabled} />
    </section>
 
    <Footer />
+   <NotificationBlock bind:theComponent={warnings} notificationNumber={1}  />
 </section>
 
 <style>
@@ -256,5 +283,95 @@
       100% {
          opacity: 0.6;
       }
+   }
+
+
+   .input-section {
+
+      position: fixed;
+
+      bottom: 50px;
+      left: 0;
+      
+      width: 100%;
+      height: fit-content;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      height: fit-content;
+      background-color: var(--color-secondary);
+
+      margin-top: 75px;
+
+      padding: 20px;
+   }
+
+   .input-section > .input {
+      background-color: var(--color-primary);
+      color: var(--color-text);
+
+      max-width: 700px;
+      width: 50%;
+      height: fit-content;
+      max-height: 200px;
+
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2em;
+      font-weight: 500;
+      text-transform: uppercase;
+      cursor: text;
+
+      margin-bottom: 20px;
+      padding: 5px;
+
+      resize: none;
+      text-transform: none;
+   }
+
+   .input-section > .input:focus {
+      outline: var(--color-tertiary) solid 2px;
+   }
+
+   .input-section > .input::-webkit-scrollbar {
+      width: 7px;
+   }
+
+   .input-section > .input::-webkit-scrollbar-thumb {
+      background-color: var(--color-tertiary);
+      border-radius: 10px;
+   }
+
+   .input-section > .input::-webkit-scrollbar-track {
+      background-color: var(--color-primary);
+      border-radius: 10px;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--color-primary);
+   }
+
+   .input-section > .input::-webkit-scrollbar-thumb:hover {
+      background-color: var(--color-tertiary-hover);
+   }
+
+   @media (max-width: 768px) {
+      .input-section > .input {
+         width: 90%;
+      }
+
+      .input-section {
+         position: fixed;
+         bottom: 50px;
+         left: 0;
+
+         width: 100%;
+      }
+
+      /* .title-section {
+         display: none;
+      } */
    }
 </style>
