@@ -1,37 +1,37 @@
 <script lang="ts">
    import PercentageBar from "./PercentageBar.svelte";
 
-   export let claim: string;
-   export let evidence: string;
-   export let label: string;
-   export let refutes: number;
-   export let supports: number;
-   export let justify: string;
-   export let id: string;
+   export let claim: {
+      claim: string,
+      evidence: string,
+      label: string,
+      refutes: number,
+      supports: number,
+      nei: number,
+      justify: string,
+   };
 
-   export let show: boolean = false;
-   
-   export let color: string = "var(--color-secondary)";
+   export let id: string;
 </script>
 
-<button style="background-color: {color};" class="output-validation-section" data-shown="{show}" on:click={() => { show = !show; }} id={id}>
+<section id={id} class="output-validation-section">
    <h3>{claim}</h3>
    <div class="dropdown">
-      <p class="label">Label: {label}</p>
+      <p class="label">Label: {claim.label}</p>
 
-      <PercentageBar supports={supports} refutes={refutes}/>
+      <PercentageBar supports={claim.supports} refutes={claim.refutes} nei={claim.nei}/>
 
       <div class="evidence">
          <p>Evidence:</p>
-         <p>{evidence}</p>
+         <p>{claim.evidence}</p>
       </div>
 
       <div class="evidence">
          <p>Justification:</p>
-         <p>{justify}</p>
+         <p>{claim.justify}</p>
       </div>
    </div>
-</button>
+</section>
 
 <style>
    p {
@@ -71,27 +71,8 @@
    }
 
    .dropdown {
-      display: none;
-
       width: 50%;
       min-width: 900px;
-   }
-
-   .output-validation-section[data-shown="true"] .dropdown {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-
-      color: var(--color-text);
-
-      font-size: 1em;
-   }
-
-   .output-validation-section[data-shown="true"] {
-      border-style: solid;
-      border-width: 2px;
-      border-color: var(--color-secondary);
-      animation: colorFade 1s;
    }
 
    @keyframes colorFade {

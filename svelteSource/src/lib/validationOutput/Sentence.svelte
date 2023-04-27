@@ -1,17 +1,13 @@
 <script lang="ts">
    export let text: string = "Sentence missing";
    export let id: string = "sentence_404_not_found";
+
+   function doo() {
+      
+   }
 </script>
 
-<a href="#{id}" on:click={() => {
-   let element = document.getElementById(id);
-   let validation_section = document.getElementsByClassName("validation-section")[0];
-   let sentences = validation_section.children;
-   for (let i = 0; i < sentences.length; i++) {
-      sentences[i].setAttribute("data-shown", "false");
-   }
-   element.dataset.shown = "true";
-}}>{text}</a>
+<a href="#{id}" on:click={doo}>{text}</a>
 
 <style>
    a {

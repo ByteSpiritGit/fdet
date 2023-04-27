@@ -40,7 +40,7 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-evenly;
 
       max-width: 45em;
 
@@ -64,6 +64,7 @@
    h3 {
       margin: 0;
       /* margin-bottom: 0.2em; */
+      white-space: nowrap;
    }
 
    p {
@@ -75,17 +76,15 @@
    }
 
    .block {
-      width: 200px;
+      width: 10em;
    }
 
    
-   @media (max-width: 768px) {
+   @media (max-width: 680px) {
       .whatWeDo {
          flex-direction: column;
 
-         margin: 30px;
-
-         /* margin-top: 125px; */
+         margin-top: 8em;
       }
 
       .hyphen {
@@ -107,15 +106,9 @@
       }
    }
 
-   @media (max-height: 770px) and (max-width: 768px) {
+   @media (max-height: 560px) {
       .whatWeDo {
-         margin-top: 125px;
-      }
-   }
-
-   @media (max-height: 640px) and (min-width: 768px) {
-      .whatWeDo {
-         margin-top: 125px;
+         margin-top: 8em;
       }
    }
 </style>
