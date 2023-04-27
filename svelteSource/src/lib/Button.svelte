@@ -1,13 +1,39 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+
    export let text: string;
    export let whenClicked: () => void = () => {
       console.log("clicked2");
    };
    export let disabled: boolean = false;
+   export let isIcon: boolean = false;
+
+   let btn: HTMLButtonElement;
+
+   onMount(() => {
+      if (isIcon && btn) {
+         // btn.style.padding = "0";
+         // btn.style += "width: 2em; height: 2em;";
+         Object.assign(btn.style, {
+            padding: "0",
+            width: "2em",
+            height: "2em",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+         });
+      }
+   });
 </script>
 
 <div class="button">
-   <button on:click={whenClicked} disabled={disabled}>{text}</button>
+   <button on:click={whenClicked} disabled={disabled} bind:this={btn}>
+      {#if isIcon}
+         <img src={text} alt="icon" />
+      {:else}
+         {text}
+      {/if}
+   </button>
 </div>
 
 <style>
@@ -48,5 +74,10 @@
       background-color: var(--color-tertiary-hover);
    }
 
+   img {
+      width: 1.2em;
+      height: 1.2em;
 
+      margin: 0;
+   }
 </style>
