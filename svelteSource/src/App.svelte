@@ -6,6 +6,8 @@
    import Warning from "./lib/notifications/Warning.svelte";
    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
 
+   import sendImg from "./assets/icons/send.png";
+
    let toEvaluate;
    
    let textarea;
@@ -54,14 +56,15 @@
       <WhatWeDo />
 
       <section class="input-section">
-         <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
-         <Button text="Evaluate" whenClicked={whenclk} disabled={buttonDisabled} />
+         <div class="input-wrapper">
+            <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
+            <Button text={sendImg} whenClicked={whenclk} disabled={buttonDisabled} isIcon={true} />
+         </div>
       </section>
    </section>
 
    <Footer />
 
-   <!-- <section class="warning-section" bind:this={warnings}></section> -->
    <NotificationBlock bind:theComponent={warnings} notificationNumber={1}  />
 </main>
 
@@ -82,6 +85,14 @@
    }
 
    .input-section {
+      position: fixed;
+
+      bottom: 50px;
+      left: 0;
+      
+      width: 100%;
+      height: fit-content;
+
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -93,16 +104,36 @@
       margin-top: 75px;
 
       padding: 20px;
+
+      border-top: 3px solid var(--color-primary-alpha);
    }
 
-   .input-section > .input {
+   .input-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-evenly;
+
+      width: 100%;
+      height: fit-content;
+      max-width: 700px;
+      max-height: 200px;
+
+      border-radius: 10px;
+
+      padding: 0.5em;
+
+      background-color: var(--color-primary);
+   }
+
+   .input-section > .input-wrapper > .input {
       background-color: var(--color-primary);
       color: var(--color-text);
 
       max-width: 700px;
-      width: 50%;
-      height: fit-content;
-      max-height: 200px;
+      width: 100%;
+
+      max-height: 180px;
 
       border: none;
       border-radius: 10px;
@@ -111,27 +142,29 @@
       text-transform: uppercase;
       cursor: text;
 
-      margin-bottom: 20px;
+      /* margin-bottom: 20px; */
       padding: 5px;
+      margin-right: 5px;
 
       resize: none;
       text-transform: none;
    }
 
-   .input-section > .input:focus {
-      outline: var(--color-tertiary) solid 2px;
+   .input:focus {
+      /* outline: var(--color-tertiary) solid 2px; */
+      outline: none;
    }
 
-   .input-section > .input::-webkit-scrollbar {
+   ::-webkit-scrollbar {
       width: 7px;
    }
 
-   .input-section > .input::-webkit-scrollbar-thumb {
+   ::-webkit-scrollbar-thumb {
       background-color: var(--color-tertiary);
       border-radius: 10px;
    }
 
-   .input-section > .input::-webkit-scrollbar-track {
+   ::-webkit-scrollbar-track {
       background-color: var(--color-primary);
       border-radius: 10px;
       border-width: 1px;
@@ -139,35 +172,19 @@
       border-color: var(--color-primary);
    }
 
-   .input-section > .input::-webkit-scrollbar-thumb:hover {
+   ::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-tertiary-hover);
    }
 
-   @media (max-width: 768px) {
-      .input-section > .input {
-         width: 90%;
-      }
+   
 
-      .input-section {
-         position: fixed;
-         bottom: 50px;
-         left: 0;
-
-         width: 100%;
-      }
-
-      /* .title-section {
-         display: none;
-      } */
-   }
-
-   @media (max-height: 770px) and (max-width: 768px) {
+   @media (max-width: 680px) {
       .title-section {
          display: none;
       }
    }
 
-   @media (max-height: 640px) and (min-width: 768px) {
+   @media (max-height: 560px) {
       .title-section {
          display: none;
       }
