@@ -59,10 +59,10 @@
    async function getEvaluated(text: string, type="") {
       let url: string;
 
-      // if (window.sessionStorage.getItem("evalued") && !text) {
-      //    console.log("from sessionStorage")
-      //    return JSON.parse(window.sessionStorage.getItem("evalued"));
-      // }
+      if (window.sessionStorage.getItem("evalued") && !text) {
+         console.log("from sessionStorage")
+         return JSON.parse(window.sessionStorage.getItem("evalued"));
+      }
 
       switch (type) {
          case "Dummy":
@@ -307,6 +307,8 @@
       margin-top: 75px;
 
       padding: 20px;
+
+      border-top: 3px solid var(--color-primary-alpha);
    }
 
    .input-section > .input {
