@@ -47,15 +47,17 @@
    <section class="claim-section" bind:this={claimSection}>
       <p>Claim: </p>
    </section>
+
    <section class="validation-section" bind:this={validationSection}></section>
-   <!-- <div class="gradient"></div> -->
+
 </output>
 
 <style>
    .claim-section {
       display: block;
       position: sticky;
-
+      top: 60px;
+      z-index: 200;
       background-color: var(--color-secondary);
 
       border-radius: 10px;
@@ -66,6 +68,8 @@
       padding: 10px;
 
       margin-top: 60px;
+
+      border: 2px solid var(--color-tertiary);
    }
 
    .claim-section p {
@@ -90,17 +94,8 @@
       overflow: auto;
 
       margin: 10px;
-      margin-bottom: 80px;
+      margin-bottom: 195px;
       /* margin-bottom: 800px; */
-   }
-
-   .gradient {
-      position: fixed;
-      bottom: 50px;
-      left: 0;
-      right: 0;
-      height: 40px;
-      background: linear-gradient(rgba(0, 0, 0, 0) 0%, var(--color-primary-alpha) 75%, var(--color-primary) 100%);
    }
 
    @media (max-width: 768px) {
