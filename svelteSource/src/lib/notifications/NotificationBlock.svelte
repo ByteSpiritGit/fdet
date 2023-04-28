@@ -28,7 +28,7 @@
 <style>
    .warning-section {
       position: absolute;
-      bottom: 85px;
+      bottom: 10rem;
       right: 0;
 
       overflow: hidden;

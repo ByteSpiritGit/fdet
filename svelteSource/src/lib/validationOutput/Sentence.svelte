@@ -2,12 +2,10 @@
    export let text: string = "Sentence missing";
    export let id: string = "sentence_404_not_found";
 
-   function doo() {
-      
-   }
 </script>
 
-<a href="#{id}" on:click={doo}>{text}</a>
+<!-- <a href="#{id}" on:click={doo}>{text}</a> -->
+<a href="#{id}" class="sentence">{text}</a>
 
 <style>
    a {
