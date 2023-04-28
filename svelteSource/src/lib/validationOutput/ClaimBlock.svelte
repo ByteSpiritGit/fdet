@@ -6,15 +6,6 @@
    import Notification from "../notifications/Notification.svelte";
    import NotificationBlock from "../notifications/NotificationBlock.svelte";
 
-   // export let claims: Array<{
-   //    claim: string,
-   //    evidence: string,
-   //    label: string,
-   //    supports: number,
-   //    refutes: number,
-   //    nei: number,
-   //    justify: string,
-   // }>;
 
    export let getCsrfToken: () => void;
    export let getCookie: (name: string) => string;
@@ -123,7 +114,7 @@
                label: "Supports",
                refutes: 0.2,
                supports: 0.7,
-               nei: 1,
+               nei: 0.1,
                justify:
                   "While childhood vaccination is important, vaccines are also recommended and available for adults. Some vaccines, such as the flu vaccine, are recommended for all adults, while others are recommended for specific groups based on age, occupation, travel plans, or other factors. Vaccination is an important part of protecting public health and preventing the spread of infectious diseases.",
             },
@@ -144,7 +135,7 @@
                   "Vaccines do contain some chemicals, but these are used to enhance the effectiveness and safety of the vaccine. The chemicals in vaccines are carefully evaluated for safety and are used in very small amounts.",
                label: "Supports",
                refutes: 0.15,
-               supports: 0.7,
+               supports: 0.6,
                nei: 0.25,
                justify:
                   "Vaccines do contain some chemicals, but these are used to enhance the effectiveness and safety of the vaccine. The chemicals in vaccines are carefully evaluated for safety and are used in very small amounts. In fact, many of the chemicals found in vaccines are also present in everyday foods and consumer products.",
@@ -164,7 +155,7 @@
       }
    }
 
-   export let whenClk = () => {
+   let whenClk = () => {
       const isthereTextRegex = /\S/;
       if (!isthereTextRegex.test(textarea.value)) {
          const notification = new Notification({
@@ -187,7 +178,7 @@
             target: chat,
             props: {
                claims: res,
-               id_offset: 0,
+               id_offset: document.querySelectorAll(".claim-section").length,
             },
          });
       chat.scrollTop = chat.scrollHeight - chat.clientHeight;
