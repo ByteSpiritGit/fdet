@@ -19,6 +19,7 @@
    let claimSection;
    let validationSection;
    let highestAverage;
+   let averageSection;
 
    function claimsBlock(where, claims, id_offset = 0) {
       let average = {
@@ -35,12 +36,10 @@
          let sentence = new Sentence({
             target: where,
             props: {
-               text: claim.claim,
-               id: `${claims.indexOf(claim)}-${id_offset}`
+               claim: claim,
+               outputId: `${id_offset.toString()+"m"}`
             }
          })
-
-         let claims_sentences = document.querySelectorAll
       });
 
       average.supports /= claims.length;
@@ -48,7 +47,7 @@
       average.nei /= claims.length;
 
       new PercentageBar({
-         target: document.querySelector(".average-percent-section"),
+         target: averageSection,
          props: {
             supports: average.supports,
             refutes: average.refutes,
@@ -60,7 +59,7 @@
          target: validationSection,
          props: {
             claim: claims[0],
-            id: `${claims.indexOf(claims[0])}-${id_offset}`
+            id: `${id_offset.toString()+"m"}`
          }
       })
    }
@@ -73,8 +72,8 @@
 <section class="claim-section">
    <p>Claim: </p>
    <section bind:this={claimSection}></section>
-   <section class="average-percent-section"></section>
-   <section id={id_offset.toString()} class="sentence-validation-section" bind:this={validationSection}>
+   <section bind:this={averageSection}></section>
+   <section id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
       <!-- <SentenceValidation claim={claims[0]} id="" /> -->
    </section>
 </section>
@@ -82,7 +81,7 @@
 <style>
    .claim-section {
       display: block;
-      top: 60px;
+      
       z-index: 200;
       background-color: var(--color-secondary);
 

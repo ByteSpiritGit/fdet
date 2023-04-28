@@ -1,11 +1,42 @@
 <script lang="ts">
-   export let text: string = "Sentence missing";
-   export let id: string = "sentence_404_not_found";
+   import SentenceValidation from "./SentenceValidation.svelte";
 
+   export let claim: {
+      claim: string,
+      evidence: string,
+      label: string,
+      refutes: number,
+      supports: number,
+      nei: number,
+      justify: string,
+   };
+   // export let id: string = "sentence_404_not_found";
+   export let outputId: string = "sentence_404_not_found";
+
+   export let clicked = false;
+
+   export let onClick: () => void = () => { 
+      console.log("Sentence clicked: " + claim.claim)
+      let target = document.getElementById(outputId);
+      clearIt(target);
+      new SentenceValidation({
+         target: target,
+         props: {
+            claim: claim
+         }
+      })
+      clicked = true;
+   };
+
+   function clearIt(target) {
+      target.innerHTML = "";
+   }
+
+   // on hover should be a overlay over output, so it doesnt delete the clicked output
 </script>
 
 <!-- <a href="#{id}" on:click={doo}>{text}</a> -->
-<a href="#{id}" class="sentence">{text}</a>
+<a href="#m" class="sentence" on:click={onClick}>{claim.claim}</a>
 
 <style>
    a {
