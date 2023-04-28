@@ -14,7 +14,53 @@
    export let id: string;
 </script>
 
-<section id={id} class="output-validation-section">
+<section class="output-validation-section">
+   <h3>{claim.claim}</h3>
+   <p class="label">Label: {claim.label}</p>
+
+   <PercentageBar supports={claim.supports} refutes={claim.refutes} nei={claim.nei}/>
+   <div class="evidence">
+      <p>Justification:</p>
+      <p>{claim.justify}</p>
+   </div>
+
+   <div class="evidence">
+      <p>Evidence:</p>
+      <p>{claim.evidence}</p>
+   </div>
+
+</section>
+
+<style>
+   h3 {
+      margin: 0;
+      padding: 0;
+   }
+
+   p {
+      margin: 0;
+      padding: 0;
+   }
+
+
+</style>
+
+<!-- <script lang="ts">
+   import PercentageBar from "./PercentageBar.svelte";
+
+   export let claim: {
+      claim: string,
+      evidence: string,
+      label: string,
+      refutes: number,
+      supports: number,
+      nei: number,
+      justify: string,
+   };
+
+   export let id: string;
+</script> -->
+<!-- <section id={id} class="output-validation-section">
    <h3>{claim}</h3>
    <div class="dropdown">
       <p class="label">Label: {claim.label}</p>
@@ -112,4 +158,4 @@
 
       text-align: left;
    }
-</style>
+</style> -->

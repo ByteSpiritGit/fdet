@@ -39,6 +39,8 @@
                id: `${claims.indexOf(claim)}-${id_offset}`
             }
          })
+
+         let claims_sentences = document.querySelectorAll
       });
 
       average.supports /= claims.length;
@@ -46,7 +48,7 @@
       average.nei /= claims.length;
 
       new PercentageBar({
-         target: validationSection,
+         target: document.querySelector(".average-percent-section"),
          props: {
             supports: average.supports,
             refutes: average.refutes,
@@ -54,11 +56,13 @@
          }
       })
 
-      // highestAverage = average.supports > average.refutes && average.supports > average.nei 
-      // ? "supports" 
-      // : average.refutes > average.nei 
-      //    ? "refutes" 
-      //    : "nei";
+      new SentenceValidation({
+         target: validationSection,
+         props: {
+            claim: claims[0],
+            id: `${claims.indexOf(claims[0])}-${id_offset}`
+         }
+      })
    }
 
    onMount(() => {
@@ -69,7 +73,8 @@
 <section class="claim-section">
    <p>Claim: </p>
    <section bind:this={claimSection}></section>
-   <section class="sentence-validation-section" bind:this={validationSection}>
+   <section class="average-percent-section"></section>
+   <section id={id_offset.toString()} class="sentence-validation-section" bind:this={validationSection}>
       <!-- <SentenceValidation claim={claims[0]} id="" /> -->
    </section>
 </section>
