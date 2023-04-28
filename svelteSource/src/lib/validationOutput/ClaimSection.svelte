@@ -41,6 +41,8 @@
                outputId: `${id_offset.toString()+"m"}`
             }
          })
+
+         let claims_sentences = document.querySelectorAll
       });
 
       // calculates the average of all sentences (claims)

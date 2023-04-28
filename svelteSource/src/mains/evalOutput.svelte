@@ -4,8 +4,6 @@
    import ClaimBlock from "../lib/validationOutput/ClaimBlock.svelte";
    import NotificationBlock from "../lib/notifications/NotificationBlock.svelte";
 
-   import sendImg from "../assets/icons/send.png";
-
    import { onMount } from "svelte";
 
    let toEvaluate: string;
