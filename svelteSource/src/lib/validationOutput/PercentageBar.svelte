@@ -50,6 +50,8 @@
       border-radius: 0.25em;
 
       overflow: hidden;
+
+      border: 1px solid var(--color-primary);
    }
 
    .supports {
@@ -59,7 +61,7 @@
 
    .nei {
       height: 100%;
-      background-color: var(--color-text);
+      background-color: var(--color-secondary);
    }
 
    .refutes {

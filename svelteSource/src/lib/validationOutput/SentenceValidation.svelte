@@ -10,8 +10,6 @@
       nei: number,
       justify: string,
    };
-
-   export let id: string;
 </script>
 
 <section class="output-validation-section">
