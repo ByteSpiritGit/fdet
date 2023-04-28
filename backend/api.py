@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from BM25 import retriever_BM25
 from DPR import retriever_DPR
-from ADA import retriever_Ada
+from Ada import retriever_Ada
 from main import Main
 from rag import RAG
 from datetime import datetime
