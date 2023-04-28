@@ -48,7 +48,7 @@ class Main():
                     supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
                     results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence, "url": url})
                 else:
-                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : text})
+                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : text, "url": url}})
         retriever.delete_database()
         return results
 
