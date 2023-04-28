@@ -85,23 +85,6 @@ def eval(text: str):
         in_use_BM25.remove(DPR)
     return JSONResponse(content=response)
 
-@app.get("/backend/v1/eval_debug")
-def eval(text: str):
-    with lock:
-        BM25 = None
-        for instance in BM25_instances:
-            if instance not in in_use_BM25:
-                BM25 = instance
-                in_use_BM25.add(instance)
-                break
-        if BM25 is None:
-            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    response = Main_instance.main_debug(text, BM25)
-    with lock:
-        in_use_BM25.remove(BM25)
-    return JSONResponse(content=response)
-
-
 @app.get("/backend/v1/eval_fast")
 def eval(text: str):
     with lock:

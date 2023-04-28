@@ -53,7 +53,7 @@ class Main():
         return results
 
 
-    async def main_debug(self, text, retriever):
+    def main_debug(self, text, retriever):
         # Document retrieval
         results = []
         nltk.download('punkt')
