@@ -32,7 +32,7 @@ in_use_BM25 = set()
 
 logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading DPR... [2/3]")
 DPR_instances = [retriever_DPR() for i in range(N_DPR)]
-in_use_BM25 = set()
+in_use_DPR = set()
 
 logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading ADA... [3/3]")
 ADA_instances = [retriever_Ada() for i in range(N_ADA)]
@@ -74,15 +74,15 @@ def eval(text: str):
     with lock:
         DPR = None
         for instance in DPR_instances:
-            if instance not in in_use_BM25:
+            if instance not in in_use_DPR:
                 DPR = instance
-                in_use_BM25.add(instance)
+                in_use_DPR.add(instance)
                 break
         if DPR is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
     response = Main_instance.main(text, DPR) 
     with lock:
-        in_use_BM25.remove(DPR)
+        in_use_DPR.remove(DPR)
     return JSONResponse(content=response)
 
 @app.get("/backend/v1/eval_fast")
@@ -113,9 +113,9 @@ def eval_DPR(text: str):
         # find an instance that is not in use
         DPR = None
         for instance in DPR_instances:
-            if instance not in in_use_BM25:
+            if instance not in in_use_DPR:
                 DPR = instance
-                in_use_BM25.add(instance)
+                in_use_DPR.add(instance)
                 break
         if DPR is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
@@ -124,7 +124,7 @@ def eval_DPR(text: str):
     data = DPR.retrieve_RAG(text)
     DPR.delete_database()
     with lock:
-        in_use_BM25.remove(DPR)
+        in_use_DPR.remove(DPR)
     response = RAG_instance.main(text, data)
     return JSONResponse(content=response)
 
