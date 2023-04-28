@@ -3,7 +3,7 @@
    import Button from "./lib/Button.svelte";
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
-   import Warning from "./lib/notifications/Warning.svelte";
+   import Notification from "./lib/notifications/Notification.svelte";
    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
 
    import sendImg from "./assets/icons/send.png";
@@ -12,7 +12,7 @@
    
    let textarea;
 
-   let warnings;
+   let notifs;
    let buttonDisabled: boolean = false;
 
    function whenclk() {
@@ -28,8 +28,8 @@
          return;
       };
 
-      const notification = new Warning({
-         target: warnings,
+      const notification = new Notification({
+         target: notifs,
          props: {
             name: 'Text missing',
             description: 'There is nothing to evaluate',
@@ -65,7 +65,7 @@
 
    <Footer />
 
-   <NotificationBlock bind:theComponent={warnings} notificationNumber={1}  />
+   <NotificationBlock bind:theComponent={notifs} notificationNumber={1}  />
 </main>
 
 <style>
