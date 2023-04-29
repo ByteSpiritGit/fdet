@@ -18,7 +18,7 @@
 
    let claimSection;
    let validationSection;
-   let highestAverage;
+   // let highestAverage;
    let averageSection;
 
    function claimsBlock(where, claims, id_offset = 0) {
