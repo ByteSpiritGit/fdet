@@ -5,38 +5,33 @@
    import InputSection from "../InputSection.svelte";
    import Notification from "../notifications/Notification.svelte";
    import NotificationBlock from "../notifications/NotificationBlock.svelte";
-
+   import Loading from "../Loading.svelte";
 
    export let getCsrfToken: () => void;
    export let getCookie: (name: string) => string;
    export let toEvaluate: string;
 
-   let chat;
+   let chat: HTMLOutputElement;
 
    let textarea: HTMLTextAreaElement;
    let notifs;
 
    onMount(() => {
-      console.log(textarea)
-
       whenClk()
-      // evaluate(toEvaluate).then((response) => {
-      //    console.log(response);
-      //    new ClaimSection({
-      //       target: chat,
-      //       props: {
-      //          claims: response,
-      //          id_offset: 0,
-      //       },
-      //    });
-      // });
-      // chat.scrollTop = chat.scrollHeight - chat.clientHeight;
    });
 
    // requests from server and processes the data
    async function evaluate(text: string) {
+      const loading = new Loading({
+         target: chat,
+         props: {
+            id: document.getElementsByClassName("claim-section").length.toString()
+         }
+      })
+
       const csrftoken = getCookie("csrftoken");
-      let url = `/rag_evaluation?text=${text}`;
+      // let url = `/rag_evaluation?text=${text}`;
+      let url = `/evaluation?text=${text}`;
 
       const request = new Request(url, {
          method: "POST",
@@ -163,7 +158,9 @@
    let whenClk = () => {
       const isthereTextRegex = /\S/;
       const urlParams = new URLSearchParams(window.location.search);
-      if (!isthereTextRegex.test(textarea.value) && !isthereTextRegex.test(urlParams.get("text"))) {
+
+      // check if there is something in input or in url, otherwise show warning
+      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text")) {
          const notification = new Notification({
             target: notifs,
             props: {
@@ -176,15 +173,32 @@
          return;
       }
       
+      let text = textarea.value
+      if (urlParams.get("text")) {
+         text = urlParams.get("text")
+         
+         urlParams.delete("text");
+         window.history.replaceState(
+            {},
+            "",
+            `${window.location.pathname}?${urlParams}`
+         );
+         console.log("eee")
+      }
+
       console.log("Claim block- whenClk");
-      evaluate(textarea.value).then((res) => {
+      evaluate(text).then((res) => {
          console.log(res);
          textarea.value = "";
+
+         // remove loading
+         document.getElementById(`${document.getElementsByClassName("claim-section").length}l`).remove()
+
          new ClaimSection({
             target: chat,
             props: {
                claims: res,
-               id_offset: document.querySelectorAll(".claim-section").length,
+               id_offset: document.getElementsByClassName("claim-section").length,
             },
          });
       chat.scrollTop = chat.scrollHeight - chat.clientHeight;
