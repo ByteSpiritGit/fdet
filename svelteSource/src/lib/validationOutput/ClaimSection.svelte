@@ -28,6 +28,7 @@
          nei: 0
       };
 
+      // create clickable claims, that are put to the top of its claim section
       claims.forEach(claim => {
          average.supports += claim.supports;
          average.refutes += claim.refutes;
@@ -42,6 +43,7 @@
          })
       });
 
+      // calculates the average of all sentences (claims)
       average.supports /= claims.length;
       average.refutes /= claims.length;
       average.nei /= claims.length;
@@ -54,12 +56,12 @@
             nei: average.nei
          }
       })
-
+      
+      // shows details of the first claim 
       new SentenceValidation({
          target: validationSection,
          props: {
             claim: claims[0],
-            id: `${id_offset.toString()+"m"}`
          }
       })
    }
@@ -71,7 +73,7 @@
 
 <section class="claim-section">
    <p>Claim: </p>
-   <section bind:this={claimSection}></section>
+   <section class="claim" bind:this={claimSection}></section>
    <section bind:this={averageSection}></section>
    <section id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
       <!-- <SentenceValidation claim={claims[0]} id="" /> -->

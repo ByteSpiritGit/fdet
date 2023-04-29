@@ -32,8 +32,9 @@
       target.innerHTML = "";
    }
 
-   // on hover should be a overlay over output, so it doesnt delete the clicked output
+   // ! on hover should be a overlay over output, so it doesnt delete the clicked output
 </script>
+<!-- TODO eeee -->
 
 <!-- <a href="#{id}" on:click={doo}>{text}</a> -->
 <a href="#m" class="sentence" on:click={onClick}>{claim.claim}</a>
@@ -54,7 +55,7 @@
       font-size: 1.1em;
       font-weight: 300;
 
-      transition: color 0.2s;
+      transition: 0.1s;
    }
 
    a:hover {
