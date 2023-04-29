@@ -82,7 +82,7 @@
       const urlParams = new URLSearchParams(window.location.search);
 
       // check if there is something in input or in url, otherwise show warning
-      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text")) {
+      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
          const notification = new Notification({
             target: notifs,
             props: {
@@ -105,10 +105,21 @@
             "",
             `${window.location.pathname}?${urlParams}`
          );
-         console.log("eee");
       }
 
-      console.log("Claim block- whenClk");
+      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text") && window.sessionStorage.getItem("evalued")) {
+         const fromStorage = JSON.parse(window.sessionStorage.getItem("evalued"))
+         new ClaimSection({
+            target: chat,
+            props: {
+               claims: fromStorage,
+               id_offset: document.getElementsByClassName("claim-section").length,
+            },
+         });
+         chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+         return;
+      }
+
       evaluate(text).then((res) => {
          console.log(res);
          textarea.value = "";
@@ -126,6 +137,8 @@
             },
          });
          chat.scrollTop = chat.scrollHeight - chat.clientHeight;
+
+         window.sessionStorage.setItem("evalued", JSON.stringify(res));
       });
    };
 </script>
