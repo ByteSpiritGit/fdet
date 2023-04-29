@@ -3,7 +3,10 @@
 
    import Sentence from "./Sentence.svelte";
    import PercentageBar from "./PercentageBar.svelte";
-    import SentenceValidation from "./SentenceValidation.svelte";
+   import SentenceValidation from "./SentenceValidation.svelte";
+   import Button from "../Button.svelte";
+
+   import hideImg from "../../assets/icons/hide.png";
 
    export let claims: Array<{
       claim: string,
@@ -69,13 +72,26 @@
    onMount(() => {
       claimsBlock(claimSection, claims, id_offset);
    })
+
+   function clear_validation_section() {
+      validationSection.innerHTML = "";
+      console.log("muhahahahha")
+   }
 </script>
 
 <section class="claim-section">
    <p>Claim: </p>
    <section class="claim" bind:this={claimSection}></section>
-   <section bind:this={averageSection}></section>
-   <section id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
+   <div class="average-wrapper">
+      <section bind:this={averageSection} class="average-section"></section>
+      <Button
+         text={hideImg}
+         whenClicked={clear_validation_section}
+         disabled={false}
+         isIcon={true}
+      />
+   </div>
+   <section  id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
       <!-- <SentenceValidation claim={claims[0]} id="" /> -->
    </section>
 </section>
@@ -107,5 +123,18 @@
    .claim-section > p {
       margin: 0;
       padding: 0;
+   }
+
+   .average-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-end;
+      
+      width: 100%;
+   }
+
+   .average-wrapper > .average-section {
+      width: 100%;
+      margin-right: 0.5rem;
    }
 </style>
