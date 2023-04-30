@@ -1,38 +1,46 @@
 <script lang="ts">
    import Login from "../mains/Login.svelte";
 
-   function showProfile() {
-      
-   }
-
    let logedin: boolean = true;
 </script>
 
 <nav class="navbar">
    <section class="menu-section">
       <a href="/">Home</a>
-      <a href="/evaluation?text=The sky is blue">About us</a>
+      <a href="/">About us</a>
       <a href="/">Learn</a>
       <a href="https://github.com/fdet/fDet">Github</a>
-      <a href="/">History</a>
    </section>
    <section class="sides-section">
       <section class="logo-section">
-         <a href="/#/evaluations">
-            
-            **logo**
-         </a>
+         <h3 class="no-margin">fDet</h3>
+         <p class="no-margin">by ByteSpirit</p>
       </section>
       <section class="profile-section">
-         <a href="/#/login" on:click={showProfile}>
-            **profile**
+         <a href="/users/login">
+            Login/<b>Register</b>
          </a>
       </section>
    </section>
 </nav>
 
-
 <style>
+   .logo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+
+      padding: 0.5em;
+   }
+
+   .no-margin {
+      margin: 0;
+      padding: 0;
+
+      line-height: 1em;
+   }
+
    a {
       color: var(--color-text);
       text-decoration: none;

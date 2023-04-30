@@ -7,14 +7,13 @@
    import NotificationBlock from "../notifications/NotificationBlock.svelte";
    import Loading from "../Loading.svelte";
 
-   export let getCsrfToken: () => void;
+   // export let getCsrfToken: () => void;
    export let getCookie: (name: string) => string;
-   export let toEvaluate: string;
 
    let chat: HTMLOutputElement;
 
    let textarea: HTMLTextAreaElement;
-   let notifs;
+   let notificationBlock: HTMLDivElement;
    let disabled = false;
 
    onMount(() => {
@@ -23,12 +22,14 @@
 
    // requests from server and processes the data
    async function evaluate(text: string) {
+      // when there was an enter, the '.' had letters next to it and the sentence splitter didn't work
       let urlText = "";
       text.split("\n").forEach(claim => {
          urlText += claim + " ";
       });
       text = urlText
 
+      // creates loading and disables the button
       const loading = new Loading({
          target: chat,
          props: {
@@ -41,14 +42,13 @@
 
       const csrftoken = getCookie("csrftoken");
       let url = `/rag_evaluation?text=${text}`;
-      // let url = `/evaluation?text=${text}`;
-
       const request = new Request(url, {
          method: "POST",
          headers: { "X-CSRFToken": csrftoken },
          mode: "same-origin",
       });
 
+      // Handle errors in the response
       const response = await fetch(request);
       if (response.status > 299) {
          console.log(response)
@@ -64,8 +64,8 @@
             },
          ];
       }
-      
-      const finna: Array<{
+
+      const final: Array<{
          claim: string,
          evidence: string,
          label: string,
@@ -74,17 +74,17 @@
          nei: number,
          justify: string,
       }> = (await (response.json())).validated;
-      return finna;
+      return final;
    }
 
-   let whenClk = () => {
+   function whenClk(fromInput = false) {
       const isthereTextRegex = /\S/;
       const urlParams = new URLSearchParams(window.location.search);
 
-      // check if there is something in input or in url, otherwise show warning
-      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
+      // Check if there is data in the input, URL or session storage, otherwise show a warning
+      if (fromInput && !isthereTextRegex.test(textarea.value) || !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
          const notification = new Notification({
-            target: notifs,
+            target: notificationBlock,
             props: {
                name: "Text missing",
                description: "There is nothing to evaluate",
@@ -95,19 +95,9 @@
          return;
       }
 
-      let text = textarea.value;
-      if (urlParams.get("text")) {
-         text = urlParams.get("text");
-
-         urlParams.delete("text");
-         window.history.replaceState(
-            {},
-            "",
-            `${window.location.pathname}?${urlParams}`
-         );
-      }
-
+      // If there is data in session storage and not anywhere else, use that
       if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text") && window.sessionStorage.getItem("evalued")) {
+         console.log("from storage")
          const fromStorage = JSON.parse(window.sessionStorage.getItem("evalued"))
          new ClaimSection({
             target: chat,
@@ -120,6 +110,23 @@
          return;
       }
 
+      // URL has priority over everything
+      let text = textarea.value;
+      let fromWhere = "from input"
+      if (urlParams.get("text")) {
+         fromWhere = "from url"
+         text = urlParams.get("text");
+
+         urlParams.delete("text");
+         window.history.replaceState(
+            {},
+            "",
+            `${window.location.pathname}?${urlParams}`
+         );
+      }
+
+      console.log(fromWhere)
+      // request it
       evaluate(text).then((res) => {
          console.log(res);
          textarea.value = "";
@@ -147,7 +154,7 @@
 
 <InputSection bind:textarea buttonDisabled={disabled} whenClk={whenClk} />
 
-<NotificationBlock bind:theComponent={notifs} notificationNumber={1} />
+<NotificationBlock bind:theComponent={notificationBlock} notificationNumber={1} />
 
 <style>
    .chat {
