@@ -37,7 +37,7 @@
 <!-- TODO eeee -->
 
 <!-- <a href="#{id}" on:click={doo}>{text}</a> -->
-<a href="#m" class="sentence" on:click={onClick}>{claim.claim}</a>
+<a href="#{outputId}" class="sentence" on:click={onClick}>{claim.claim}</a>
 
 <style>
    a {

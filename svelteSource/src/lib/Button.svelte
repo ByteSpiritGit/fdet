@@ -12,8 +12,6 @@
 
    onMount(() => {
       if (isIcon && btn) {
-         // btn.style.padding = "0";
-         // btn.style += "width: 2em; height: 2em;";
          Object.assign(btn.style, {
             padding: "0",
             width: "2em",
