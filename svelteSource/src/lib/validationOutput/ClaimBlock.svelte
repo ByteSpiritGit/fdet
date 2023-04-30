@@ -41,9 +41,7 @@
       disabled = true;
 
       const csrftoken = getCookie("csrftoken");
-      // let url = `/rag_evaluation?text=${text}`;
-      let url = `/rag_dummy_backend?text=${text}`
-
+      let url = `/rag_evaluation?text=${text}`;
       const request = new Request(url, {
          method: "POST",
          headers: { "X-CSRFToken": csrftoken },
