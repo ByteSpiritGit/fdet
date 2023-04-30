@@ -3,7 +3,7 @@
 
    export let text: string;
    export let whenClicked: () => void = () => {
-      console.log("clicked2");
+      console.log("buttonClicked");
    };
    export let disabled: boolean = false;
    export let isIcon: boolean = false;

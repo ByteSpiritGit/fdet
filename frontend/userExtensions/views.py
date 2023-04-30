@@ -26,26 +26,26 @@ def registration_view(request, *args, **kwargs):
     if not password_regex.search(password):
         # Password does not match the required regex pattern
         error_msg = "Password must contain at least 8 characters, 1 letter, 1 digit, and 1 special character. It cannot be too similar to your personal information and cannot be a commonly used password."
-        return JsonResponse({"error_msg": error_msg})
+        return JsonResponse({"error_msg": error_msg, "status": 400})
 
     if not email_regex.search(email):
         # Email does not match the required regex pattern
         error_msg = "Email is not valid."
-        return JsonResponse({"error_msg": error_msg})
+        return JsonResponse({"error_msg": error_msg, "status": 400})
     
     if not username_regex.search(username):
         # Username does not match the required regex pattern
         error_msg = "Username is not valid."
-        return JsonResponse({"error_msg": error_msg})
+        return JsonResponse({"error_msg": error_msg, "status":400})
     
     if password == password2:    
         if User.objects.filter(email=email).exists():
             error_msg = "Email already exists."
-            return JsonResponse({"error_msg": error_msg})
+            return JsonResponse({"error_msg": error_msg, "status":409})
 
         elif User.objects.filter(username=username).exists():
             error_msg = "Username already exists."
-            return JsonResponse({"error_msg": error_msg})
+            return JsonResponse({"error_msg": error_msg, "status":409})
             
         else:
             # Username and email do not exist
@@ -53,12 +53,12 @@ def registration_view(request, *args, **kwargs):
             user.save()
             user_extension = UserExtension(user=user)
             user_extension.save()
-            return JsonResponse({"success_msg": "User created successfully."})
+            return JsonResponse({"success_msg": "User created successfully.", "status": 200})
 
     else:
         # Passwords do not match
         error_msg = "Passwords do not match."
-        return JsonResponse({"error_msg": error_msg})
+        return JsonResponse({"error_msg": error_msg, "status": 400})
 
 
 def login_view(request, *args, **kwargs):

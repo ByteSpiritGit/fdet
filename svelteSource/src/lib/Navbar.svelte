@@ -17,9 +17,8 @@
          <p class="no-margin">by ByteSpirit</p>
       </section>
       <section class="profile-section">
-         <a href="/users/login">
-            Login/<b>Register</b>
-         </a>
+         <a href="/users/login" class="no-margin">Login</a>
+         <a href="/users/register" class="no-margin"><b>Register</b></a>
       </section>
    </section>
 </nav>
@@ -30,6 +29,19 @@
       flex-direction: column;
       align-items: flex-start;
       justify-content: center;
+
+      padding: 0.5em;
+   }
+
+   .profile-section > a:hover{
+      text-shadow: 0px 0px 1px #ffffffce, 0px 0px 10px #cccccc77;
+   }
+
+   .profile-section {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
 
       padding: 0.5em;
    }
@@ -52,7 +64,7 @@
       align-items: center;
       justify-content: center;
 
-      transition: 0.1s;
+      /* transition: 0.1s; */
 
       white-space: nowrap;
 
