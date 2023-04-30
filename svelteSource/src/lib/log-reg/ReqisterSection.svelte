@@ -11,12 +11,12 @@
       password: string;
       confirmPassword: string;
    } = {
-      firstName: "David",
-      lastName: "Vrtulek",
+      firstName: "Rubber",
+      lastName: "Duck",
       email: "fdet.eu@gmail.com",
-      username: "fdet",
-      password: "aA1.,",
-      confirmPassword: "aA1.,",
+      username: "Duckie123",
+      password: "BestDuck123.",
+      confirmPassword: "BestDuck123.",
    };
 
    const regex = {
@@ -29,15 +29,14 @@
       lastNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
    };
 
-   let buttonDisabled = false;
-
    async function onClick() {
-      const inputs = document.querySelectorAll<HTMLInputElement>("input");
-      inputs.forEach((input) => {
-         console.log(input.name);
-         checkType(user, input);
-         buttonDisabled = false;
-      });
+      const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("input"));
+
+      const isValid = inputs.every((input) => checkType(user, input))
+
+      if (!isValid) return console.log("not registering");
+
+      console.log("registering");
    }
 
    function checkType(
@@ -60,23 +59,23 @@
 
       switch (toCheck.name) {
          case "email":
-            check(toCheck, regex.emailRegex);
+            return check(toCheck, regex.emailRegex);
             break;
          case "username":
-            check(toCheck, regex.usernameRegex);
+            return check(toCheck, regex.usernameRegex);
             break;
          case "password":
-            check(toCheck, regex.passwordRegex);
+            return check(toCheck, regex.passwordRegex);
             break;
          case "confirmPassword":
             const passwordConfirmRegex = `^${user.password}$`;
-            check(toCheck, new RegExp(passwordConfirmRegex));
+            return check(toCheck, new RegExp(passwordConfirmRegex));
             break;
          case "firstName":
-            check(toCheck, regex.firstNameRegex);
+            return check(toCheck, regex.firstNameRegex);
             break;
          case "lastName":
-            check(toCheck, regex.lastNameRegex);
+            return check(toCheck, regex.lastNameRegex);
             break;
          default:
             break;
@@ -86,10 +85,10 @@
    function check(what: HTMLInputElement, how: RegExp) {
       if (how.test(what.value)) {
          what.style.borderBottom = "2px solid green";
-
-         return;
+         return true;
       }
       what.style.borderBottom = "2px solid red";
+      return false
    }
 
    onMount(() => {
@@ -105,7 +104,7 @@
 
 <section class="register-section">
    <LogRegSwitchBtn selectedButton="register" />
-   
+
    <h1 class="no-margin">Register</h1>
    <div class="line">
       <label for="firstName">First name</label>
@@ -162,7 +161,7 @@
       />
    </div>
    <section class="button-wrapper">
-      <Button text="Register" whenClicked={onClick} disabled={buttonDisabled} />
+      <Button text="Register" whenClicked={onClick} />
    </section>
 </section>
 
