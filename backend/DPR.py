@@ -25,14 +25,14 @@ class retriever_DPR(wiki_document_store):
         self.document_store.update_embeddings(self.retriever)
 
     def retrieve_RAG(self,claim, top_k=3, max_len=125) -> str:
-      evidence, text, url = self.retrieve(claim, top_k)
-      while len(evidence[0]) > max_len and top_k > 1:
+      evidence, text, url = self.retrieve_data(claim, top_k)
+      while len(evidence) > max_len and top_k > 1:
           top_k -= 1
-          evidence, text, url = self.retrieve(claim, top_k)
+          evidence, text, url = self.retrieve_data(claim, top_k)
       return evidence, text, url
 
-    def retrieve(self, query, top_k):
-      candidate_docs = self.retriever.retrieve(query=query, top_k=top_k)
+    def retrieve_data(self, claim, top_k):
+      candidate_docs = self.retriever.retrieve(query=claim, top_k=top_k)
       return super().format_docs_str(candidate_docs)
     
     def delete_database(self):

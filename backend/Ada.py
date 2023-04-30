@@ -10,7 +10,7 @@ class retriever_Ada(wiki_document_store):
         load_dotenv()
         self.document_store = InMemoryDocumentStore(
            embedding_dim=1024,
-           use_gpu=True
+           use_gpu=True,
            )
         self.retriever = EmbeddingRetriever(
            document_store=self.document_store,
@@ -25,7 +25,7 @@ class retriever_Ada(wiki_document_store):
 
     def retrieve_RAG(self,claim, top_k=3, max_len=150) -> str:
       evidence, text, url = self.retrieve_data(claim, top_k)
-      while len(evidence[0]) > max_len and top_k > 1:
+      while len(evidence) > max_len and top_k > 1:
           top_k -= 1
           evidence, text, url = self.retrieve_data(claim, top_k)
       return evidence, text, url

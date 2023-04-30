@@ -18,6 +18,7 @@ logging.getLogger().setLevel(logging.INFO)
 
 
 nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
 lock = threading.Lock()
 
 N_BM25 = 30
@@ -80,7 +81,9 @@ def eval(text: str):
                 break
         if DPR is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
+    DPR.create_database(text)
     response = Main_instance.main(text, DPR) 
+    DPR.delete_database()
     with lock:
         in_use_DPR.remove(DPR)
     return JSONResponse(content=response)
@@ -96,7 +99,9 @@ def eval(text: str):
                 break
         if BM25 is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
+    BM25.create_database(text, 5)
     response = Main_instance.main_debug(text, BM25)
+    BM25.delete_database()
     with lock:
         in_use_BM25.remove(BM25)
     return JSONResponse(content=response)
@@ -121,11 +126,10 @@ def eval_DPR(text: str):
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
     DPR.create_database(text)
     DPR.update_embed()
-    data = DPR.retrieve_RAG(text)
+    response = RAG_instance.main(text, DPR)
     DPR.delete_database()
     with lock:
         in_use_DPR.remove(DPR)
-    response = RAG_instance.main(text, data)
     return JSONResponse(content=response)
 
 @app.get("/backend/rag/eval_ada")
@@ -139,13 +143,12 @@ def eval_ada(text: str):
                 break
         if ADA is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    ADA.create_database(text)
+    ADA.create_database(text, 5)
     ADA.update_embed()
-    data = ADA.retrieve_RAG(text)
+    response = RAG_instance.main(text, ADA)
     ADA.delete_database()
     with lock:
         in_use_ADA.remove(ADA)
-    response = RAG_instance.main(text, data)
     return JSONResponse(content=response)
 
 @app.get("/backend/rag/eval_bm25")
@@ -159,10 +162,11 @@ def eval_bm25(text: str):
                 break
         if BM25 is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    data = BM25.retrieve_RAG(text)
+    BM25.create_database(text, 8)
+    response = RAG_instance.main(text, BM25)
+    BM25.delete_database()
     with lock:
         in_use_BM25.remove(BM25)
-    response = RAG_instance.main(text, data)
     return JSONResponse(content=response)
 
 if __name__ == "__main__":

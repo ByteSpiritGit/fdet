@@ -6,7 +6,10 @@ from yake import KeywordExtractor
 import asyncio
 import re
 import anlys
-import logging
+import nltk
+import math
+from collections import Counter
+from nltk.tokenize import word_tokenize
 from datetime import datetime
 class wiki_document_store():
     def __init__(self) -> None:
@@ -14,15 +17,38 @@ class wiki_document_store():
         self.kw_extractor = KeywordExtractor()
         self.document_store = InMemoryDocumentStore(
             use_bm25= True,
-            use_gpu=True,
+            use_gpu=True
         )
+        self.WORD = re.compile(r'\w+')
+
+
+    def get_cosine(self, vec1, vec2) -> float:
+        intersection = set(vec1.keys()) & set(vec2.keys())
+        numerator = sum(vec1[x] * vec2[x] for x in intersection)
+        sum1 = math.fsum(vec1[x]**2 for x in vec1)
+        sum2 = math.fsum(vec2[x]**2 for x in vec2)
+        denominator = math.sqrt(sum1) * math.sqrt(sum2)
+        return float(numerator) / denominator if denominator else 0.0
+    
+    def text_to_vector(self, text) -> Counter:
+        return Counter(self.WORD.findall(text.lower()))
+    
+    def get_text_similarity(self, a, b) -> float:
+        a = self.text_to_vector(a.strip())
+        b = self.text_to_vector(b.strip())
+        return self.get_cosine(a, b)
 
     def __extractKeyWords(self, text, keyWords=3) -> list:
+        words = word_tokenize(text)
+        pos = nltk.pos_tag(words)
+        nouns = [word for word, tag in pos if tag.startswith('N')]
+        nouns += [word for word, tag in pos if tag == 'PRP']
         # Extract Subject
         temp_titles = self.kw_extractor.extract_keywords(text)
+        temp_titles = [(tup[0], tup[1]+self.get_text_similarity(text, tup[0])) if tup[0] in nouns else tup for tup in temp_titles]
+        temp_titles = sorted(temp_titles, key=lambda x: x[1], reverse=True)
         pages = [i[0] for i in temp_titles]
         return pages[:keyWords]   
-
 
     async def __fetch_wikipedia_page(self, title):
         wikiPages = self.wiki.search(title)
@@ -81,8 +107,8 @@ class wiki_document_store():
         text = text.replace("–present", "-2023")
         return evidence, text, url
 
-    def create_database(self, text) -> bool:
-        keyWords = self.__extractKeyWords(text)
+    def create_database(self, text, n_pages=3) -> bool:
+        keyWords = self.__extractKeyWords(text, n_pages)
         pages = asyncio.run(self.__extract_wikipedia_pages(keyWords))
         asyncio.run(self.storeDocuments(pages))
         return self.document_store

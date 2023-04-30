@@ -16,21 +16,20 @@ class RAG:
         self.num_model.to(self.device)
         openai.api_key = os.getenv('openAI_API_KEY')
 
-    def main(self, text, data):
-        return asyncio.run(self.async_main(text, data))
+    def main(self, text, retriever):
+        return asyncio.run(self.async_main(text, retriever))
 
-    async def async_main(self, text:str, data) -> list:
+    async def async_main(self, text:str, retriever) -> list:
         claims = nltk.sent_tokenize(text)
         async def process_claim(claim, data):
-            evidence, text, url = data
+            evidence, text, url = retriever.retrieve_RAG(claim)
             if evidence == "":
                 return {"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None}
             else:
                 justify = await self.generate(claim, evidence)
                 label, percent = await self.numerical_evaluation(justify)
                 return {"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : text, "justify" : justify, "url" : url}
-
-        tasks = [process_claim(claim, data) for claim in claims]
+        tasks = [process_claim(claim, retriever) for claim in claims]
         results = await asyncio.gather(*tasks)
         return results
     
@@ -49,7 +48,8 @@ class RAG:
         prompt_template = f"claim: {claim} evidence: {evidence}"
         response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        max_tokens=50,
+        max_tokens=75,
+        frequency_penalty=0.5,
         messages=[
                 {"role": "system", "content": "Classify if the claim is supports, not enough info or refutes and justify. Use evidence and knowledge base."},
                 {"role": "user", "content": prompt_template},
