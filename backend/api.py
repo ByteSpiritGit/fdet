@@ -49,6 +49,7 @@ Main_instance = Main()
 logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading server...")
 app = FastAPI()
 
+
 @app.get("/backend")
 async def root() -> str:
     help_text = "Welcome to the backend of the Fact-Checking System. Please use the following endpoints to access the system: \n" \
@@ -168,6 +169,11 @@ def eval_bm25(text: str):
     with lock:
         in_use_BM25.remove(BM25)
     return JSONResponse(content=response)
+
+
+@app.get("/coffee")
+async def root() -> str:
+    return JSONResponse(status_code=418, content={"message": "I'm a teapot"})
 
 if __name__ == "__main__":
     uvicorn.run(app, port=8002)
