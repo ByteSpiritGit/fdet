@@ -36,11 +36,9 @@
    // };
 
    const regex = {
-      emailRegex:
-         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      emailRegex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,
-      passwordRegex:
-         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$/,
+      passwordRegex: /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
       firstNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
       lastNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
    };
@@ -49,10 +47,10 @@
       wrongPassword: {
          name: "Password must contain at least: ",
          description: `
-            one digit (0-9)<br />
-            one lowercase letter (a-z)<br />
-            one uppercase letter (A-Z)<br />
-            one special character (e.g. !@#$%^&*)<br />
+            One uppercase letter (A-Z)<br />
+            Two lowercase letters (a-z)<br />
+            One digit (0-9)<br />
+            One special character (e.g. !@#$%^&*)<br />
             Be at least 5 characters long
          `,
          iconType: "Warning",
@@ -97,7 +95,6 @@
    async function onClick() {
       const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("input"));
 
-      // const isValid = inputs.every((input) => checkType(user, input, true))
       let isValid = true;
       inputs.forEach((input) => {
          if (!checkType(user, input)) { 

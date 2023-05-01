@@ -9,9 +9,8 @@ import requests
 import json
 
 email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-password_regex = re.compile(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$')
+password_regex = re.compile(r'((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$')
 username_regex = re.compile(r'^[\w.@+-]{1,150}$')
-password_regex = re.compile(r'^(?=.*[a-zA-Z])(?=.*\d)(?!.*password)(?!.*12345678)(?!^\d+$)[A-Za-z\d.@$!%*?&^_-]{8,}$')
 
 # Create your views here.
 def registration_view(request, *args, **kwargs):
@@ -29,7 +28,13 @@ def registration_view(request, *args, **kwargs):
     
     if not password_regex.search(password):
         # Password does not match the required regex pattern
-        error_msg = "one digit(0-9) <br /> one lowercase letter(a-z) <br /> one uppercase letter(A-Z) <br /> one special character(e.g. !@  # $%^&*) <br /> Be at least 5 characters long"
+        error_msg = """
+            One uppercase letter (A-Z)<br />
+            Two lowercase letters (a-z)<br />
+            One digit (0-9)<br />
+            One special character (e.g. !@#$%^&*)<br />
+            Be at least 5 characters long
+        """
         return JsonResponse({"error_msg": error_msg, "status": 400, "type": "error"})
 
     if not email_regex.search(email):
