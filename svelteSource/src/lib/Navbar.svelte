@@ -1,7 +1,89 @@
 <script lang="ts">
-   import Login from "../mains/Login.svelte";
+   import Notification from "./notifications/Notification.svelte";
+   import NotificationBlock from "./notifications/NotificationBlock.svelte";
 
-   let logedin: boolean = true;
+   let notificationBlock: HTMLDivElement;
+
+   let logedin: boolean = false;
+   if (localStorage.getItem("logged") === "true") {
+      logedin = true;
+   }
+
+   function getCsrfToken() {
+      var xhr = new XMLHttpRequest();
+      // Set up a callback function to handle the response
+      xhr.onreadystatechange = function () {
+         if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+               try {
+                  document.cookie =
+                     "csrftoken=" +
+                     encodeURIComponent(
+                        JSON.parse(xhr.responseText).csrf_token
+                     ) +
+                     "; path=/";
+               } catch (error) {
+                  console.log(error);
+               }
+            } else {
+               console.log("Request failed");
+            }
+         }
+      };
+
+      xhr.open("GET", "/csrf_view");
+      xhr.send();
+   }
+
+   function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+         const cookies = document.cookie.split(";");
+         for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+               cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+               );
+               break;
+            }
+         }
+      }
+      return cookieValue;
+   }
+
+   async function logout() {
+
+      getCsrfToken();
+      const csrftoken = getCookie("csrftoken");
+
+      const url = "/logout"
+      const request = new Request(url, {
+         method: "POST",
+         mode: "same-origin",
+         headers: { "X-CSRFToken": csrftoken },
+      });
+
+      const response = await fetch(request);
+      if (response.status != 200) {
+         new Notification({
+            target: notificationBlock,
+            props: {
+               name: "Something went wrong",
+               description: `Error ${response.status}: ${response.statusText}`,
+               iconType: "Warning",
+               duration: 5000
+            }
+         })
+         console.log("Server error")
+         return response;
+      }
+
+      localStorage.setItem("logged", "false");
+      localStorage.setItem("username", "");
+      window.location.href = "/";
+   }
 </script>
 
 <nav class="navbar">
@@ -16,14 +98,37 @@
          <h3 class="no-margin">fDet</h3>
          <p class="no-margin">by ByteSpirit</p>
       </section>
-      <section class="profile-section">
-         <a href="/users/login" class="no-margin">Login</a>
-         <a href="/users/register" class="no-margin"><b>Register</b></a>
-      </section>
+      {#if logedin}
+         <section class="underneath">
+            <a href="/" class="no-margin">User: {localStorage.getItem("username")}</a>
+            <a on:click={logout} href="#logout" class="no-margin"><b>Logout</b></a>
+         </section>
+      {:else}
+         <section class="profile-section">
+            <a href="/users/login" class="no-margin">Login</a>
+            <a href="/users/register" class="no-margin"><b>Register</b></a>
+         </section>
+      {/if}
    </section>
 </nav>
 
+<NotificationBlock bind:theComponent={notificationBlock} notificationNumber={1} />
+
 <style>
+   .underneath {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+   }
+
+   .underneath > a {
+      text-align: left;
+      justify-content: flex-start;
+
+      padding-left: 0.35em;
+   }
+
    .logo-section {
       display: flex;
       flex-direction: column;
@@ -33,7 +138,7 @@
       padding: 0.5em;
    }
 
-   .profile-section > a:hover{
+   .profile-section > a:hover, .underneath > a:hover{
       text-shadow: 0px 0px 1px #ffffffce, 0px 0px 10px #cccccc77;
    }
 

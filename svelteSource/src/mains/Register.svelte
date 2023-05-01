@@ -51,6 +51,10 @@
 
    onMount(() => {
       getCsrfToken();
+
+      if (localStorage.getItem("logged") === "true") {
+         window.location.href = "/";
+      }
    });
 </script>
 

@@ -19,7 +19,7 @@
    } = {
       firstName: "Rubber",
       lastName: "Duck",
-      email: "fdet.eu@gmail.com",
+      email: "duck.eu@gmail.com",
       username: "Duckie123",
       password: "BestDuck123.",
       // password: "BestDuck",
@@ -151,7 +151,7 @@
          return console.log("not registering")
       };
 
-      console.log("registering");
+      console.log("registering...");
 
       const csrftoken = getCookie("csrftoken");
       const url = "/registration"
@@ -171,12 +171,42 @@
 
       // Handle errors in the response
       const response = await fetch(request);
-      if (response.status > 299) {
-         return console.log(response);
+      if (response.status != 200) {
+         new Notification({
+            target: notificationBlock,
+            props: {
+               name: "Something went wrong",
+               description: `Error ${response.status}: ${response.statusText}`,
+               iconType: "Warning",
+               duration: 5000
+            }
+         })
+         console.log("Server error")
+         return response;
       }
 
-      const final = await (response.json());
+      const final = await response.json();
+      if (final["error_msg"] != undefined) {
+         new Notification({
+            target: notificationBlock,
+            props: {
+               name: "Something went wrong",
+               description: `Error ${final["status"]}: ${final["error_msg"]}`,
+               iconType: "Warning",
+               duration: 5000
+            }
+         })
+         console.log("User error")
+         return final;
+      }
+
+      localStorage.setItem("logged", "true");
+      localStorage.setItem("username", user.username);
+
+      console.log("success")
       console.log(final);
+
+      window.location.href = "/";
       return final;
    }
 

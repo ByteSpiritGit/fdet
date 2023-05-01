@@ -34,6 +34,7 @@ urlpatterns = [
     # *User Extensions
     path('registration', registration_view, name="registration"),
     path('login', login_view, name="login"),
+    path('logout', logout_view, name="logout"),
     path('authentication', authentication_view, name="authentication"),
 
     # *Evaluations

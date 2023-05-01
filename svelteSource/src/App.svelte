@@ -7,13 +7,13 @@
    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
 
    import sendImg from "./assets/icons/send.png";
+    import InputSection from "./lib/InputSection.svelte";
 
    let toEvaluate;
    
    let textarea;
 
    let notifs;
-   let buttonDisabled: boolean = false;
 
    function whenclk() {
       toEvaluate = textarea.value;
@@ -38,11 +38,6 @@
          }
       });
    }
-
-   function checkSize() {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
-   }
 </script>
 
 <main>
@@ -55,12 +50,7 @@
    
       <WhatWeDo />
 
-      <section class="input-section">
-         <div class="input-wrapper">
-            <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
-            <Button text={sendImg} whenClicked={whenclk} disabled={buttonDisabled} isIcon={true} />
-         </div>
-      </section>
+      <InputSection bind:textarea={textarea} whenClk={whenclk} />
    </section>
 
    <Footer />
@@ -82,77 +72,6 @@
       background-color: var(--color-secondary);
 
       margin-top: 125px;
-   }
-
-   .input-section {
-      position: fixed;
-
-      bottom: 50px;
-      left: 0;
-      
-      width: 100%;
-      height: fit-content;
-
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      height: fit-content;
-      background-color: var(--color-secondary);
-
-      margin-top: 75px;
-
-      padding: 20px;
-
-      border-top: 3px solid var(--color-primary-alpha);
-   }
-
-   .input-wrapper {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-end;
-      justify-content: space-evenly;
-
-      width: 100%;
-      height: fit-content;
-      max-width: 700px;
-      max-height: 200px;
-
-      border-radius: 10px;
-
-      padding: 0.5em;
-
-      background-color: var(--color-primary);
-   }
-
-   .input-section > .input-wrapper > .input {
-      background-color: var(--color-primary);
-      color: var(--color-text);
-
-      max-width: 700px;
-      width: 100%;
-
-      max-height: 180px;
-
-      border: none;
-      border-radius: 10px;
-      font-size: 1.2em;
-      font-weight: 500;
-      text-transform: uppercase;
-      cursor: text;
-
-      /* margin-bottom: 20px; */
-      padding: 5px;
-      margin-right: 5px;
-
-      resize: none;
-      text-transform: none;
-   }
-
-   .input:focus {
-      /* outline: var(--color-tertiary) solid 2px; */
-      outline: none;
    }
 
    ::-webkit-scrollbar {

@@ -1,52 +1,138 @@
 <script lang="ts">
    import { onMount } from "svelte";
    import Button from "../Button.svelte";
-    import LogRegSwitchBtn from "./LogReg_switch-btn.svelte";
+   import LogRegSwitchBtn from "./LogReg_switch-btn.svelte";
+   import NotificationBlock from "../notifications/NotificationBlock.svelte";
+   import Notification from "../notifications/Notification.svelte";
+
+   export let getCookie: (name: string) => string;
+
+   let notificationBlock: HTMLDivElement;
 
    let user: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      username: string;
-      password: string;
-      confirmPassword: string;
+      username: string,
+      password: string
    } = {
-      firstName: "Rubber",
-      lastName: "Duck",
-      email: "fdet.eu@gmail.com",
       username: "Duckie123",
-      password: "BestDuck123.",
-      confirmPassword: "BestDuck123.",
+      password: "BestDuck123."
    };
 
    const regex = {
-      emailRegex:
-         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,
       passwordRegex:
          /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$/,
-      firstNameRegex: /^[\p{L}'-]{2,}$/u,
+      firstNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
       lastNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
    };
+
+   const notifs = {
+      wrongPassword: {
+         name: "Wrong password",
+         description: `
+            Password is incorrect.
+         `,
+         iconType: "Warning",
+         duration: 5000
+      },
+      wrongUsername: {
+         name: "Username format wrong: ",
+         description: `
+            Must be at least 3 characters long
+         `,
+         iconType: "Warning",
+         duration: 5000
+      }
+   }
 
    async function onClick() {
       const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("input"));
 
-      const isValid = inputs.every((input) => checkType(user, input, false))
+      let isValid = true;
+      inputs.forEach((input) => {
+         if (!checkType(user, input)) { 
+            isValid = false;
+         }
+      });
 
-      if (!isValid) return console.log("not registering");
+      if (!isValid) {
+         if ((<HTMLInputElement>document.querySelector("#username")).dataset.correct === "false") {
+            new Notification({
+               target: notificationBlock,
+               props: notifs.wrongUsername
+            })
+            console.log("Wrong username format")
+         }
+         
+         if ((<HTMLInputElement>document.querySelector("#password")).dataset.correct === "false") {
+            (<HTMLInputElement>document.querySelector("#password")).value = "";
+            new Notification({
+               target: notificationBlock,
+               props: notifs.wrongPassword
+            })
+            console.log("Wrong password format")
+         }
+         return console.log("not registering")
+      };
 
-      console.log("registering");
+      console.log("logging in...");
+
+      const csrftoken = getCookie("csrftoken");
+      const url = "/login"
+      const request = new Request(url, {
+         method: "POST",
+         headers: { "X-CSRFToken": csrftoken },
+         mode: "same-origin",
+         body: JSON.stringify({
+            username: user.username,
+            password: user.password
+         }),
+      });
+
+      // Handle errors in the response
+      const response = await fetch(request);
+      if (response.status != 200) {
+         new Notification({
+            target: notificationBlock,
+            props: {
+               name: "Something went wrong",
+               description: `Error ${response.status}: ${response.statusText}`,
+               iconType: response.status === 404 ? "ehh" : "Warning",
+               duration: 5000
+            }
+         })
+         console.log("Server error")
+         return response;
+      }
+
+      const final = await response.json();
+      if (final["error_msg"] != undefined) {
+         new Notification({
+            target: notificationBlock,
+            props: {
+               name: "Invalid credentials",
+               description: `Error ${final["status"]}: ${final["error_msg"]}`,
+               iconType: "Warning",
+               duration: 5000
+            }
+         })
+         console.log("User error")
+         return final;
+      }
+
+      localStorage.setItem("logged", "true");
+      localStorage.setItem("username", user.username);
+
+      console.log("success")
+      console.log(final);
+
+      window.location.href = "/";
+      return final;
    }
 
    function checkType(
       user: {
-         firstName: string;
-         lastName: string;
-         email: string;
-         username: string;
-         password: string;
-         confirmPassword: string;
+         username: string,
+         password: string
       },
       e: HTMLInputElement | Event, 
       changeCol=true
@@ -59,24 +145,11 @@
       }
 
       switch (toCheck.name) {
-         case "email":
-            return check(toCheck, regex.emailRegex, changeCol);
-            break;
          case "username":
             return check(toCheck, regex.usernameRegex, changeCol);
             break;
          case "password":
             return check(toCheck, regex.passwordRegex, changeCol);
-            break;
-         case "confirmPassword":
-            const passwordConfirmRegex = `^${user.password}$`;
-            return check(toCheck, new RegExp(passwordConfirmRegex), changeCol);
-            break;
-         case "firstName":
-            return check(toCheck, regex.firstNameRegex, changeCol);
-            break;
-         case "lastName":
-            return check(toCheck, regex.lastNameRegex, changeCol);
             break;
          default:
             break;
@@ -86,9 +159,11 @@
    function check(what: HTMLInputElement, how: RegExp, changeCol=true) {
       if (how.test(what.value)) {
          if (changeCol) { what.style.borderBottom = "2px solid green"; }
+         what.setAttribute("data-correct", "true")
          return true;
       }
       if (changeCol) { what.style.borderBottom = "2px solid red" };
+      what.setAttribute("data-correct", "false")
       return false
    }
 
@@ -106,14 +181,16 @@
 <section class="register-section">
    <LogRegSwitchBtn selectedButton="login" />
 
-   <h1 class="no-margin">Register</h1>
+   <h1 class="no-margin">Login</h1>
    <div class="line">
-      <label for="email">Email/Username</label>
+      <label for="username">Username</label>
       <input
          type="text"
-         placeholder="Email/Username"
-         bind:value={user.email}
-         name="email"
+         placeholder="Username"
+         bind:value={user.username}
+         name="username"
+         id="username"
+         data-correct="false"
       />
    </div>
    <div class="line">
@@ -123,12 +200,16 @@
          placeholder="Password"
          bind:value={user.password}
          name="password"
+         id="password"
+         data-correct="false"
       />
    </div>
    <section class="button-wrapper">
-      <Button text="Register" whenClicked={onClick} />
+      <Button text="Login" whenClicked={onClick} />
    </section>
 </section>
+
+<NotificationBlock bind:theComponent={notificationBlock} notificationNumber={3} />
 
 <style>
    .register-section {

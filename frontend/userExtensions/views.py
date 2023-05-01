@@ -30,7 +30,7 @@ def registration_view(request, *args, **kwargs):
     if not password_regex.search(password):
         # Password does not match the required regex pattern
         error_msg = "Password must contain at least 8 characters, 1 letter, 1 digit, and 1 special character. It cannot be too similar to your personal information and cannot be a commonly used password."
-        return JsonResponse({"error_msg": error_msg, "status": 400})
+        return JsonResponse({"error_msg": error_msg, "status": 400, "type": "error"})
 
     if not email_regex.search(email):
         # Email does not match the required regex pattern
@@ -79,9 +79,12 @@ def login_view(request, *args, **kwargs):
         return JsonResponse({"success_msg": "User logged in successfully."})
     else:
         error_msg = "Invalid credentials."
-        return JsonResponse({"error_msg": error_msg})
+        return JsonResponse({"error_msg": error_msg, "status": 400})
 
 def authentication_view(request, *args, **kwargs):
     authentication = request.user.is_authenticated
     return JsonResponse({"authentication": authentication})
 
+def logout_view(request, *args, **kwargs):
+    auth.logout(request)
+    return JsonResponse({"success_msg": "User logged out successfully."})
