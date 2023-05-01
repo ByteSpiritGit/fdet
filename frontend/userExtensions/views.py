@@ -9,7 +9,7 @@ import requests
 import json
 
 email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-password_regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
+password_regex = re.compile(r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$')
 username_regex = re.compile(r'^[\w.@+-]{1,150}$')
 password_regex = re.compile(r'^(?=.*[a-zA-Z])(?=.*\d)(?!.*password)(?!.*12345678)(?!^\d+$)[A-Za-z\d.@$!%*?&^_-]{8,}$')
 
@@ -29,7 +29,7 @@ def registration_view(request, *args, **kwargs):
     
     if not password_regex.search(password):
         # Password does not match the required regex pattern
-        error_msg = "Password must contain at least 8 characters, 1 letter, 1 digit, and 1 special character. It cannot be too similar to your personal information and cannot be a commonly used password."
+        error_msg = "one digit(0-9) <br /> one lowercase letter(a-z) <br /> one uppercase letter(A-Z) <br /> one special character(e.g. !@  # $%^&*) <br /> Be at least 5 characters long"
         return JsonResponse({"error_msg": error_msg, "status": 400, "type": "error"})
 
     if not email_regex.search(email):

@@ -24,10 +24,7 @@
 
    const regex = {
       usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,
-      passwordRegex:
-         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9])(?!.*\s).{5,}$/,
-      firstNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
-      lastNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
+      passwordRegex: /.{5,}/
    };
 
    const notifs = {

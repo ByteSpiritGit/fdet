@@ -46,7 +46,7 @@
       
       <div class="description">
          <h3>{name}</h3>
-         <p>{@html description}</p>
+         <p>{@html description.toString()}</p>
       </div>
    </div>
 </div>
