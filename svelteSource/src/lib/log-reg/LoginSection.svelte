@@ -12,10 +12,15 @@
    let user: {
       username: string,
       password: string
-   } = {
-      username: "Duckie123",
-      password: "BestDuck123."
+   } 
+   = {
+      username: "",
+      password: ""
    };
+   // = {
+   //    username: "Duckie123",
+   //    password: "BestDuck123."
+   // };
 
    const regex = {
       usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,

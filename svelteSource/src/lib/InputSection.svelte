@@ -2,7 +2,6 @@
    import Button from "./Button.svelte";
    import sendImg from "../assets/icons/send.png";
    import { onMount } from "svelte";
-    import LogRegSwitchBtn from "./log-reg/LogReg_switch-btn.svelte";
 
    export let buttonDisabled: boolean = false;
    export let textarea: HTMLTextAreaElement;
@@ -21,9 +20,6 @@
          const inputSection = <HTMLDivElement>document.querySelector(".input-section");
          overlay.style.display = "flex";
          const inputSectionRect = inputSection.getBoundingClientRect();
-         // overlay.style.top = `${inputSectionRect.top -2.5}px`;
-         // overlay.style.left = `${inputSectionRect.left -2.5}px`;
-         // overlay.style.width = `${inputSectionRect.width}px`;
          overlay.style.height = `${inputSectionRect.height}px`;
       }
       else {

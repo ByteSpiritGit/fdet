@@ -16,15 +16,24 @@
       username: string;
       password: string;
       confirmPassword: string;
-   } = {
-      firstName: "Rubber",
-      lastName: "Duck",
-      email: "duck.eu@gmail.com",
-      username: "Duckie123",
-      password: "BestDuck123.",
-      // password: "BestDuck",
-      confirmPassword: "BestDuck123.",
+   }
+   = {
+      firstName: "",
+      lastName: "",
+      email: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
    };
+   // = {
+   //    firstName: "Rubber",
+   //    lastName: "Duck",
+   //    email: "duck.eu@gmail.com",
+   //    username: "Duckie123",
+   //    password: "BestDuck123.",
+   //    // password: "BestDuck",
+   //    confirmPassword: "BestDuck123.",
+   // };
 
    const regex = {
       emailRegex:
