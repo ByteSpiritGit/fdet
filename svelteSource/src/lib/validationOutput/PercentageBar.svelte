@@ -6,6 +6,7 @@
    supports = parseFloat((supports * 100).toFixed(1))
    nei = parseFloat((nei * 100).toFixed(1))
    refutes = parseFloat((refutes * 100).toFixed(1))
+   
    if (refutes + supports > 100) {
       supports /= 100;
       nei /= 100;

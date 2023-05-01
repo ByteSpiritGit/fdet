@@ -7,7 +7,6 @@
    import NotificationBlock from "../notifications/NotificationBlock.svelte";
    import Loading from "../Loading.svelte";
 
-   // export let getCsrfToken: () => void;
    export let getCookie: (name: string) => string;
 
    let chat: HTMLOutputElement;

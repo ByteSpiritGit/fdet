@@ -25,15 +25,6 @@
       password: "",
       confirmPassword: "",
    };
-   // = {
-   //    firstName: "Rubber",
-   //    lastName: "Duck",
-   //    email: "duck.eu@gmail.com",
-   //    username: "Duckie123",
-   //    password: "BestDuck123.",
-   //    // password: "BestDuck",
-   //    confirmPassword: "BestDuck123.",
-   // };
 
    const regex = {
       emailRegex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -95,6 +86,7 @@
    async function onClick() {
       const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("input"));
 
+      // Check all inputs
       let isValid = true;
       inputs.forEach((input) => {
          if (!checkType(user, input)) { 
@@ -110,33 +102,28 @@
             })
             console.log("nameWrong")
          }
-
-         if ((<HTMLInputElement>document.querySelector("#lastname")).dataset.correct === "false") {
+         else if ((<HTMLInputElement>document.querySelector("#lastname")).dataset.correct === "false") {
             new Notification({
                target: notificationBlock,
                props: notifs.name
             })
             console.log("nameWrong")
          }
-
-         if ((<HTMLInputElement>document.querySelector("#username")).dataset.correct === "false") {
-            new Notification({
-               target: notificationBlock,
-               props: notifs.username
-            })
-            console.log("usernameWrong")
-         }
-
-         if ((<HTMLInputElement>document.querySelector("#email")).dataset.correct === "false") {
+         else if ((<HTMLInputElement>document.querySelector("#email")).dataset.correct === "false") {
             new Notification({
                target: notificationBlock,
                props: notifs.email
             })
             console.log("emailWrong")
          }
-
-         
-         if ((<HTMLInputElement>document.querySelector("#password")).dataset.correct === "false") {
+         else if ((<HTMLInputElement>document.querySelector("#username")).dataset.correct === "false") {
+            new Notification({
+               target: notificationBlock,
+               props: notifs.username
+            })
+            console.log("usernameWrong")
+         }
+         else if ((<HTMLInputElement>document.querySelector("#password")).dataset.correct === "false") {
             (<HTMLInputElement>document.querySelector("#password")).value = "";
             (<HTMLInputElement>document.querySelector("#confirmPassword")).value = "";
             new Notification({
@@ -145,8 +132,7 @@
             })
             console.log("password wrong")
          }
-
-         if ((<HTMLInputElement>document.querySelector("#confirmPassword")).dataset.correct === "false") {
+         else if ((<HTMLInputElement>document.querySelector("#confirmPassword")).dataset.correct === "false") {
             (<HTMLInputElement>document.querySelector("#confirmPassword")).value = "";
             new Notification({
                target: notificationBlock,
@@ -191,6 +177,7 @@
          return response;
       }
 
+      // Handle error messeges about the user
       const final = await response.json();
       if (final["error_msg"] != undefined) {
          new Notification({
@@ -209,8 +196,7 @@
       localStorage.setItem("logged", "true");
       localStorage.setItem("username", user.username);
 
-      console.log("success")
-      console.log(final);
+      console.log("success");
 
       window.location.href = "/";
       return final;
@@ -238,23 +224,17 @@
       switch (toCheck.name) {
          case "email":
             return check(toCheck, regex.emailRegex, changeCol);
-            break;
          case "username":
             return check(toCheck, regex.usernameRegex, changeCol);
-            break;
          case "password":
             return check(toCheck, regex.passwordRegex, changeCol);
-            break;
          case "confirmPassword":
             const passwordConfirmRegex = `^${user.password}$`;
             return check(toCheck, new RegExp(passwordConfirmRegex), changeCol);
-            break;
          case "firstName":
             return check(toCheck, regex.firstNameRegex, changeCol);
-            break;
          case "lastName":
             return check(toCheck, regex.lastNameRegex, changeCol);
-            break;
          default:
             break;
       }

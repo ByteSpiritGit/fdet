@@ -3,14 +3,12 @@
 
    export let theComponent: HTMLElement;
    export let notificationNumber: number = 1;
+   
    const notifNumberDefault = notificationNumber;
-   let isSmallScreen = false;
 
-   function handleMutation(mutationsList, observer) {
-      // console.log("Mutation observed:", theComponent.children.length);
-
+   function handleMutation() {
       if (theComponent.children.length > notificationNumber) {
-         // theComponent.children[0].remove();
+         // If there are too many notifications, remove them
          setTimeout(() => {
             if (theComponent.children.length > notificationNumber) {
                theComponent.children[0].remove();
@@ -26,17 +24,13 @@
       }
    }
 
-   // if the screen size is smaller then 680px then the notification block will be at the bottom of the screen and notificationNumber 1
-
    function updateNotificationBlock() {
     if (window.innerWidth < 680) {
       theComponent.style.bottom = "3rem";
       notificationNumber = 1;
-      isSmallScreen = true;
     } else {
       theComponent.style.bottom = "10rem";
       notificationNumber = notifNumberDefault;
-      isSmallScreen = false;
     }
   }
 

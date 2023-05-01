@@ -1,11 +1,4 @@
 :root {
-   
-   /* --color-primary: #eeeeee;
-   --color-secondary: #e8d5c4;
-   --color-tertiary: #3a98b9;
-   --color-text: #2c2c2c; */
-  
-
    --color-primary: #222831; 
    --color-secondary: #393E46;
    --color-tertiary: #D65A31;
@@ -15,11 +8,6 @@
    --color-tertiary-alpha: #d65a3186;
    --color-tertiary-hover: #c04b24;
    --color-disabled:#e03023a8;
-
-   /* --color-primary: #353B40;
-   --color-secondary: #485356;
-   --color-tertiary: #358DEA;
-   --color-text: #FAFAFA; */
 
    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
    line-height: 1.5;

@@ -1,13 +1,11 @@
 <script lang="ts">
    import Navbar from "./lib/Navbar.svelte";
-   import Button from "./lib/Button.svelte";
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
    import Notification from "./lib/notifications/Notification.svelte";
    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
 
-   import sendImg from "./assets/icons/send.png";
-    import InputSection from "./lib/InputSection.svelte";
+   import InputSection from "./lib/InputSection.svelte";
 
    let toEvaluate;
    
@@ -59,9 +57,6 @@
 </main>
 
 <style>
-   @import "./main.css";
-
-   /* title section */
    .title-section {
       display: flex;
       flex-direction: column;
@@ -94,8 +89,6 @@
    ::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-tertiary-hover);
    }
-
-   
 
    @media (max-width: 680px) {
       .title-section {

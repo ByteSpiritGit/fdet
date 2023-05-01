@@ -27,7 +27,6 @@
             textarea.focus;
          })
       }
-
    })
 
    function checkSize() {
@@ -49,12 +48,12 @@
 <section class="input-section">
    <div class="input-wrapper">
       <textarea
-      bind:this={textarea}
-      on:input={checkSize}
-      on:paste={checkSize}
-      class="input"
-      placeholder="Paste your statement here"
-      bind:value={toEvaluate}
+         bind:this={textarea}
+         on:input={checkSize}
+         on:paste={checkSize}
+         class="input"
+         placeholder="Paste your statement here"
+         bind:value={toEvaluate}
       />
       <Button text={sendImg} whenClicked={whenClk} disabled={buttonDisabled} isIcon={true}/>
    </div>

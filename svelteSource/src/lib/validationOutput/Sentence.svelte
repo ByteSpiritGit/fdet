@@ -10,7 +10,7 @@
       nei: number,
       justify: string,
    };
-   // export let id: string = "sentence_404_not_found";
+   
    export let outputId: string = "sentence_404_not_found";
 
    export let clicked = false;
@@ -34,9 +34,7 @@
 
    // ! on hover should be a overlay over output, so it doesnt delete the clicked output
 </script>
-<!-- TODO eeee -->
 
-<!-- <a href="#{id}" on:click={doo}>{text}</a> -->
 <a href="#{outputId}" class="sentence" on:click={onClick}>{claim.claim}</a>
 
 <style>

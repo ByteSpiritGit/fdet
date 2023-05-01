@@ -21,7 +21,6 @@
 
    let claimSection;
    let validationSection;
-   // let highestAverage;
    let averageSection;
 
    function claimsBlock(where, claims, id_offset = 0) {
@@ -75,7 +74,6 @@
 
    function clear_validation_section() {
       validationSection.innerHTML = "";
-      console.log("muhahahahha")
    }
 </script>
 
@@ -92,7 +90,6 @@
       />
    </div>
    <section  id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
-      <!-- <SentenceValidation claim={claims[0]} id="" /> -->
    </section>
 </section>
 

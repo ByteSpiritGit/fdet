@@ -41,7 +41,6 @@
          const cookies = document.cookie.split(";");
          for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
             if (cookie.substring(0, name.length + 1) === name + "=") {
                cookieValue = decodeURIComponent(
                   cookie.substring(name.length + 1)
@@ -54,7 +53,6 @@
    }
 
    async function logout() {
-
       getCsrfToken();
       const csrftoken = getCookie("csrftoken");
 
@@ -169,8 +167,6 @@
       align-items: center;
       justify-content: center;
 
-      /* transition: 0.1s; */
-
       white-space: nowrap;
 
       padding: 0 0.5em;
@@ -196,7 +192,6 @@
 
       background-color: var(--color-primary);
 
-      /* border-bottom: 1px solid var(--color-primary); */
       box-shadow: 0 0 10px 1px var(--color-primary);
    }
    
@@ -224,12 +219,10 @@
 
    .sides-section > section:first-child {
       border-radius: 0 0 10px 0;
-      /* box-shadow: 0 0 10px 1px var(--color-primary); */
    }
 
    .sides-section > section:last-child {
       border-radius: 0 0 0 10px;
-      /* box-shadow: 0 0 10px 1px var(--color-primary); */
    }
 
    .menu-section {
@@ -255,8 +248,6 @@
       overflow: hidden;
 
       background-color: var(--color-secondary);
-
-      /* box-shadow: 0 0 10px 1px var(--color-primary); */
    }
 
    .menu-section > a:hover {
@@ -281,7 +272,6 @@
       }
 
       .sides-section > section:first-child {
-         /* border-radius: 0 0 10px 0; */
          border-radius: 0 0 0 0;
          box-shadow: none;
 
@@ -289,7 +279,6 @@
       }
 
       .sides-section > section:last-child {
-         /* border-radius: 0 0 0 10px; */
          border-radius: 0 0 0 0;
          box-shadow: none;
       }

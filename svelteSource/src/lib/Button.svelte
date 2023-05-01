@@ -35,8 +35,6 @@
 </div>
 
 <style>
-   @import "../main.css";
-
    .button {
       display: flex;
       align-items: center;

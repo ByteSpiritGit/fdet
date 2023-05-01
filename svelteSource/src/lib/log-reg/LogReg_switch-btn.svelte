@@ -31,8 +31,6 @@
       justify-content: space-evenly;
       align-items: center;
 
-      /* border-radius: 0.3em; */
-
       padding: 0;
       margin: 0;
    }

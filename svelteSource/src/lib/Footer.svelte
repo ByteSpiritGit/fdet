@@ -60,8 +60,6 @@
 </footer>
 
 <style>
-   @import "../main.css";
-
    .footer-section {
       background-color: var(--color-secondary);
 

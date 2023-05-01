@@ -40,7 +40,6 @@
 </script>
 
 <div class="whole" bind:this={whole} style="border-left: 0.4em solid {color};">
-   <!-- <div class="line" style="background-color: {color};"></div> -->
    <img src="{icon}" alt="icon" class="icon"/>
    <div class="text">
       
@@ -55,7 +54,7 @@
    .whole {
       user-select: text;
 
-      display: inline-flex; /* Changed display property */
+      display: inline-flex;
       flex-direction: row;
       align-items: flex-start;
       justify-content: space-between;

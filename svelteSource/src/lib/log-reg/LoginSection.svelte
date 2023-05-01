@@ -17,10 +17,6 @@
       username: "",
       password: ""
    };
-   // = {
-   //    username: "Duckie123",
-   //    password: "BestDuck123."
-   // };
 
    const regex = {
       usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,
@@ -49,6 +45,7 @@
    async function onClick() {
       const inputs = Array.from(document.querySelectorAll<HTMLInputElement>("input"));
 
+      // Check all inputs
       let isValid = true;
       inputs.forEach((input) => {
          if (!checkType(user, input)) { 
@@ -64,8 +61,7 @@
             })
             console.log("Wrong username format")
          }
-         
-         if ((<HTMLInputElement>document.querySelector("#password")).dataset.correct === "false") {
+         else if ((<HTMLInputElement>document.querySelector("#password")).dataset.correct === "false") {
             (<HTMLInputElement>document.querySelector("#password")).value = "";
             new Notification({
                target: notificationBlock,
@@ -73,7 +69,7 @@
             })
             console.log("Wrong password format")
          }
-         return console.log("not registering")
+         return console.log("not logging in")
       };
 
       console.log("logging in...");
@@ -106,6 +102,7 @@
          return response;
       }
 
+      // Handle errors about the user
       const final = await response.json();
       if (final["error_msg"] != undefined) {
          new Notification({
@@ -124,8 +121,7 @@
       localStorage.setItem("logged", "true");
       localStorage.setItem("username", user.username);
 
-      console.log("success")
-      console.log(final);
+      console.log("success");
 
       window.location.href = "/";
       return final;
@@ -149,10 +145,8 @@
       switch (toCheck.name) {
          case "username":
             return check(toCheck, regex.usernameRegex, changeCol);
-            break;
          case "password":
             return check(toCheck, regex.passwordRegex, changeCol);
-            break;
          default:
             break;
       }
