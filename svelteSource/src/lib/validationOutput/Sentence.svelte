@@ -1,17 +1,43 @@
 <script lang="ts">
-   export let text: string = "Sentence missing";
-   export let id: string = "sentence_404_not_found";
-</script>
+   import SentenceValidation from "./SentenceValidation.svelte";
 
-<a href="#{id}" on:click={() => {
-   let element = document.getElementById(id);
-   let validation_section = document.getElementsByClassName("validation-section")[0];
-   let sentences = validation_section.children;
-   for (let i = 0; i < sentences.length; i++) {
-      sentences[i].setAttribute("data-shown", "false");
+   export let claim: {
+      claim: string,
+      evidence: string,
+      label: string,
+      refutes: number,
+      supports: number,
+      nei: number,
+      justify: string,
+   };
+   // export let id: string = "sentence_404_not_found";
+   export let outputId: string = "sentence_404_not_found";
+
+   export let clicked = false;
+
+   export let onClick: () => void = () => { 
+      console.log("Sentence clicked: " + claim.claim)
+      let target = document.getElementById(outputId);
+      clearIt(target);
+      new SentenceValidation({
+         target: target,
+         props: {
+            claim: claim
+         }
+      })
+      clicked = true;
+   };
+
+   function clearIt(target) {
+      target.innerHTML = "";
    }
-   element.dataset.shown = "true";
-}}>{text}</a>
+
+   // ! on hover should be a overlay over output, so it doesnt delete the clicked output
+</script>
+<!-- TODO eeee -->
+
+<!-- <a href="#{id}" on:click={doo}>{text}</a> -->
+<a href="#{outputId}" class="sentence" on:click={onClick}>{claim.claim}</a>
 
 <style>
    a {
@@ -29,7 +55,7 @@
       font-size: 1.1em;
       font-weight: 300;
 
-      transition: color 0.2s;
+      transition: 0.1s;
    }
 
    a:hover {

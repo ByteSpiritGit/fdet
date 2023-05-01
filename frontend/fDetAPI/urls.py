@@ -27,13 +27,14 @@ urlpatterns = [
     # *Pages
     path('', home_view, name="home"),
     path('evalOutput', evalOutput, name="eval_output"),
-    path('registerPage', registerPage, name="registerPage"),
-    path('loginPage', loginPage, name="loginPage"),
+    path('users/register', registerPage, name="register_age"),
+    path('users/login', loginPage, name="login_page"),
     path('csrf_view', csrf_view, name="csrf_view"),
 
     # *User Extensions
     path('registration', registration_view, name="registration"),
     path('login', login_view, name="login"),
+    path('logout', logout_view, name="logout"),
     path('authentication', authentication_view, name="authentication"),
 
     # *Evaluations

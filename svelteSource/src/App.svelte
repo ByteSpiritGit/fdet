@@ -3,16 +3,17 @@
    import Button from "./lib/Button.svelte";
    import Footer from "./lib/Footer.svelte";
    import WhatWeDo from "./lib/WhatWeDo.svelte";
-   import Warning from "./lib/notifications/Warning.svelte";
-    import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
-    import { bind } from "svelte/internal";
+   import Notification from "./lib/notifications/Notification.svelte";
+   import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
+
+   import sendImg from "./assets/icons/send.png";
+    import InputSection from "./lib/InputSection.svelte";
 
    let toEvaluate;
    
    let textarea;
 
-   let warnings;
-   let buttonDisabled: boolean = false;
+   let notifs;
 
    function whenclk() {
       toEvaluate = textarea.value;
@@ -27,8 +28,8 @@
          return;
       };
 
-      const notification = new Warning({
-         target: warnings,
+      const notification = new Notification({
+         target: notifs,
          props: {
             name: 'Text missing',
             description: 'There is nothing to evaluate',
@@ -36,11 +37,6 @@
             duration: 5000
          }
       });
-   }
-
-   function checkSize() {
-      textarea.style.height = 'auto';
-      textarea.style.height = textarea.scrollHeight + 'px';
    }
 </script>
 
@@ -54,16 +50,12 @@
    
       <WhatWeDo />
 
-      <section class="input-section">
-         <textarea bind:this={textarea} on:input={checkSize} on:paste={checkSize} class="input" placeholder="Paste your statement here" bind:value={toEvaluate}></textarea>
-         <Button text="Evaluate" whenClicked={whenclk} disabled={buttonDisabled} />
-      </section>
+      <InputSection bind:textarea={textarea} whenClk={whenclk} />
    </section>
 
    <Footer />
 
-   <!-- <section class="warning-section" bind:this={warnings}></section> -->
-   <NotificationBlock bind:theComponent={warnings} notificationNumber={1}  />
+   <NotificationBlock bind:theComponent={notifs} notificationNumber={1}  />
 </main>
 
 <style>
@@ -79,60 +71,19 @@
       height: 100px;
       background-color: var(--color-secondary);
 
-      margin-top: 100px;
+      margin-top: 125px;
    }
 
-   .input-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-
-      height: fit-content;
-      background-color: var(--color-secondary);
-
-      margin-top: 75px;
-
-      padding: 20px;
-   }
-
-   .input-section > .input {
-      background-color: var(--color-primary);
-      color: var(--color-text);
-
-      max-width: 700px;
-      width: 50%;
-      height: fit-content;
-      max-height: 200px;
-
-      border: none;
-      border-radius: 10px;
-      font-size: 1.2em;
-      font-weight: 500;
-      text-transform: uppercase;
-      cursor: text;
-
-      margin-bottom: 20px;
-      padding: 5px;
-
-      resize: none;
-      text-transform: none;
-   }
-
-   .input-section > .input:focus {
-      outline: none;
-   }
-
-   .input-section > .input::-webkit-scrollbar {
+   ::-webkit-scrollbar {
       width: 7px;
    }
 
-   .input-section > .input::-webkit-scrollbar-thumb {
+   ::-webkit-scrollbar-thumb {
       background-color: var(--color-tertiary);
       border-radius: 10px;
    }
 
-   .input-section > .input::-webkit-scrollbar-track {
+   ::-webkit-scrollbar-track {
       background-color: var(--color-primary);
       border-radius: 10px;
       border-width: 1px;
@@ -140,7 +91,21 @@
       border-color: var(--color-primary);
    }
 
-   .input-section > .input::-webkit-scrollbar-thumb:hover {
+   ::-webkit-scrollbar-thumb:hover {
       background-color: var(--color-tertiary-hover);
+   }
+
+   
+
+   @media (max-width: 680px) {
+      .title-section {
+         display: none;
+      }
+   }
+
+   @media (max-height: 560px) {
+      .title-section {
+         display: none;
+      }
    }
 </style>

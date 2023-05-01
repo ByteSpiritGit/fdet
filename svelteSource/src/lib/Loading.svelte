@@ -1,4 +1,10 @@
-<div class="lds-grid">
+<script lang="ts">
+   export let id: string = "";
+
+   if (id != "") { id += "l"}
+</script>
+
+<div id={id} class="lds-grid">
    <div /><div /><div /> <div /><div /><div /><div /><div /><div />
 </div>
 

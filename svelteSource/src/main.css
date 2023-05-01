@@ -7,12 +7,12 @@
   
 
    --color-primary: #222831; 
-   --color-primary-alpha: #22283186;
    --color-secondary: #393E46;
-   --color-secondary-v2: #393d49;
    --color-tertiary: #D65A31;
-   --color-tertiary-alpha: #d65a3186;
    --color-text: #EEEEEE;
+   --color-text-darker: #a4a7ac;
+   --color-primary-alpha: #22283186;
+   --color-tertiary-alpha: #d65a3186;
    --color-tertiary-hover: #c04b24;
    --color-disabled:#e03023a8;
 
@@ -46,14 +46,20 @@ body {
 }
 
 ::-webkit-scrollbar {
-   width: 0.5rem;
-   background-color: var(--color-secondary);
+   width: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
    background-color: var(--color-tertiary);
+   border-radius: 10px;
+}
 
-   border-radius: 0.25rem;
+::-webkit-scrollbar-track {
+   background-color: var(--color-primary);
+   border-radius: 10px;
+   border-width: 1px;
+   border-style: solid;
+   border-color: var(--color-primary);
 }
 
 ::-webkit-scrollbar-thumb:hover {

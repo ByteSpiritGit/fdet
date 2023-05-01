@@ -1,48 +1,164 @@
+<script lang="ts">
+   import Notification from "./notifications/Notification.svelte";
+   import NotificationBlock from "./notifications/NotificationBlock.svelte";
+
+   let notificationBlock: HTMLDivElement;
+
+   let logedin: boolean = false;
+   if (localStorage.getItem("logged") === "true") {
+      logedin = true;
+   }
+
+   function getCsrfToken() {
+      var xhr = new XMLHttpRequest();
+      // Set up a callback function to handle the response
+      xhr.onreadystatechange = function () {
+         if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+               try {
+                  document.cookie =
+                     "csrftoken=" +
+                     encodeURIComponent(
+                        JSON.parse(xhr.responseText).csrf_token
+                     ) +
+                     "; path=/";
+               } catch (error) {
+                  console.log(error);
+               }
+            } else {
+               console.log("Request failed");
+            }
+         }
+      };
+
+      xhr.open("GET", "/csrf_view");
+      xhr.send();
+   }
+
+   function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+         const cookies = document.cookie.split(";");
+         for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+               cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+               );
+               break;
+            }
+         }
+      }
+      return cookieValue;
+   }
+
+   async function logout() {
+
+      getCsrfToken();
+      const csrftoken = getCookie("csrftoken");
+
+      const url = "/logout"
+      const request = new Request(url, {
+         method: "POST",
+         mode: "same-origin",
+         headers: { "X-CSRFToken": csrftoken },
+      });
+
+      const response = await fetch(request);
+      if (response.status != 200) {
+         new Notification({
+            target: notificationBlock,
+            props: {
+               name: "Something went wrong",
+               description: `Error ${response.status}: ${response.statusText}`,
+               iconType: "Warning",
+               duration: 5000
+            }
+         })
+         console.log("Server error")
+         return response;
+      }
+
+      localStorage.setItem("logged", "false");
+      localStorage.setItem("username", "");
+      window.location.href = "/";
+   }
+</script>
+
 <nav class="navbar">
-   <section class="logo-section">
-      <a href="/#/evaluations">**Logo**</a>
-   </section>
    <section class="menu-section">
       <a href="/">Home</a>
-      <a href="/evaluation?text=The sky is blue">About us</a>
+      <a href="/">About us</a>
       <a href="/">Learn</a>
       <a href="https://github.com/fdet/fDet">Github</a>
-      <a href="/">History</a>
    </section>
-   <section class="profile-section">
-      <a href="/#/login">**profile**</a>
+   <section class="sides-section">
+      <section class="logo-section">
+         <h3 class="no-margin">fDet</h3>
+         <p class="no-margin">by ByteSpirit</p>
+      </section>
+      {#if logedin}
+         <section class="underneath">
+            <a href="/" class="no-margin">User: {localStorage.getItem("username")}</a>
+            <a on:click={logout} href="#logout" class="no-margin"><b>Logout</b></a>
+         </section>
+      {:else}
+         <section class="profile-section">
+            <a href="/users/login" class="no-margin">Login</a>
+            <a href="/users/register" class="no-margin"><b>Register</b></a>
+         </section>
+      {/if}
    </section>
 </nav>
 
+<NotificationBlock bind:theComponent={notificationBlock} notificationNumber={1} />
+
 <style>
-   @import "../main.css";
+   .underneath {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+   }
 
-   .navbar {
+   .underneath > a {
+      text-align: left;
+      justify-content: flex-start;
+
+      padding-left: 0.35em;
+   }
+
+   .logo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+
+      padding: 0.5em;
+   }
+
+   .profile-section > a:hover, .underneath > a:hover{
+      text-shadow: 0px 0px 1px #ffffffce, 0px 0px 10px #cccccc77;
+   }
+
+   .profile-section {
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-evenly;
 
-      font-size: 1.2em;
-      font-weight: 500;
-      text-transform: uppercase;
-
-      height: 55px;
+      padding: 0.5em;
    }
 
-   .navbar > section {
-      background-color: var(--color-secondary);
-      height: 100%;
+   .no-margin {
+      margin: 0;
+      padding: 0;
 
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: baseline;
-
-      overflow: hidden;
+      line-height: 1em;
    }
 
-   .navbar > section > a {
+   a {
       color: var(--color-text);
       text-decoration: none;
 
@@ -53,31 +169,135 @@
       align-items: center;
       justify-content: center;
 
-      transition: 0.1s;
+      /* transition: 0.1s; */
+
+      white-space: nowrap;
+
+      padding: 0 0.5em;
+      border: none;
+   }
+
+   a:focus {
+      border: none;
+      outline: 2px solid var(--color-text);
+      outline-offset: -2px;
+   }
+
+   .navbar {
+      position: fixed;
+      top: 0;
+
+      z-index: 200;
+
+      width: 100%;
+      height: 3.5rem;
+
+      font-size: 1.2em;
+
+      background-color: var(--color-primary);
+
+      /* border-bottom: 1px solid var(--color-primary); */
+      box-shadow: 0 0 10px 1px var(--color-primary);
+   }
+   
+   .sides-section {
+      position: relative;
+      z-index: 250;
+      top: -3.5rem;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      width: 100%;
+      height: 3.5rem;
+   }
+
+   .sides-section > section {
+      width: 150px;
+      background-color: var(--color-secondary);
+      height: 100%;
+
+      border: none;
+   }
+
+   .sides-section > section:first-child {
+      border-radius: 0 0 10px 0;
+      /* box-shadow: 0 0 10px 1px var(--color-primary); */
+   }
+
+   .sides-section > section:last-child {
+      border-radius: 0 0 0 10px;
+      /* box-shadow: 0 0 10px 1px var(--color-primary); */
    }
 
    .menu-section {
+      position: relative;
+      z-index: 500;
+
+      width: 100%;
+      height: 3.5rem;
+
       border-radius: 0 0 10px 10px;
       width: fit-content;
-      min-width: 440px;
+
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
+
+      overflow: hidden;
+
+      background-color: var(--color-secondary);
+
+      /* box-shadow: 0 0 10px 1px var(--color-primary); */
    }
 
-   .menu-section > a {
-      padding: 0 20px;
-      white-space: nowrap;
-   }
-
-   .navbar > .profile-section {
-      border-radius: 0 0 0 10px;
-      width: 180px;
-   }
-
-   .logo-section {
-      border-radius: 0 0 10px 0;
-      width: 180px;
-   }
-
-   .navbar > .menu-section > a:hover {
+   .menu-section > a:hover {
       background-color: var(--color-tertiary);
+   }
+
+   @media (max-width: 680px) {
+      .navbar {
+         height: 7rem;
+      }
+
+      .sides-section {
+         top: 0;
+      }
+
+      .sides-section > section {
+         width: 100%;
+         
+         border-width: 2px 0 0 0;
+         border-color: var(--color-primary);
+         border-style: solid;
+      }
+
+      .sides-section > section:first-child {
+         /* border-radius: 0 0 10px 0; */
+         border-radius: 0 0 0 0;
+         box-shadow: none;
+
+         border-width: 2px 2px 0 0;
+      }
+
+      .sides-section > section:last-child {
+         /* border-radius: 0 0 0 10px; */
+         border-radius: 0 0 0 0;
+         box-shadow: none;
+      }
+      
+      .menu-section {
+         border-radius: 0 0 0 0;
+
+         width: 100%;
+      }
    }
 </style>

@@ -72,6 +72,8 @@
 
       margin: 0;
       padding: 0;
+
+      height: 3rem;
    }
 
    .link-section {
@@ -101,4 +103,5 @@
    .mask:hover {
       background-color: var(--color-tertiary);
    }
+
 </style>
