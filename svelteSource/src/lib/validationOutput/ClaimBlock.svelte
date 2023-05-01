@@ -48,6 +48,7 @@
          method: "POST",
          headers: { "X-CSRFToken": csrftoken },
          mode: "same-origin",
+         body: JSON.stringify({ text: text }),
       });
 
       // Handle errors in the response

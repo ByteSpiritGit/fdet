@@ -69,6 +69,13 @@
       white-space: nowrap;
 
       padding: 0 0.5em;
+      border: none;
+   }
+
+   a:focus {
+      border: none;
+      outline: 2px solid var(--color-text);
+      outline-offset: -2px;
    }
 
    .navbar {

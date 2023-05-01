@@ -6,7 +6,7 @@ from .models import UserExtension
 from django.contrib.auth.models import User, auth
 import re
 import requests
-
+import json
 
 email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 password_regex = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
@@ -15,12 +15,16 @@ password_regex = re.compile(r'^(?=.*[a-zA-Z])(?=.*\d)(?!.*password)(?!.*12345678
 
 # Create your views here.
 def registration_view(request, *args, **kwargs):
-    first_name = request.GET["first_name"]
-    last_name = request.GET["last_name"]
-    email = request.GET["email"]
-    username = request.GET["username"]
-    password = request.GET["password"]
-    password2 = request.GET["password2"]
+    
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    
+    first_name = data.get("first_name")
+    last_name = data.get("last_name")
+    email = data.get("email")
+    username = data.get("username")
+    password = data.get("password")
+    password2 = data.get("password2")
 
     
     if not password_regex.search(password):
@@ -48,7 +52,7 @@ def registration_view(request, *args, **kwargs):
             return JsonResponse({"error_msg": error_msg, "status":409})
             
         else:
-            # Username and email do not exist
+            # Everything is valid
             user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
             user.save()
             user_extension = UserExtension(user=user)
@@ -62,8 +66,11 @@ def registration_view(request, *args, **kwargs):
 
 
 def login_view(request, *args, **kwargs):
-    username = request.GET["username"]
-    password = request.GET["password"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+   
+    username = data.get("username")
+    password = data.get("password")
 
     user = auth.authenticate(username=username, password=password)
 

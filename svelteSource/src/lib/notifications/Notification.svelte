@@ -39,54 +39,50 @@
    });
 </script>
 
-<div class="whole" bind:this={whole}>
-   <div class="line" style="background-color: {color};">
-      <img src="{icon}" alt="icon" class="icon"/>
+<div class="whole" bind:this={whole} style="border-left: 0.4em solid {color};">
+   <!-- <div class="line" style="background-color: {color};"></div> -->
+   <img src="{icon}" alt="icon" class="icon"/>
+   <div class="text">
       
       <div class="description">
          <h3>{name}</h3>
-         <p>{description}</p>
+         <p>{@html description}</p>
       </div>
    </div>
 </div>
 
 <style>
    .whole {
-      user-select: none;
+      user-select: text;
 
-      display: flex;
+      display: inline-flex; /* Changed display property */
       flex-direction: row;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
 
-      width: 300px;
-      height: fit-content;
+      width: fit-content;
 
       border-radius: 4px 0 0 4px;
 
       background-color: var(--color-secondary);
 
-      overflow: hidden;
-
       animation: show 0.4s ease-in-out;
 
       margin: 10px 0;
+      padding: 0.4em;
+      padding-left: 0;
    }
 
-   .whole > .line {
-      width: 7px;
-      height: fit-content;
-      
-      position: relative;
+   .text {
       display: flex;
-      align-items: center;
-
    }
 
    .icon {
-      height: 25px;
-      margin-left: 20px;
-      margin-right: 15px;
+      /* height: 25px; */
+      height: 2em;
+      margin-top: 0.3em;
+      margin-left: 0.6em;
+      margin-right: 0.5em;
    }
 
    .description {
@@ -98,14 +94,15 @@
       height: 100%;
       width: 100%;
 
-      white-space: nowrap;
-
       line-height: 1.3em;
    }
 
    .description h3 {
-      margin: 2px;
+      margin: 0;
+      margin-right: 0.8rem;
       padding: 0;
+
+      white-space: nowrap;
 
       font-size: 1.2rem;
       font-weight: 600;
@@ -123,7 +120,7 @@
 
    @keyframes show {
       0% {
-         transform: translateX(300px);
+         transform: translateX(100%);
       }
       100% {
          transform: translateX(0);
