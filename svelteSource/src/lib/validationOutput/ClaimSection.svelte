@@ -6,7 +6,10 @@
    import SentenceValidation from "./SentenceValidation.svelte";
    import Button from "../Button.svelte";
 
-   import hideImg from "../../assets/icons/hide.png";
+    import hideImg from "../../assets/icons/hide.png";
+    import showImg from "../../assets/icons/show.png";
+
+    let btnImg = hideImg;
 
    export let claims: Array<{
       claim: string,
@@ -16,6 +19,8 @@
       supports: number,
       nei: number,
       justify: string,
+      url: Array<string>,
+      is_error: boolean
    }>;
    export let id_offset: number = 0;
 
@@ -40,7 +45,11 @@
             target: where,
             props: {
                claim: claim,
-               outputId: `${id_offset.toString()+"m"}`
+               outputId: `${id_offset.toString()+"m"}`,
+               whenClicked: () => {
+                  validationSection.style.display = "block";
+                  btnImg = hideImg;
+               }
             }
          })
       });
@@ -73,7 +82,13 @@
    })
 
    function clear_validation_section() {
-      validationSection.innerHTML = "";
+        if (validationSection.style.display == "none") {
+            validationSection.style.display = "block";
+            btnImg = hideImg;
+        } else {
+            validationSection.style.display = "none";
+            btnImg = showImg;
+        }
    }
 </script>
 
@@ -83,13 +98,13 @@
    <div class="average-wrapper">
       <section bind:this={averageSection} class="average-section"></section>
       <Button
-         text={hideImg}
+         text={btnImg}
          whenClicked={clear_validation_section}
          disabled={false}
          isIcon={true}
       />
    </div>
-   <section  id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
+   <section id={id_offset.toString()+"m"} class="sentence-validation-section" bind:this={validationSection}>
    </section>
 </section>
 

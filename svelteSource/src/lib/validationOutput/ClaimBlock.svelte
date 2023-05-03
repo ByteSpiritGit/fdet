@@ -41,14 +41,16 @@
 
       const csrftoken = getCookie("csrftoken");
       let url = `/rag_evaluation?text=${text}`;
+        // let url = `http://127.0.0.1:8002/backend/rag/eval_DPR?text=${text}`
       // let url = `/rag_dummy_backend?text=${text}`
 
-      const request = new Request(url, {
-         method: "POST",
-         headers: { "X-CSRFToken": csrftoken },
-         mode: "same-origin",
-         body: JSON.stringify({ text: text }),
-      });
+        const request = new Request(url, {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            mode: "same-origin",
+            body: JSON.stringify({ text: text }),
+        });
+
 
       // Handle errors in the response
       const response = await fetch(request);
@@ -56,13 +58,15 @@
          console.log(response)
          return [
             {
-               claim: response.statusText,
-               evidence: response.statusText,
-               label: "Error " + response.status,
+               claim: `${text}`,
+               evidence: response.status.toString(),
+               label: `Error: ${response.status}`,
                refutes: 0,
                nei: 0,
                supports: 0,
-               justify: "OK? " + response.ok,
+               justify: response.statusText,
+               url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"],
+               is_error: true
             },
          ];
       }
@@ -75,16 +79,18 @@
          supports: number,
          nei: number,
          justify: string,
+         url: Array<string>,
+         is_error: boolean
       }> = (await (response.json())).validated;
       return final;
    }
 
-   function whenClk(fromInput = false) {
+   function whenClk() {
       const isthereTextRegex = /\S/;
       const urlParams = new URLSearchParams(window.location.search);
 
       // Check if there is data in the input, URL or session storage, otherwise show a warning
-      if (fromInput && !isthereTextRegex.test(textarea.value) || !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
+      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
          const notification = new Notification({
             target: notificationBlock,
             props: {

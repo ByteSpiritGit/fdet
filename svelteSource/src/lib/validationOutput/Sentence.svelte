@@ -1,5 +1,6 @@
 <script lang="ts">
    import SentenceValidation from "./SentenceValidation.svelte";
+   import hideImg from "../../assets/icons/hide.png";
 
    export let claim: {
       claim: string,
@@ -9,15 +10,18 @@
       supports: number,
       nei: number,
       justify: string,
+      url: Array<string>,
+      is_error: boolean
    };
    
    export let outputId: string = "sentence_404_not_found";
-
    export let clicked = false;
+   export let whenClicked: () => void = () => { console.log("clicked"); };
 
    export let onClick: () => void = () => { 
       console.log("Sentence clicked: " + claim.claim)
       let target = document.getElementById(outputId);
+      whenClicked();
       clearIt(target);
       new SentenceValidation({
          target: target,
@@ -35,7 +39,7 @@
    // ! on hover should be a overlay over output, so it doesnt delete the clicked output
 </script>
 
-<a href="#{outputId}" class="sentence" on:click={onClick}>{claim.claim}</a>
+<a href="# " class="sentence" on:click={onClick}>{claim.claim}</a>
 
 <style>
    a {
