@@ -9,6 +9,7 @@
       supports: number,
       nei: number,
       justify: string,
+      url: Array<string>
    };
    
    export let outputId: string = "sentence_404_not_found";

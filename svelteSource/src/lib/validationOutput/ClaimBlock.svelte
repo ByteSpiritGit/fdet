@@ -56,13 +56,15 @@
          console.log(response)
          return [
             {
-               claim: response.statusText,
+               claim: `${response.status} ${response.statusText}`,
                evidence: response.statusText,
-               label: "Error " + response.status,
+               label: response.status.toString(),
                refutes: 0,
                nei: 0,
                supports: 0,
                justify: "OK? " + response.ok,
+               url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"],
+               is_error: true
             },
          ];
       }
@@ -75,16 +77,18 @@
          supports: number,
          nei: number,
          justify: string,
+         url: Array<string>,
+         is_error: boolean
       }> = (await (response.json())).validated;
       return final;
    }
 
-   function whenClk(fromInput = false) {
+   function whenClk() {
       const isthereTextRegex = /\S/;
       const urlParams = new URLSearchParams(window.location.search);
 
       // Check if there is data in the input, URL or session storage, otherwise show a warning
-      if (fromInput && !isthereTextRegex.test(textarea.value) || !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
+      if (!isthereTextRegex.test(textarea.value) && !urlParams.get("text") && !window.sessionStorage.getItem("evalued")) {
          const notification = new Notification({
             target: notificationBlock,
             props: {

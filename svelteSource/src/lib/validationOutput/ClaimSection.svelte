@@ -16,6 +16,8 @@
       supports: number,
       nei: number,
       justify: string,
+      url: Array<string>,
+      is_error: boolean
    }>;
    export let id_offset: number = 0;
 
