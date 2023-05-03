@@ -39,7 +39,7 @@
    // ! on hover should be a overlay over output, so it doesnt delete the clicked output
 </script>
 
-<a href="#{outputId}" class="sentence" on:click={onClick}>{claim.claim}</a>
+<a href="# " class="sentence" on:click={onClick}>{claim.claim}</a>
 
 <style>
    a {

@@ -59,12 +59,12 @@
          return [
             {
                claim: `${text}`,
-               evidence: response.statusText,
-               label: response.status.toString(),
+               evidence: response.status.toString(),
+               label: `Error: ${response.status}`,
                refutes: 0,
                nei: 0,
                supports: 0,
-               justify: "OK? " + response.ok,
+               justify: response.statusText,
                url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"],
                is_error: true
             },

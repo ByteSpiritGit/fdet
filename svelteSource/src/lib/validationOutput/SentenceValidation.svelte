@@ -13,11 +13,15 @@
         is_error: boolean;
     };
 
-    const splitedEv = claim.evidence.split("=").slice(-1).toString().split(" ");
-    const firstPiece = splitedEv.slice(0, splitedEv.length/4).join(" ");
-    const secondPiece = splitedEv.slice(-splitedEv.length/4).join(" ");
+    let highlight: string;
 
-    const highlight = `${firstPiece.replace(/^\s/, "")}, ${secondPiece}`;
+    if (!claim.is_error) {
+        const splitedEv = claim.evidence.split("=").slice(-1).toString().split(" ");
+        const firstPiece = splitedEv.slice(0, splitedEv.length/4).join(" ");
+        const secondPiece = splitedEv.slice(-splitedEv.length/4).join(" ");
+    
+        highlight = `${firstPiece.replace(/^\s/, "")}, ${secondPiece}`;
+    }
 </script>
 
 <section class="output-validation-section border-top">
@@ -38,7 +42,7 @@
         <p>Evidence:</p>
         {#each claim.url as url}
             {#if claim.is_error}
-                <a class="evidence-url" href={`${claim.url[0]}#${claim.label}`}>
+                <a class="evidence-url" href={`${claim.url[0]}#${claim.evidence}`}>
                     {url.split("/").slice(-1)}...
                 </a>
             {:else}
