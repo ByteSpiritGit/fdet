@@ -1,5 +1,6 @@
 <script lang="ts">
    import SentenceValidation from "./SentenceValidation.svelte";
+   import hideImg from "../../assets/icons/hide.png";
 
    export let claim: {
       claim: string,
@@ -9,16 +10,18 @@
       supports: number,
       nei: number,
       justify: string,
-      url: Array<string>
+      url: Array<string>,
+      is_error: boolean
    };
    
    export let outputId: string = "sentence_404_not_found";
-
    export let clicked = false;
+   export let whenClicked: () => void = () => { console.log("clicked"); };
 
    export let onClick: () => void = () => { 
       console.log("Sentence clicked: " + claim.claim)
       let target = document.getElementById(outputId);
+      whenClicked();
       clearIt(target);
       new SentenceValidation({
          target: target,

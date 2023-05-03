@@ -21,9 +21,9 @@ nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 lock = threading.Lock()
 
-N_BM25 = 1
-N_DPR = 1
-N_ADA = 1
+N_BM25 = 30
+N_DPR = 2
+N_ADA = 30
 
 
 logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading retrievers...[BM25, DPR, Ada]")

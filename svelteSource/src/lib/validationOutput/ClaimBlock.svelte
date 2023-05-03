@@ -41,14 +41,16 @@
 
       const csrftoken = getCookie("csrftoken");
       let url = `/rag_evaluation?text=${text}`;
+        // let url = `http://127.0.0.1:8002/backend/rag/eval_DPR?text=${text}`
       // let url = `/rag_dummy_backend?text=${text}`
 
-      const request = new Request(url, {
-         method: "POST",
-         headers: { "X-CSRFToken": csrftoken },
-         mode: "same-origin",
-         body: JSON.stringify({ text: text }),
-      });
+        const request = new Request(url, {
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            mode: "same-origin",
+            body: JSON.stringify({ text: text }),
+        });
+
 
       // Handle errors in the response
       const response = await fetch(request);
@@ -56,7 +58,7 @@
          console.log(response)
          return [
             {
-               claim: `${response.status} ${response.statusText}`,
+               claim: `${text}`,
                evidence: response.statusText,
                label: response.status.toString(),
                refutes: 0,

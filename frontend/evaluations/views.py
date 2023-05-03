@@ -81,7 +81,7 @@ def dummy_fnc_backend_view(request):
 def rag_evaluation_view(request, *args, **kwargs):
     text = request.GET["text"]
 
-    validated_text = requests.get("http://127.0.0.1:8002/backend/rag/eval_bm25", params={"text" : text}).json()
+    validated_text = requests.get("http://127.0.0.1:8002/backend/rag/eval_DPR", params={"text" : text}).json()
 
     # * New Evaluation Block creation
     whole_claim = " ".join([claim["claim"] for claim in validated_text])
