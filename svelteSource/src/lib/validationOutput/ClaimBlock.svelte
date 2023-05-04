@@ -70,6 +70,7 @@
             },
          ];
       }
+    //   console.log(response)
 
       const final: Array<{
          claim: string,

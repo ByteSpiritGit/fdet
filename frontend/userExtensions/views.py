@@ -35,7 +35,7 @@ def registration_view(request, *args, **kwargs):
             One special character (e.g. !@#$%^&*)<br />
             Be at least 5 characters long
         """
-        return JsonResponse({"error_msg": error_msg, "status": 400, "type": "error"})
+        return JsonResponse({"error_msg": error_msg, "status": 400})
 
     if not email_regex.search(email):
         # Email does not match the required regex pattern

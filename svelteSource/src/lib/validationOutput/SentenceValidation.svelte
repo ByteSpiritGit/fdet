@@ -42,11 +42,11 @@
         <p>Evidence:</p>
         {#each claim.url as url}
             {#if claim.is_error}
-                <a class="evidence-url" href={`${claim.url[0]}#${claim.evidence}`}>
+                <a class="evidence-url" href={`${url}#${claim.evidence}`}>
                     {url.split("/").slice(-1)}...
                 </a>
             {:else}
-                <a class="evidence-url" href={`${claim.url[0]}#:~:text=${highlight}`}>
+                <a class="evidence-url" href={`${url}#:~:text=${highlight}`}>
                     {url.split("/").slice(-1)}...
                 </a>
             {/if}
@@ -82,6 +82,8 @@
         text-decoration: none;
 
         transition: 0.4s;
+
+        margin-right: 0.5em;
     }
 
     .evidence-url:hover {
