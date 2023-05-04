@@ -41,7 +41,6 @@
 
       const csrftoken = getCookie("csrftoken");
       let url = `/rag_evaluation?text=${text}`;
-        // let url = `http://127.0.0.1:8002/backend/rag/eval_DPR?text=${text}`
       // let url = `/rag_dummy_backend?text=${text}`
 
         const request = new Request(url, {
@@ -59,28 +58,27 @@
          return [
             {
                claim: `${text}`,
-               evidence: response.status.toString(),
+               evidence: [response.status.toString(), "I skate to where the puck is going to be, not where it has been"],
                label: `Error: ${response.status}`,
                refutes: 0,
                nei: 0,
                supports: 0,
                justify: response.statusText,
-               url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes"],
-               is_error: true
+               url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes", "https://en.wikipedia.org/wiki/Steve_Jobs"]
             },
          ];
       }
+    //   console.log(response)
 
       const final: Array<{
          claim: string,
-         evidence: string,
+         evidence: Array<string>,
          label: string,
          refutes: number,
          supports: number,
          nei: number,
          justify: string,
-         url: Array<string>,
-         is_error: boolean
+         url: Array<string>
       }> = (await (response.json())).validated;
       return final;
    }
