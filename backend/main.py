@@ -22,7 +22,7 @@ class Main():
         retriever.create_database(text)
         retriever.update_embed()
         for claim in claims:
-            evidence, text, url = retriever.retrieve(claim, 3)
+            evidence, text, url = retriever.retrieve_data(claim, 3)
             if evidence == "":
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None,"ei":None, "evidence" : None})
             elif evidence != "":

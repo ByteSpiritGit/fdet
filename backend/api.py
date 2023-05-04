@@ -21,9 +21,9 @@ nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
 lock = threading.Lock()
 
-N_BM25 = 30
-N_DPR = 2
-N_ADA = 30
+N_BM25 = 1
+N_DPR = 1
+N_ADA = 1
 
 
 logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading retrievers...[BM25, DPR, Ada]")
@@ -50,6 +50,50 @@ logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading server...")
 app = FastAPI()
 
 
+def eval_rag_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
+    with lock:
+        retriever = None
+        for instance in retriever_instances:
+            if instance not in in_use:
+                retriever = instance
+                in_use.add(instance)
+                break
+        if retriever is None:
+            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
+    try:
+        retriever.create_database(text)
+        response = calc_instance.main(text, retriever)
+        retriever.delete_database()
+        with lock:
+            in_use.remove(retriever)
+        return JSONResponse(content=response)
+    except:
+        with lock:
+            in_use.remove(retriever)
+        return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+
+# TODO: repair main function Error in retriever in main
+def eval_main_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
+    with lock:
+        retriever = None
+        for instance in retriever_instances:
+            if instance not in in_use:
+                retriever = instance
+                in_use.add(instance)
+                break
+        if retriever is None:
+            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
+    try:
+        response = calc_instance.main(text, retriever)
+        retriever.delete_database()
+        with lock:
+            in_use.remove(retriever)
+        return JSONResponse(content=response)
+    except:
+        with lock:
+            in_use.remove(retriever)
+        return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+
 @app.get("/backend")
 async def root() -> str:
     help_text = "Welcome to the backend of the Fact-Checking System. Please use the following endpoints to access the system: \n" \
@@ -71,41 +115,13 @@ def dummy():
     response = [{"claim": "Dummy claim", "label" : "REFUTES", "supports" : 0.1457, "refutes" : 0.8543, "nei": 0.004, "ei": 0.0005, "evidence" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum! Ullam, velit recusandae. Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!"}]
     return JSONResponse(content=response)
 
-@app.get("/backend/v1/eval_DPR")
+@app.get("/backend/v1/eval")
 def eval(text: str):
-    with lock:
-        DPR = None
-        for instance in DPR_instances:
-            if instance not in in_use_DPR:
-                DPR = instance
-                in_use_DPR.add(instance)
-                break
-        if DPR is None:
-            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    DPR.create_database(text)
-    response = Main_instance.main(text, DPR) 
-    DPR.delete_database()
-    with lock:
-        in_use_DPR.remove(DPR)
-    return JSONResponse(content=response)
+    return eval_main_fnc(DPR_instances, in_use_DPR, Main_instance, text)
 
 @app.get("/backend/v1/eval_fast")
 def eval(text: str):
-    with lock:
-        BM25 = None
-        for instance in BM25_instances:
-            if instance not in in_use_BM25:
-                BM25 = instance
-                in_use_BM25.add(instance)
-                break
-        if BM25 is None:
-            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    BM25.create_database(text, 5)
-    response = Main_instance.main_debug(text, BM25)
-    BM25.delete_database()
-    with lock:
-        in_use_BM25.remove(BM25)
-    return JSONResponse(content=response)
+    return eval_main_fnc(BM25_instances, in_use_BM25, Main_instance, text)
 
 # Retrieval-Augmented Generation - RAG
 @app.get("/backend/rag/dummy")
@@ -115,60 +131,16 @@ def dummy():
 
 @app.get("/backend/rag/eval_DPR")
 def eval_DPR(text: str):
-    with lock:
-        # find an instance that is not in use
-        DPR = None
-        for instance in DPR_instances:
-            if instance not in in_use_DPR:
-                DPR = instance
-                in_use_DPR.add(instance)
-                break
-        if DPR is None:
-            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    DPR.create_database(text)
-    DPR.update_embed()
-    response = RAG_instance.main(text, DPR)
-    DPR.delete_database()
-    with lock:
-        in_use_DPR.remove(DPR)
-    return JSONResponse(content=response)
+    return eval_rag_fnc(DPR_instances, in_use_DPR, RAG_instance, text)
 
 @app.get("/backend/rag/eval_ada")
 def eval_ada(text: str):
-    with lock:
-        ADA = None
-        for instance in ADA_instances:
-            if instance not in in_use_ADA:
-                ADA = instance
-                in_use_ADA.add(instance)
-                break
-        if ADA is None:
-            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    ADA.create_database(text, 5)
-    ADA.update_embed()
-    response = RAG_instance.main(text, ADA)
-    ADA.delete_database()
-    with lock:
-        in_use_ADA.remove(ADA)
-    return JSONResponse(content=response)
+    return eval_rag_fnc(ADA_instances, in_use_ADA, RAG_instance, text)
 
 @app.get("/backend/rag/eval_bm25")
 def eval_bm25(text: str):
-    with lock:
-        BM25 = None
-        for instance in BM25_instances:
-            if instance not in in_use_BM25:
-                BM25 = instance
-                in_use_BM25.add(instance)
-                break
-        if BM25 is None:
-            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
-    BM25.create_database(text, 8)
-    response = RAG_instance.main(text, BM25)
-    BM25.delete_database()
-    with lock:
-        in_use_BM25.remove(BM25)
-    return JSONResponse(content=response)
+    return eval_rag_fnc(BM25_instances, in_use_BM25, RAG_instance, text)
+
 
 
 @app.get("/coffee")
