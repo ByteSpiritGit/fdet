@@ -19,9 +19,9 @@ class RAG:
     def main(self, text, retriever):
         return asyncio.run(self.async_main(text, retriever))
 
-    async def async_main(self, text:str, retriever) -> list:
+    async def async_main(self, text:str, retriever) -> list:    
         claims = nltk.sent_tokenize(text)
-        async def process_claim(claim, data):
+        async def process_claim(claim, retriever):
             evidence, text, url = retriever.retrieve_RAG(claim)
             if evidence == "":
                 return {"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None}

@@ -11,6 +11,8 @@ import math
 from collections import Counter
 from nltk.tokenize import word_tokenize
 from datetime import datetime
+from google_api import googleAPI
+
 class wiki_document_store():
     def __init__(self) -> None:
         self.wiki = Wikipedia("en")
@@ -20,6 +22,7 @@ class wiki_document_store():
             use_gpu=True
         )
         self.WORD = re.compile(r'\w+')
+        self.google_api = googleAPI()
 
 
     def get_cosine(self, vec1, vec2) -> float:
@@ -71,14 +74,13 @@ class wiki_document_store():
         results = list({tup: None for tup in results})
         return results
 
-    async def storeDocuments(self, documents):        
+    def storeDocuments(self, documents):        
         dicts = []
         for i in documents:    
             text = clean_wiki_text(i[1])
             text = text.split("== References ==")[0].split("== External links ==")[0]
             text = re.sub(r'  ', r' ', text)
             text = re.sub(r'(\n)+', r'\n', text)
-
             text = nltk.sent_tokenize(text)
             for num, line in enumerate(text):
                 dicts.append(
@@ -92,7 +94,7 @@ class wiki_document_store():
 
     def format_docs_str(self, candidate_documents) -> tuple:
         evidence = ""
-        text = ""
+        text = []
         url = []
         current_year = datetime.now().year
         for i in candidate_documents:
@@ -102,18 +104,20 @@ class wiki_document_store():
             url.append(i.meta.get("url"))
             content = i.meta["text"].replace('\n', '')
             content = re.sub(r"since (\d+)", f"since \\1 to {current_year}", content)
-            text += f"{content}"
+            content = content.replace("–present", "-2023")
+            text.append(content)
         evidence = evidence.replace("–present", "-2023")
-        text = text.replace("–present", "-2023")
         return evidence, text, url
 
     def create_database(self, text, n_pages=3) -> bool:
         keyWords = self.__extractKeyWords(text, n_pages)
         pages = asyncio.run(self.__extract_wikipedia_pages(keyWords))
-        asyncio.run(self.storeDocuments(pages))
+        pages += self.google_api.main(text)
+        self.storeDocuments(pages)
         return self.document_store
 
     def delete_database(self) -> bool:
         self.document_store.delete_documents()
         return True
     
+
