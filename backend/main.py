@@ -19,8 +19,6 @@ class Main():
         # Document retrieval
         results = []
         claims = nltk.sent_tokenize(text)
-        retriever.create_database(text)
-        retriever.update_embed()
         for claim in claims:
             evidence, text, url = retriever.retrieve_data(claim, 3)
             if evidence == "":
@@ -49,7 +47,6 @@ class Main():
                     results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence, "url": url})
                 else:
                     results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : text, "url": url})
-        retriever.delete_database()
         return results
 
 
@@ -58,10 +55,8 @@ class Main():
         results = []
         nltk.download('punkt')
         claims = nltk.sent_tokenize(text)
-        retriever.create_database(claims)
-        retriever.update_embed()
         for claim in claims:
-            evidence, text, url = retriever.retrieve(claim, 3)
+            evidence, text, url = retriever.retrieve_data(claim, 3)
             if evidence == "":
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None, 'ei': None, "evidence" : None})
             elif evidence != "":
@@ -83,5 +78,4 @@ class Main():
                 softMax = softmax(prediction.logits, dim=1)
                 supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
                 results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : text, "url": url})
-        retriever.delete_documents()
         return results

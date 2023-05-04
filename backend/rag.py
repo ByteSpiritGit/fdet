@@ -19,8 +19,7 @@ class RAG:
     def main(self, text, retriever):
         return asyncio.run(self.async_main(text, retriever))
 
-    async def async_main(self, text:str, retriever) -> list:
-        retriever.update_embed()
+    async def async_main(self, text:str, retriever) -> list:    
         claims = nltk.sent_tokenize(text)
         async def process_claim(claim, retriever):
             evidence, text, url = retriever.retrieve_RAG(claim)

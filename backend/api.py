@@ -50,7 +50,7 @@ logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading server...")
 app = FastAPI()
 
 
-def eval_rag_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
+def eval_fnc_emb(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
     with lock:
         retriever = None
         for instance in retriever_instances:
@@ -62,6 +62,7 @@ def eval_rag_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONR
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
     try:
         retriever.create_database(text)
+        retriever.update_embed()
         response = calc_instance.main(text, retriever)
         retriever.delete_database()
         with lock:
@@ -73,7 +74,7 @@ def eval_rag_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONR
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
 # TODO: repair main function Error in retriever in main
-def eval_main_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
+def eval_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
     with lock:
         retriever = None
         for instance in retriever_instances:
@@ -84,6 +85,7 @@ def eval_main_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSON
         if retriever is None:
             return JSONResponse(status_code=503, content={"message": "All instances are in use"})
     try:
+        retriever.create_database(text)
         response = calc_instance.main(text, retriever)
         retriever.delete_database()
         with lock:
@@ -117,11 +119,11 @@ def dummy():
 
 @app.get("/backend/v1/eval")
 def eval(text: str):
-    return eval_main_fnc(DPR_instances, in_use_DPR, Main_instance, text)
+    return eval_fnc_emb(DPR_instances, in_use_DPR, Main_instance, text)
 
 @app.get("/backend/v1/eval_fast")
 def eval(text: str):
-    return eval_main_fnc(BM25_instances, in_use_BM25, Main_instance, text)
+    return eval_fnc(BM25_instances, in_use_BM25, Main_instance, text)
 
 # Retrieval-Augmented Generation - RAG
 @app.get("/backend/rag/dummy")
@@ -131,15 +133,15 @@ def dummy():
 
 @app.get("/backend/rag/eval_DPR")
 def eval_DPR(text: str):
-    return eval_rag_fnc(DPR_instances, in_use_DPR, RAG_instance, text)
+    return eval_fnc_emb(DPR_instances, in_use_DPR, RAG_instance, text)
 
 @app.get("/backend/rag/eval_ada")
 def eval_ada(text: str):
-    return eval_rag_fnc(ADA_instances, in_use_ADA, RAG_instance, text)
+    return eval_fnc_emb(ADA_instances, in_use_ADA, RAG_instance, text)
 
 @app.get("/backend/rag/eval_bm25")
 def eval_bm25(text: str):
-    return eval_rag_fnc(BM25_instances, in_use_BM25, RAG_instance, text)
+    return eval_fnc(BM25_instances, in_use_BM25, RAG_instance, text)
 
 
 
