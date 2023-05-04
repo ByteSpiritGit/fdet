@@ -2,36 +2,68 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.shortcuts import render
-from .models import Evaluation
+from .models import Evaluation_block, Evaluation
 import requests
-from django.views.decorators.csrf import csrf_protect
-
 
 # Create your views here.
 def evaluation_view(request, *args, **kwargs):
     text = request.GET["text"]
-    validated_text = requests.get("http://127.0.0.1:8002/backend/eval", params={"text" : text}).json()
-    # print(type(validated_text[0]["label"]))
+    validated_text = requests.get("http://127.0.0.1:8002/backend/v1/eval", params={"text" : text}).json()
+    
+    # //print(type(validated_text[0]["label"]))
+
+    # * New Evaluation Block creation
+    whole_claim = " ".join([claim["claim"] for claim in validated_text])
+    new_evaluation_block = Evaluation_block.objects.create(claims=whole_claim)
 
     for evaluation in validated_text:
         new_evaluation = Evaluation.objects.create(
-            claim=evaluation["claim"], 
-            label=evaluation["label"], 
-            supports=evaluation["supports"], 
-            refutes=evaluation["refutes"], 
-            evidence=evaluation["evidence"]
-        )
-        evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app 
+            evaluation_block=new_evaluation_block,
 
-    context = {
-        "validated" : validated_text
-    }
-    return JsonResponse(context)
+            claim=evaluation.get("claim"),
+            label=evaluation.get("label"), 
+            supports=evaluation.get("supports"), 
+            refutes=evaluation.get("refutes"),
+            ei=evaluation.get("ei"),
+            nei=evaluation.get("nei"),
+            evidence=evaluation.get("evidence")
+        )
+        evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app
+        evaluation["evaluation_block"] = new_evaluation_block.id
+
+    return JsonResponse({"validated" : validated_text})
+
+
+def evaluation_fast_view(request, *args, **kwargs):
+    text = request.GET["text"]
+
+    validated_text = requests.get("http://127.0.0.1:8002/backend/v1/eval_fast", params={"text" : text}).json()
+    
+    # * New Evaluation Block creation
+    whole_claim = " ".join([claim["claim"] for claim in validated_text])
+    new_evaluation_block = Evaluation_block.objects.create(claims=whole_claim)
+
+    for evaluation in validated_text:
+        new_evaluation = Evaluation.objects.create(
+            evaluation_block=new_evaluation_block,
+
+            claim=evaluation.get("claim"),
+            label=evaluation.get("label"), 
+            supports=evaluation.get("supports"), 
+            refutes=evaluation.get("refutes"),
+            ei=evaluation.get("ei"),
+            nei=evaluation.get("nei"),
+            evidence=evaluation.get("evidence")
+        )
+        evaluation["id"] = new_evaluation.id
+        evaluation["evaluation_block"] = new_evaluation_block.id
+
+    return JsonResponse({"validated" : validated_text})
 
 
 def dummy_fnc_view(request):
     text = request.GET["text"]
-    validated_text = [{"claim": "Dummy claim", "label" : "REFUTES", "supports" : 0.1457, "refutes" : 0.8543, "evidence" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum! Ullam, velit recusandae. Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!"}]
+    validated_text = [{"claim": "Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document", "label" : "REFUTES", "supports" : 0.1457, "refutes" : 0.8543, "nei": 0.004, "ei": 0.0005, "evidence" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum! Ullam, velit recusandae. Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!", "url": ["https://en.wikipedia.org/wiki/Lorem_ipsum"]}]
 
     context = {
         "validated" : validated_text
@@ -40,13 +72,42 @@ def dummy_fnc_view(request):
 
 def dummy_fnc_backend_view(request):
     text = request.GET["text"]
-    validated_text = requests.get("http://127.0.0.1:8002/backend/dummy").json()
+    validated_text = requests.get("http://127.0.0.1:8002/backend/v1/dummy").json()
 
-    context = {
-        "validated" : validated_text
-    }
-    return JsonResponse(context)
+    return JsonResponse({"validated" : validated_text})
 
 
-def csrf_view(request):
-    return JsonResponse({"csrf_token": get_token(request)})
+# ! RAG
+def rag_evaluation_view(request, *args, **kwargs):
+    text = request.GET["text"]
+
+    validated_text = requests.get("http://127.0.0.1:8002/backend/rag/eval_DPR", params={"text" : text}).json()
+
+    # * New Evaluation Block creation
+    whole_claim = " ".join([claim["claim"] for claim in validated_text])
+    new_evaluation_block = Evaluation_block.objects.create(claims=whole_claim)
+
+    for evaluation in validated_text:
+        new_evaluation = Evaluation.objects.create(
+            evaluation_block=new_evaluation_block,
+
+            claim=evaluation.get("claim"),
+            label=evaluation.get("label"), 
+            supports=evaluation.get("supports"), 
+            refutes=evaluation.get("refutes"),
+            ei=evaluation.get("ei"),
+            nei=evaluation.get("nei"),
+            evidence=evaluation.get("evidence"),
+            justify=evaluation.get("justify")
+        )
+        evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app
+        evaluation["evaluation_block"] = new_evaluation_block.id
+
+    return JsonResponse({"validated" : validated_text})
+
+def rag_dummy_fnc_backend_view(request):
+    text = request.GET["text"]
+    validated_text = requests.get("http://127.0.0.1:8002/backend/rag/dummy").json()
+
+    return JsonResponse({"validated" : validated_text})
+

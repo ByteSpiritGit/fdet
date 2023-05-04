@@ -16,22 +16,37 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view
-from evaluations.views import evaluation_view, dummy_fnc_view, dummy_fnc_backend_view, csrf_view
+from pages.views import *
+from evaluations.views import *
 from feedbacks.views import eval_feedback_view
+from userExtensions.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # *Pages
     path('', home_view, name="home"),
-
-    # *Evaluations
-    path('evaluation', evaluation_view, name="evaluation"),
-    path('dummy', dummy_fnc_view, name="dummy"),
-    path('dummy_backend', dummy_fnc_backend_view, name="dummy_backend"),
+    path('evalOutput', evalOutput, name="eval_output"),
+    path('users/register', registerPage, name="register_age"),
+    path('users/login', loginPage, name="login_page"),
     path('csrf_view', csrf_view, name="csrf_view"),
 
+    # *User Extensions
+    path('registration', registration_view, name="registration"),
+    path('login', login_view, name="login"),
+    path('logout', logout_view, name="logout"),
+    path('authentication', authentication_view, name="authentication"),
+
+    # *Evaluations
+    # V1
+    path('evaluation', evaluation_view, name="evaluation"),
+    path('evaluation_fast', evaluation_fast_view, name="evaluation_fast"),
+    path('dummy', dummy_fnc_view, name="dummy"),
+    path('dummy_backend', dummy_fnc_backend_view, name="dummy_backend"),
+    # RAG
+    path('rag_evaluation', rag_evaluation_view, name="rag_evaluation"),
+    path('rag_dummy_backend', rag_dummy_fnc_backend_view, name="rag_dummy_backend"),
+    
     
     # *Feedbacks
     path('eval_feedback', eval_feedback_view, name="feedback"),

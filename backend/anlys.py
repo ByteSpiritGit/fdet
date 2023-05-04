@@ -4,14 +4,24 @@ import matplotlib.pyplot as plt
 import random
 import requests
 import re
+import openai
+import asyncio
+import time
+
+STOP_WORDS = ["a", "an", "the", "o"]
+def remove_stop_words(text):
+    text = text.split()
+    text = " ".join([i for i in text if i not in STOP_WORDS])
+    return text
 
 
 def load(path):
     file = []
-    with open(path, 'r') as f:
+    with open(path, 'r', encoding="utf-8") as f:
         for line in f:
             file.append(json.loads(line))
     return file
+
 
 
 def load_from_url(url):
@@ -150,6 +160,33 @@ def split(file, train=0.8, test=0.1, val=0.1):
     val_file = file[train + test:train + test + val]
     return train_file, test_file, val_file
 
+async def request(claim, label) -> str:
+    prompt_template = f"claim: {claim} label: {label}"
+    response = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    max_tokens=100,
+    messages=[
+            {"role": "system", "content": "You are a fact checking specialist. I will provide claim and label and you will justify why the claim is supports, not enough info or refutes."},
+            {"role": "user", "content": prompt_template},
+        ]
+    )
+    justify = response["choices"][0]["message"]["content"]
+    return justify
+
+def make_request(i):
+    try:
+        label_map = {0: "SUPPORTS", 1: "REFUTES", 2: "NOT ENOUGH INFO"}
+        label = label_map[i["label"]] if i["label"] in label_map else i["label"]
+        out = asyncio.run(request(i["claim"], label))
+        return out
+    except:
+        print("sleeping")
+        time.sleep(30)
+        make_request(i)
+    
 
 if __name__ == "__main__":
     print("Anlys.py")
+    ok = load("v3/track0.jsonl")
+    show_loss(ok)
+
