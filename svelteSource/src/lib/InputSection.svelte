@@ -12,8 +12,11 @@
    const loggedin = localStorage.getItem("logged") === "true";
    
    let toEvaluate: string;
+   let mounted = false;
    
    onMount(() => {
+      mounted = true;
+
       if (!loggedin) {
          buttonDisabled = true;
          const overlay = <HTMLDivElement>document.querySelector("#overlay");
@@ -33,6 +36,15 @@
       textarea.style.height = "auto";
       textarea.style.height = textarea.scrollHeight + "px";
    }
+
+    $: if (buttonDisabled && mounted) {
+        checkSize();
+    }
+    else if (!buttonDisabled && mounted) {
+        checkSize();
+    }
+    
+    
 </script>
 
 <div id="overlay" class="overlay">

@@ -1,27 +1,33 @@
 <script lang="ts">
+    import { onMount } from "svelte";
+    
+    import EvidenceUrl from "./EvidenceURL.svelte";
     import PercentageBar from "./PercentageBar.svelte";
 
     export let claim: {
         claim: string;
-        evidence: string;
+        evidence: Array<string>;
         label: string;
         refutes: number;
         supports: number;
         nei: number;
         justify: string;
         url: Array<string>;
-        is_error: boolean;
     };
 
-    let highlight: string;
+    let urlEvidences;
 
-    if (!claim.is_error) {
-        const splitedEv = claim.evidence.split("=").slice(-1).toString().split(" ");
-        const firstPiece = splitedEv.slice(0, splitedEv.length/4).join(" ");
-        const secondPiece = splitedEv.slice(-splitedEv.length/4).join(" ");
-    
-        highlight = `${firstPiece.replace(/^\s/, "")}, ${secondPiece}`;
-    }
+    onMount(() => {
+        claim.evidence.forEach((evidence, index) => {
+            new EvidenceUrl({
+                target: urlEvidences,
+                props: {
+                    url: claim.url[index],
+                    evidence: evidence
+                }
+            });
+        });
+    });
 </script>
 
 <section class="output-validation-section border-top">
@@ -40,17 +46,7 @@
 
     <div class="evidence border-top smaller-text">
         <p>Evidence:</p>
-        {#each claim.url as url}
-            {#if claim.is_error}
-                <a class="evidence-url" href={`${url}#${claim.evidence}`}>
-                    {url.split("/").slice(-1)}...
-                </a>
-            {:else}
-                <a class="evidence-url" href={`${url}#:~:text=${highlight}`}>
-                    {url.split("/").slice(-1)}...
-                </a>
-            {/if}
-        {/each}
+        <div bind:this={urlEvidences}></div>
     </div>
 </section>
 
@@ -72,22 +68,5 @@
 
     .smaller-text {
         font-size: 0.9rem;
-    }
-
-    .evidence-url {
-        background-color: var(--color-tertiary-alpha);
-        border-radius: 0.35em;
-        color: var(--color-text);
-        padding: 0.1em;
-        text-decoration: none;
-
-        transition: 0.4s;
-
-        margin-right: 0.5em;
-    }
-
-    .evidence-url:hover {
-        background-color: var(--color-tertiary);
-        text-decoration: dotted underline;
     }
 </style>

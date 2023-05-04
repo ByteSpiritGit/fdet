@@ -13,14 +13,13 @@
 
    export let claims: Array<{
       claim: string,
-      evidence: string,
+      evidence: Array<string>,
       label: string,
       refutes: number,
       supports: number,
       nei: number,
       justify: string,
-      url: Array<string>,
-      is_error: boolean
+      url: Array<string>
    }>;
    export let id_offset: number = 0;
 
@@ -95,6 +94,7 @@
 <section class="claim-section">
    <p>Claim: </p>
    <section class="claim" bind:this={claimSection}></section>
+   <p class="">Average: </p>
    <div class="average-wrapper">
       <section bind:this={averageSection} class="average-section"></section>
       <Button
@@ -149,4 +149,8 @@
       width: 100%;
       margin-right: 0.5rem;
    }
+
+   .border-top {
+        border-top: 2px var(--color-tertiary-alpha) solid;
+    }
 </style>
