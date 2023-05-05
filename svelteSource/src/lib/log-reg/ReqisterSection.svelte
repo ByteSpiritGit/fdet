@@ -229,6 +229,12 @@
             checkType(user, e);
          });
       });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                onClick();
+            }
+        });
    });
 
 </script>
