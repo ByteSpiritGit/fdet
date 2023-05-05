@@ -48,13 +48,13 @@
       return cookieValue;
    }
 
-   onMount(() => {
-      getCsrfToken();
+    onMount(() => {
+        getCsrfToken();
 
-      if (localStorage.getItem("logged") === "true") {
-         window.location.href = "/";
-      }
-   });
+        if (localStorage.getItem("logged") === "true") {
+            window.location.href = "/";
+        }
+    });
 </script>
 
 <Navbar />

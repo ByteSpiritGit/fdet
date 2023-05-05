@@ -16,6 +16,10 @@
    let disabled = false;
 
    onMount(() => {
+        if (localStorage.getItem("username") === null) {
+            window.location.href = "users/login";
+        }
+
       whenClk();
    });
 
@@ -47,27 +51,38 @@
             method: "POST",
             headers: { "X-CSRFToken": csrftoken },
             mode: "same-origin",
-            body: JSON.stringify({ text: text }),
+            body: JSON.stringify({ 
+                text: text,
+                user: {
+                    username: localStorage.getItem("username"),
+                    email: localStorage.getItem("email"),
+                    password: localStorage.getItem("password"),
+                }
+            }),
         });
 
 
       // Handle errors in the response
       const response = await fetch(request);
-      if (response.status > 299) {
-         console.log(response)
-         return [
-            {
-               claim: `${text}`,
-               evidence: [response.status.toString(), "I skate to where the puck is going to be, not where it has been"],
-               label: `Error: ${response.status}`,
-               refutes: 0,
-               nei: 0,
-               supports: 0,
-               justify: response.statusText,
-               url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes", "https://en.wikipedia.org/wiki/Steve_Jobs"]
-            },
-         ];
-      }
+        if (response.status === 401) {
+            localStorage.removeItem("logged");
+            window.location.href = "users/login";
+        }
+        else if (response.status > 299) {
+            console.log(response)
+            return [
+                {
+                claim: `${text}`,
+                evidence: [response.status.toString(), "I skate to where the puck is going to be, not where it has been"],
+                label: `Error: ${response.status}`,
+                refutes: 0,
+                nei: 0,
+                supports: 0,
+                justify: response.statusText,
+                url: ["https://en.wikipedia.org/wiki/List_of_HTTP_status_codes", "https://en.wikipedia.org/wiki/Steve_Jobs"]
+                },
+            ];
+        }
     //   console.log(response)
 
       const final: Array<{

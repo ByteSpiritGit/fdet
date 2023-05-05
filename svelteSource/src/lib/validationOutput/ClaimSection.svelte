@@ -149,8 +149,4 @@
       width: 100%;
       margin-right: 0.5rem;
    }
-
-   .border-top {
-        border-top: 2px var(--color-tertiary-alpha) solid;
-    }
 </style>
