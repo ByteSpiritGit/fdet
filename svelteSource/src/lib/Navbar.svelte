@@ -4,8 +4,9 @@
 
    let notificationBlock: HTMLDivElement;
 
-    let logedin: boolean = localStorage.getItem("logged") === "true";
-    if (logedin) {
+    const logedin: boolean = localStorage.getItem("logged") === "true";
+    const username: string = localStorage.getItem("username");
+    if (logedin && username === null || username === undefined || username === "") {
         authenticate();
     }
 
