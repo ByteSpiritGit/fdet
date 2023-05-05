@@ -5,7 +5,6 @@ from django.shortcuts import render
 from .models import UserExtension
 from django.contrib.auth.models import User, auth
 import re
-import requests
 import json
 
 email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
@@ -18,8 +17,6 @@ def registration_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     
-    first_name = data.get("first_name")
-    last_name = data.get("last_name")
     email = data.get("email")
     username = data.get("username")
     password = data.get("password")
@@ -58,12 +55,12 @@ def registration_view(request, *args, **kwargs):
             
         else:
             # Everything is valid
-            user = User.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+            user = User.objects.create_user(username=username, password=password, email=email)
             user.save()
             user_extension = UserExtension(user=user)
             user_extension.save()
-            return JsonResponse({"success_msg": "User created successfully.", "status": 200})
-
+            auth.login(request, user)
+            return JsonResponse({ "success_msg": "User created successfully.", "status": 200, "username": username })
     else:
         # Passwords do not match
         error_msg = "Passwords do not match."
@@ -74,21 +71,26 @@ def login_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
    
-    username = data.get("username")
+    username = data.get("username_mail")
     password = data.get("password")
 
     user = auth.authenticate(username=username, password=password)
 
     if user is not None:
         auth.login(request, user)
-        return JsonResponse({"success_msg": "User logged in successfully."})
+        return JsonResponse({
+            "success_msg": "User logged in successfully.",
+            "username": user.username,
+        })
     else:
         error_msg = "Invalid credentials."
         return JsonResponse({"error_msg": error_msg, "status": 400})
 
 def authentication_view(request, *args, **kwargs):
-    authentication = request.user.is_authenticated
-    return JsonResponse({"authentication": authentication})
+    if request.user.is_authenticated:
+        return JsonResponse({"username": request.user.username})
+    else:
+        return HttpResponse(status=401)
 
 def logout_view(request, *args, **kwargs):
     auth.logout(request)

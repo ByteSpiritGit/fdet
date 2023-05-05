@@ -19,7 +19,7 @@
    };
 
    const regex = {
-      usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,
+      nameMailRegex: /^[a-zA-Z0-9_-]{3,}|^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       passwordRegex: /.{5,}/
    };
 
@@ -48,7 +48,7 @@
       // Check all inputs
       let isValid = true;
       inputs.forEach((input) => {
-         if (!checkType(user, input)) { 
+         if (!checkType(input)) { 
             isValid = false;
          }
       });
@@ -81,7 +81,7 @@
          headers: { "X-CSRFToken": csrftoken },
          mode: "same-origin",
          body: JSON.stringify({
-            username: user.username,
+            username_mail: user.username,
             password: user.password
          }),
       });
@@ -118,8 +118,8 @@
          return final;
       }
 
-      localStorage.setItem("logged", "true");
-      localStorage.setItem("username", user.username);
+        localStorage.setItem("logged", "true");
+        localStorage.setItem("username", final["username"]);
 
       console.log("success");
 
@@ -127,14 +127,7 @@
       return final;
    }
 
-   function checkType(
-      user: {
-         username: string,
-         password: string
-      },
-      e: HTMLInputElement | Event, 
-      changeCol=true
-   ) {
+   function checkType( e: HTMLInputElement | Event, changeCol=true ) {
       let toCheck: HTMLInputElement;
       if (e instanceof HTMLInputElement) {
          toCheck = e;
@@ -144,7 +137,7 @@
 
       switch (toCheck.name) {
          case "username":
-            return check(toCheck, regex.usernameRegex, changeCol);
+            return check(toCheck, regex.nameMailRegex, changeCol);
          case "password":
             return check(toCheck, regex.passwordRegex, changeCol);
          default:
@@ -167,7 +160,7 @@
       const inputs = document.querySelectorAll<HTMLInputElement>("input");
       inputs.forEach((input) => {
          input.addEventListener("blur", (e) => {
-            checkType(user, e);
+            checkType(e);
          });
       });
    });
@@ -179,10 +172,10 @@
 
    <h1 class="no-margin">Login</h1>
    <div class="line">
-      <label for="username">Username</label>
+      <label for="username">Username/E-mail</label>
       <input
          type="text"
-         placeholder="Username"
+         placeholder="Username/E-mail"
          bind:value={user.username}
          name="username"
          id="username"
