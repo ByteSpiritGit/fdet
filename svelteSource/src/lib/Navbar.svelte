@@ -4,10 +4,11 @@
 
    let notificationBlock: HTMLDivElement;
 
-   let logedin: boolean = false;
-   if (localStorage.getItem("logged") === "true") {
-      logedin = true;
-   }
+    const logedin: boolean = localStorage.getItem("logged") === "true";
+    const username: string = localStorage.getItem("username");
+    if (logedin && username === null || username === undefined || username === "") {
+        authenticate();
+    }
 
    function getCsrfToken() {
       var xhr = new XMLHttpRequest();
@@ -54,6 +55,8 @@
 
    async function logout() {
       getCsrfToken();
+        localStorage.removeItem("logged");
+
       const csrftoken = getCookie("csrftoken");
 
       const url = "/logout"
@@ -78,10 +81,46 @@
          return response;
       }
 
-      localStorage.setItem("logged", "false");
-      localStorage.setItem("username", "");
+      localStorage.removeItem("logged");
+      localStorage.removeItem("username");
       window.location.href = "/";
    }
+
+    async function authenticate() {
+        const csrftoken = getCookie("csrftoken");
+        
+        const request = new Request("/authentication", {
+            method: "POST",
+            mode: "same-origin",
+            headers: { "X-CSRFToken": csrftoken },
+        });
+
+        const response = await fetch(request);
+        
+        switch (response.status) {
+            case 200:
+                localStorage.setItem("logged", "true");
+                localStorage.setItem("username", (await (response.json())).username);
+                break;
+            case 401:
+                localStorage.removeItem("logged");
+                window.location.href = "/";
+                break;
+            default:
+                new Notification({
+                    target: notificationBlock,
+                    props: {
+                        name: "Something went wrong",
+                        description: `Error ${response.status}: ${response.statusText}`,
+                        iconType: "Warning",
+                        duration: 5000
+                    }
+                })
+                console.log("Server error")
+                break;
+        }
+
+    }
 </script>
 
 <nav class="navbar">

@@ -10,16 +10,12 @@
    let notificationBlock: HTMLDivElement;
 
    let user: {
-      firstName: string;
-      lastName: string;
       email: string;
       username: string;
       password: string;
       confirmPassword: string;
    }
    = {
-      firstName: "",
-      lastName: "",
       email: "",
       username: "",
       password: "",
@@ -29,9 +25,7 @@
    const regex = {
       emailRegex: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
       usernameRegex: /^[a-zA-Z0-9_-]{3,}$/,
-      passwordRegex: /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-      firstNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
-      lastNameRegex: /^[\p{L}'-]{2,}(?: [\p{L}'-]+)*$/u,
+      passwordRegex: /((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
    };
 
    const notifs = {
@@ -95,21 +89,7 @@
       });
 
       if (!isValid) {
-         if ((<HTMLInputElement>document.querySelector("#firstname")).dataset.correct === "false") {
-            new Notification({
-               target: notificationBlock,
-               props: notifs.name
-            })
-            console.log("nameWrong")
-         }
-         else if ((<HTMLInputElement>document.querySelector("#lastname")).dataset.correct === "false") {
-            new Notification({
-               target: notificationBlock,
-               props: notifs.name
-            })
-            console.log("nameWrong")
-         }
-         else if ((<HTMLInputElement>document.querySelector("#email")).dataset.correct === "false") {
+         if ((<HTMLInputElement>document.querySelector("#email")).dataset.correct === "false") {
             new Notification({
                target: notificationBlock,
                props: notifs.email
@@ -152,8 +132,6 @@
          headers: { "X-CSRFToken": csrftoken },
          mode: "same-origin",
           body: JSON.stringify({
-            first_name: user.firstName,
-            last_name: user.lastName,
             email: user.email,
             username: user.username,
             password: user.password,
@@ -193,8 +171,7 @@
          return final;
       }
 
-      localStorage.setItem("logged", "true");
-      localStorage.setItem("username", user.username);
+        localStorage.setItem("logged", "true");
 
       console.log("success");
 
@@ -204,8 +181,6 @@
 
    function checkType(
       user: {
-         firstName: string;
-         lastName: string;
          email: string;
          username: string;
          password: string;
@@ -231,10 +206,6 @@
          case "confirmPassword":
             const passwordConfirmRegex = `^${user.password}$`;
             return check(toCheck, new RegExp(passwordConfirmRegex), changeCol);
-         case "firstName":
-            return check(toCheck, regex.firstNameRegex, changeCol);
-         case "lastName":
-            return check(toCheck, regex.lastNameRegex, changeCol);
          default:
             break;
       }
@@ -258,6 +229,12 @@
             checkType(user, e);
          });
       });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                onClick();
+            }
+        });
    });
 
 </script>
@@ -266,28 +243,7 @@
    <LogRegSwitchBtn selectedButton="register" />
 
    <h1 class="no-margin">Register</h1>
-   <div class="line">
-      <label for="firstName">First name</label>
-      <input
-         type="text"
-         placeholder="First name"
-         bind:value={user.firstName}
-         name="firstName"
-         id="firstname"
-         data-correct="false"
-      />
-   </div>
-   <div class="line">
-      <label for="lastName">Last name</label>
-      <input
-         type="text"
-         placeholder="Last name"
-         bind:value={user.lastName}
-         name="lastName"
-         id="lastname"
-         data-correct="false"
-      />
-   </div>
+
    <div class="line">
       <label for="email">Email</label>
       <input

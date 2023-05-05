@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Evaluation_block, Evaluation
 import requests
 
@@ -81,29 +81,32 @@ def dummy_fnc_backend_view(request):
 def rag_evaluation_view(request, *args, **kwargs):
     text = request.GET["text"]
 
-    validated_text = requests.get("http://127.0.0.1:8002/backend/rag/eval_DPR", params={"text" : text}).json()
+    if request.user.is_authenticated:
+        validated_text = requests.get("http://127.0.0.1:8002/backend/rag/eval_bm25", params={"text" : text}).json()
 
-    # * New Evaluation Block creation
-    whole_claim = " ".join([claim["claim"] for claim in validated_text])
-    new_evaluation_block = Evaluation_block.objects.create(claims=whole_claim)
+        # * New Evaluation Block creation
+        whole_claim = " ".join([claim["claim"] for claim in validated_text])
+        new_evaluation_block = Evaluation_block.objects.create(claims=whole_claim)
 
-    for evaluation in validated_text:
-        new_evaluation = Evaluation.objects.create(
-            evaluation_block=new_evaluation_block,
+        for evaluation in validated_text:
+            new_evaluation = Evaluation.objects.create(
+                evaluation_block=new_evaluation_block,
 
-            claim=evaluation.get("claim"),
-            label=evaluation.get("label"), 
-            supports=evaluation.get("supports"), 
-            refutes=evaluation.get("refutes"),
-            ei=evaluation.get("ei"),
-            nei=evaluation.get("nei"),
-            evidence=evaluation.get("evidence"),
-            justify=evaluation.get("justify")
-        )
-        evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app
-        evaluation["evaluation_block"] = new_evaluation_block.id
+                claim=evaluation.get("claim"),
+                label=evaluation.get("label"), 
+                supports=evaluation.get("supports"), 
+                refutes=evaluation.get("refutes"),
+                ei=evaluation.get("ei"),
+                nei=evaluation.get("nei"),
+                evidence=evaluation.get("evidence"),
+                justify=evaluation.get("justify")
+            )
+            evaluation["id"] = new_evaluation.id # ! Adding id to the obtained JSON -> passing to feedbacks app
+            evaluation["evaluation_block"] = new_evaluation_block.id
 
-    return JsonResponse({"validated" : validated_text})
+        return JsonResponse({"validated" : validated_text})
+    else:
+        return HttpResponse(status=401)
 
 def rag_dummy_fnc_backend_view(request):
     text = request.GET["text"]
