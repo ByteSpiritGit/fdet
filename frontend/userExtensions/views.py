@@ -74,10 +74,18 @@ def login_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
    
-    username = data.get("username")
+    username_email = data.get("username_email")
     password = data.get("password")
 
-    user = auth.authenticate(username=username, password=password)
+    if "@" in username_email:
+        try:
+            user = User.objects.get(email=username_email)
+            username_email = user.username
+        except User.DoesNotExist:
+            user = None
+    else:
+        user = auth.authenticate(username=username_email, password=password)
+
 
     if user is not None:
         auth.login(request, user)

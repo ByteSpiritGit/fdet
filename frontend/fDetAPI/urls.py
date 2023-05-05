@@ -18,7 +18,7 @@ from django.urls import path
 
 from pages.views import *
 from evaluations.views import *
-from feedbacks.views import eval_feedback_view
+from feedbacks.views import *
 from userExtensions.views import *
 
 urlpatterns = [
@@ -39,15 +39,18 @@ urlpatterns = [
 
     # *Evaluations
     # V1
-    path('evaluation', evaluation_view, name="evaluation"),
-    path('evaluation_fast', evaluation_fast_view, name="evaluation_fast"),
-    path('dummy', dummy_fnc_view, name="dummy"),
-    path('dummy_backend', dummy_fnc_backend_view, name="dummy_backend"),
+    path('v1/dummy_backend', v1_dummy_fnc_backend_view, name="v1_dummy_backend"),
+    path('v1/eval', v1_evaluation_view, name="v1_evaluation"),
+    path('v1/eval_fast', v1_evaluation_fast_view, name="v1_evaluation_fast"),
     # RAG
-    path('rag_evaluation', rag_evaluation_view, name="rag_evaluation"),
-    path('rag_dummy_backend', rag_dummy_fnc_backend_view, name="rag_dummy_backend"),
+    path('rag/dummy_backend', rag_dummy_fnc_backend_view, name="rag_dummy_backend"),
+    path('rag/eval', rag_evaluation_view, name="rag_evaluation"),
+    path('rag/eval_DPR', rag_evaluation_DPR_view, name="rag_evaluation_DPR"),
+    path('rag/eval_Ada', rag_evaluation_Ada_view, name="rag_evaluation_Ada"),
+    path('rag/eval_BM25', rag_evaluation_BM25_view, name="rag_evaluation_BM25"),
     
     
     # *Feedbacks
     path('eval_feedback', eval_feedback_view, name="feedback"),
+    path('user_feedback', user_feedback_view, name="user_feedback"),
 ]

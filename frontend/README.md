@@ -18,21 +18,25 @@ CSRF - "/csrf_view" <br>
 ### USERS EXT
 Registration - "/registration" <br>
 Login - "/login" <br>
-authentication - "/authentication" <br>
+Logout - "/logout" <br>
+Authentication - "/authentication" <br>
 
 ### EVALUATIONS
 
-Evaluation - "/evaluation" <br>
-Evaluation fast - "/evaluation_fast" <br>
-Dummy - "/dummy" <br>
-Dummy backend - "/dummy_backend" <br>
+V1 Dummy backend - "/v1/dummy_backend" <br>
+V1 Evaluation - "/v1/eval" <br>
+V1 Evaluation fast - "/v1/eval_fast" <br>
 
-Rag Evaluation - "/rag_evaluation" <br>
-Rag dummy backend - "/rag_dummy_backend" <br>
+Rag Dummy Backend - "rag/dummy_backend" <br>
+Rag Evaluation - "/rag/eval" <br>
+Rag Evaluation DPR - "/rag/eval_DPR" <br>
+Rag Evaluation Ada - "/rag/eval_Ada" <br>
+Rag Evaluation BM25 - "/rag/eval_BM25" <br>
 
 
 ### FEEDBACKS
 Eval feedback - "/eval_feedback" <br>
+User feedback - "/user_feedback" <br>
 
 ## **Notes!** <br>
 If public: Debug = False
