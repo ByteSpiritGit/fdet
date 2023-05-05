@@ -81,7 +81,7 @@
          headers: { "X-CSRFToken": csrftoken },
          mode: "same-origin",
          body: JSON.stringify({
-            username_mail: user.username,
+            username_email: user.username,
             password: user.password
          }),
       });

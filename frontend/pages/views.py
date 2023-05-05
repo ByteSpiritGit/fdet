@@ -10,7 +10,7 @@ import requests
 
 def home_view(request, *args, **kwargs):
     models = {}
-    return render(request, "index.html", models)
+    return render(request, "./index.html", models)
 
 def evalOutput(request, *args, **kwargs):
     models = {}
