@@ -8,7 +8,7 @@ def eval_feedback_view(request, *args, **kwargs):
     feedback = request.GET["feedback"]
     eval_block_id = request.GET["eval_block_id"]
 
-    Evaluation_Feedback.objects.create(feedback=feedback, evaluation=eval_id)
+    Evaluation_Feedback.objects.create(feedback=feedback, evaluation=eval_block_id)
 
     return HttpResponse(status=402)
 
