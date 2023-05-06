@@ -13,8 +13,8 @@ Please use the following endpoints to access the system:
 - `/backend/rag/dummy`: A dummy endpoint for the Retrieval-Augmented Generation (RAG) model for testing purposes.
 - `/backend/rag/eval?text=...`: This endpoint uses the RAG model to evaluate the accuracy of the provided text.
 - `/backend/rag/eval_DPR?text=...`: This endpoint uses the RAG model with Dense Passage Retrieval (DPR) to evaluate the accuracy of the provided text.
-- `/backend/rag/eval_Ada?text=...`: This endpoint uses the RAG model with Adaptive Retrieval (Ada) to evaluate the accuracy of the provided text.
-- `/backend/rag/eval_BM25?text=...`: This endpoint uses the RAG model with BM25 retrieval to evaluate the accuracy of the provided text.
+- `/backend/rag/eval_ada?text=...`: This endpoint uses the RAG model with Adaptive Retrieval (Ada) to evaluate the accuracy of the provided text.
+- `/backend/rag/eval_bm25?text=...`: This endpoint uses the RAG model with BM25 retrieval to evaluate the accuracy of the provided text.
 
 ## Usage
 

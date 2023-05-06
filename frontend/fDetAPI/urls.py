@@ -46,8 +46,8 @@ urlpatterns = [
     path('rag/dummy_backend', rag_dummy_fnc_backend_view, name="rag_dummy_backend"),
     path('rag/eval', rag_evaluation_view, name="rag_evaluation"),
     path('rag/eval_DPR', rag_evaluation_DPR_view, name="rag_evaluation_DPR"),
-    path('rag/eval_Ada', rag_evaluation_Ada_view, name="rag_evaluation_Ada"),
-    path('rag/eval_BM25', rag_evaluation_BM25_view, name="rag_evaluation_BM25"),
+    path('rag/eval_ada', rag_evaluation_Ada_view, name="rag_evaluation_Ada"),
+    path('rag/eval_bm25', rag_evaluation_BM25_view, name="rag_evaluation_BM25"),
     
     
     # *Feedbacks
