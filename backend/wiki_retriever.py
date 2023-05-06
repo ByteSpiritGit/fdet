@@ -5,7 +5,6 @@ from haystack.document_stores import InMemoryDocumentStore
 from yake import KeywordExtractor
 import asyncio
 import re
-import anlys
 import nltk
 import math
 from collections import Counter
@@ -15,6 +14,7 @@ from google_api import googleAPI
 
 class wiki_document_store():
     def __init__(self) -> None:
+        self.STOP_WORDS = ["a", "an", "the", "o"]
         self.wiki = Wikipedia("en")
         self.kw_extractor = KeywordExtractor()
         self.document_store = InMemoryDocumentStore(
@@ -49,9 +49,23 @@ class wiki_document_store():
         # Extract Subject
         temp_titles = self.kw_extractor.extract_keywords(text)
         temp_titles = [(tup[0], tup[1]+self.get_text_similarity(text, tup[0])) if tup[0] in nouns else tup for tup in temp_titles]
+        temp_titles = self.add_value_from_substring(temp_titles)
         temp_titles = sorted(temp_titles, key=lambda x: x[1], reverse=True)
         pages = [i[0] for i in temp_titles]
         return pages[:keyWords]   
+    
+    def add_value_from_substring(self, lst):
+        for i in range(len(lst)):
+            for j in range(len(lst)):
+                if i != j and lst[j][0] in lst[i][0] and (len(lst[i][0]) > len(lst[j][0])):
+                    lst[i] = (lst[i][0], lst[i][1]+lst[j][1])
+                    print(lst[i])
+        return lst
+
+    def remove_stop_words(self, text):
+        text = text.split()
+        text = " ".join([i for i in text if i not in self.STOP_WORDS])
+        return text
 
     async def __fetch_wikipedia_page(self, title):
         wikiPages = self.wiki.search(title)
@@ -85,7 +99,7 @@ class wiki_document_store():
             for num, line in enumerate(text):
                 dicts.append(
                 {
-                'content': anlys.remove_stop_words(line.lower()),
+                'content': self.remove_stop_words(line.lower()),
                 'meta': {'title': i[0], "ID" : num, 'text': line, 'url': i[2]}
                 }
                 )
