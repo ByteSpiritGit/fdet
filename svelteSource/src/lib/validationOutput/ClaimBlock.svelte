@@ -44,7 +44,7 @@
       disabled = true;
 
       const csrftoken = getCookie("csrftoken");
-      let url = `/rag/eval_BM25?text=${text}`;
+      let url = `/rag/eval_bm25?text=${text}`;
       // let url = `/rag_dummy_backend?text=${text}`
 
         const request = new Request(url, {
