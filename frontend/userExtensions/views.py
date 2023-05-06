@@ -9,7 +9,7 @@ import json
 
 email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 password_regex = re.compile(r'((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$')
-username_regex = re.compile(r'^[\w.@+-]{1,150}$')
+username_regex = re.compile(r'^[a-zA-Z0-9.\-+]{3,150}$')
 
 # Create your views here.
 def registration_view(request, *args, **kwargs):
