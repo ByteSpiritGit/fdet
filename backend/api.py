@@ -96,21 +96,6 @@ def eval_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONRespo
             in_use.remove(retriever)
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
-@app.get("/backend")
-async def root() -> str:
-    help_text = "Welcome to the backend of the Fact-Checking System. Please use the following endpoints to access the system: \n" \
-                "/backend/v1/dummy \n"  \
-                "/backend/v1/eval?text=... \n" \
-                "/backend/v1/eval_debug?text=... \n" \
-                "/backend/v1/eval_fast?text=... \n" \
-                "/backend/rag/dummy \n" \
-                "/backend/rag/eval?text=... \n" \
-                "/backend/rag/eval_DPR?text=... \n" \
-                "/backend/rag/eval_Ada?text=... \n" \
-                "/backend/rag/eval_BM25?text=... \n" 
-    return help_text
-
-
 # classification with advanced search
 @app.get("/backend/v1/dummy")
 def dummy():
@@ -131,7 +116,7 @@ def dummy():
     response = [{"claim": "Dummy claim", "label" : "REFUTES", "supports" : 0.1457, "refutes" : 0.8543, "nei": 0.004, "evidence" : ["Lorem ipsum dolor sit amet consectetur adipisicing elit.","Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum !", "Ullam, velit recusandae.", "Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!"], "justify" : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam quibusdam architecto velit ut distinctio culpa possimus, debitis corporis, at officiis voluptas ea modi magni omnis saepe earum! Ullam, velit recusandae. Ipsa quibusdam delectus, debitis quam quisquam quasi consectetur ab obcaecati incidunt amet labore, earum velit modi fuga ducimus dignissimos perspiciatis!", "url" : ["https://www.google.com", "https://www.google.com", "https://www.google.com", "https://www.google.com"]}]
     return JSONResponse(content=response)
 
-@app.get("/backend/rag/eval_DPR")
+@app.get("/backend/rag/eval_dpr")
 def eval_DPR(text: str):
     return eval_fnc_emb(DPR_instances, in_use_DPR, RAG_instance, text)
 
@@ -142,8 +127,6 @@ def eval_ada(text: str):
 @app.get("/backend/rag/eval_bm25")
 def eval_bm25(text: str):
     return eval_fnc(BM25_instances, in_use_BM25, RAG_instance, text)
-
-
 
 @app.get("/coffee")
 async def root() -> str:
