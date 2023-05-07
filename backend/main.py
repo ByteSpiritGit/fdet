@@ -1,5 +1,4 @@
 import nltk
-from anlys import remove_stop_words
 import logging
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification
@@ -24,7 +23,7 @@ class Main():
             if evidence == "":
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None,"ei":None, "evidence" : None})
             elif evidence != "":
-                tokens = self.tokenizer.encode_plus(remove_stop_words(claim.lower()), evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
+                tokens = self.tokenizer.encode_plus(claim.lower(), evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
                 self.nei.eval()
                 with no_grad(): 
