@@ -6,6 +6,7 @@ from .models import Evaluation_block, Evaluation
 import re, unicodedata
 import requests
 import queue
+import json
 
 # input_text_regex = re.compile(r'^[\x20-\x7E\p{L}\p{N}]+$')
 request_queue = queue.Queue()
@@ -76,41 +77,57 @@ def eval_fnc(request, input_text, backend_url):
 
 # Create your views here.
 def v1_dummy_fnc_backend_view(request):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     validated_text = requests.get("http://127.0.0.1:8002/backend/v1/dummy").json()
 
     return JsonResponse({"validated" : validated_text})
 
 def v1_evaluation_view(request, *args, **kwargs):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     return eval_fnc(request, text, "http://127.0.0.1:8002/backend/v1/eval")
 
 def v1_evaluation_fast_view(request, *args, **kwargs):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     return eval_fnc(request, text, "http://127.0.0.1:8002/backend/v1/eval_fast")
 
 
 # ! RAG
 def rag_dummy_fnc_backend_view(request):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     validated_text = requests.get("http://127.0.0.1:8002/backend/rag/dummy").json()
 
     return JsonResponse({"validated" : validated_text})
 
 def rag_evaluation_view(request, *args, **kwargs):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval")
 
 def rag_evaluation_DPR_view(request, *args, **kwargs):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval_DPR")
     
 def rag_evaluation_Ada_view(request, *args, **kwargs):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval_ada")
 
 def rag_evaluation_BM25_view(request, *args, **kwargs):
-    text = request.GET["text"]
+    body_unicode = request.body.decode('utf-8')
+    data = json.loads(body_unicode)
+    text = data.get("text")
     return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval_bm25")
 
 
