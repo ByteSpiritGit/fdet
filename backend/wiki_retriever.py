@@ -59,7 +59,6 @@ class wiki_document_store():
             for j in range(len(lst)):
                 if i != j and lst[j][0] in lst[i][0] and (len(lst[i][0]) > len(lst[j][0])):
                     lst[i] = (lst[i][0], lst[i][1]+lst[j][1])
-                    print(lst[i])
         return lst
 
     def remove_stop_words(self, text):
