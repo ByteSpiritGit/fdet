@@ -19,7 +19,10 @@ class Main():
         results = []
         claims = nltk.sent_tokenize(text)
         for claim in claims:
-            evidence, text, url = retriever.retrieve_data(claim, 3)
+            try:
+                evidence, text, url = retriever.retrieve_data(claim, 3)
+            except:
+                return {"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None}
             if evidence == "":
                 results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None,"ei":None, "evidence" : None})
             elif evidence != "":
