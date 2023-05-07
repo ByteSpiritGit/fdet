@@ -172,6 +172,7 @@
       }
 
         localStorage.setItem("logged", "true");
+        localStorage.setItem("username", final["username"]);
 
       console.log("success");
 

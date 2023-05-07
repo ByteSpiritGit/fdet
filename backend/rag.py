@@ -22,13 +22,13 @@ class RAG:
     async def async_main(self, text:str, retriever) -> list:    
         claims = nltk.sent_tokenize(text)
         async def process_claim(claim, retriever):
-            evidence, text, url = retriever.retrieve_RAG(claim)
-            if evidence == "":
+            try:
+                evidence, text, url = retriever.retrieve_RAG(claim)
+            except:
                 return {"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None}
-            else:
-                justify = await self.generate(claim, evidence)
-                label, percent = await self.numerical_evaluation(justify)
-                return {"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : text, "justify" : justify, "url" : url}
+            justify = await self.generate(claim, evidence)
+            label, percent = await self.numerical_evaluation(justify)
+            return {"claim": claim, "label" : label, "supports" : percent[0], "refutes" : percent[1], "nei": percent[2], "evidence" : text, "justify" : justify, "url" : url}
         tasks = [process_claim(claim, retriever) for claim in claims]
         results = await asyncio.gather(*tasks)
         return results

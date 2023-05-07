@@ -9,7 +9,7 @@ import json
 
 email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
 password_regex = re.compile(r'((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$')
-username_regex = re.compile(r'^[\w.@+-]{1,150}$')
+username_regex = re.compile(r'^[a-zA-Z0-9._\-+]{3,150}$')
 
 # Create your views here.
 def registration_view(request, *args, **kwargs):
@@ -57,7 +57,7 @@ def registration_view(request, *args, **kwargs):
             # Everything is valid
             user = User.objects.create_user(username=username, password=password, email=email)
             user.save()
-            user_extension = UserExtension(user=user)
+            user_extension = UserExtension(user=user, profile_picture="default_profile_picture.jpg")
             user_extension.save()
             auth.login(request, user)
             return JsonResponse({ "success_msg": "User created successfully.", "status": 200, "username": username })
@@ -71,10 +71,18 @@ def login_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
    
-    username = data.get("username_mail")
+    username_email = data.get("username_email")
     password = data.get("password")
 
-    user = auth.authenticate(username=username, password=password)
+    if "@" in username_email:
+        try:
+            user = User.objects.get(email=username_email)
+            username_email = user.username
+        except User.DoesNotExist:
+            user = None
+    else:
+        user = auth.authenticate(username=username_email, password=password)
+
 
     if user is not None:
         auth.login(request, user)

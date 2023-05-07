@@ -48,9 +48,14 @@ class wiki_document_store():
         nouns += [word for word, tag in pos if tag == 'PRP']
         # Extract Subject
         temp_titles = self.kw_extractor.extract_keywords(text)
+
+        if temp_titles == []:
+            return []
+        # Calculate score for each title
         temp_titles = [(tup[0], tup[1]+self.get_text_similarity(text, tup[0])) if tup[0] in nouns else tup for tup in temp_titles]
         temp_titles = self.add_value_from_substring(temp_titles)
         temp_titles = sorted(temp_titles, key=lambda x: x[1], reverse=True)
+
         pages = [i[0] for i in temp_titles]
         return pages[:keyWords]   
     
@@ -59,7 +64,6 @@ class wiki_document_store():
             for j in range(len(lst)):
                 if i != j and lst[j][0] in lst[i][0] and (len(lst[i][0]) > len(lst[j][0])):
                     lst[i] = (lst[i][0], lst[i][1]+lst[j][1])
-                    print(lst[i])
         return lst
 
     def remove_stop_words(self, text):
@@ -123,12 +127,11 @@ class wiki_document_store():
         evidence = evidence.replace("–present", "-2023")
         return evidence, text, url
 
-    def create_database(self, text, n_pages=3) -> bool:
+    def create_database(self, text, n_pages=3):
         keyWords = self.__extractKeyWords(text, n_pages)
         pages = asyncio.run(self.__extract_wikipedia_pages(keyWords))
         pages += self.google_api.main(text)
         self.storeDocuments(pages)
-        return self.document_store
 
     def delete_database(self) -> bool:
         self.document_store.delete_documents()
