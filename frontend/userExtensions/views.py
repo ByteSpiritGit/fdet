@@ -57,7 +57,7 @@ def registration_view(request, *args, **kwargs):
             # Everything is valid
             user = User.objects.create_user(username=username, password=password, email=email)
             user.save()
-            user_extension = UserExtension(user=user)
+            user_extension = UserExtension(user=user, profile_picture="default_profile_picture.jpg")
             user_extension.save()
             auth.login(request, user)
             return JsonResponse({ "success_msg": "User created successfully.", "status": 200, "username": username })
