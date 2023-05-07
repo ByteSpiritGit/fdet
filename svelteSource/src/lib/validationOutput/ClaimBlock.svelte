@@ -44,20 +44,14 @@
       disabled = true;
 
       const csrftoken = getCookie("csrftoken");
-      let url = `/rag/eval_bm25?text=${text}`;
-      // let url = `/rag_dummy_backend?text=${text}`
+      let url = `/rag/eval_bm25`;
 
         const request = new Request(url, {
             method: "POST",
             headers: { "X-CSRFToken": csrftoken },
             mode: "same-origin",
             body: JSON.stringify({ 
-                text: text,
-                user: {
-                    username: localStorage.getItem("username"),
-                    email: localStorage.getItem("email"),
-                    password: localStorage.getItem("password"),
-                }
+                text: text
             }),
         });
 
