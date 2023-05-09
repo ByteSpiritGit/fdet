@@ -12,9 +12,6 @@ templates
 *.csv
 track.jsonl
 
-# Custom TLM
-media
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

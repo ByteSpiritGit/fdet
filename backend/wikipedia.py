@@ -13,6 +13,7 @@ class Wikipedia:
     # TODO: get MOST revelant site via DPR/BM25
 
     def search(self, title) -> list:
+        results = []
         params = {
             'action': 'query',
             'format': 'json',
@@ -21,12 +22,13 @@ class Wikipedia:
             'srsearch': title
         }
         data = requests.get(self.url, params=params).json()
-        # for i in data['query']['search']:
+        for i in data['query']['search']:
             # , BeautifulSoup(i["snippet"], "html.parser").text, i["wordcount"]))
-            # results.append(i["title"])
-        return [i["title"] for i in data['query']['search']]
+            results.append(i["title"])
+        return results
 
     def open_search(self, title) -> list:
+        results = []
         params = {
             'action': 'opensearch',
             'format': 'json',
@@ -35,9 +37,12 @@ class Wikipedia:
             'search': title
         }
         response = requests.get(self.url, params=params).json()
-        return [(response[1][i], response[3][i]) for i in range(len(response[1]))]
+        for i in range(len(response[1])):
+            results.append((response[1][i], response[3][i]))
+        return results
 
     def extract_page(self, title) -> str:
+        result = ""
         params = {
             'action': 'query',
             'titles': title,
@@ -47,5 +52,8 @@ class Wikipedia:
                     'utf8': 1,
         }
         response = requests.get(self.url, params=params).json()[
-            'query']['pages'] 
-        return response[list(response.keys())[0]]['extract']
+            'query']['pages']
+        for key in response:
+            result = response[key]['extract']
+            break
+        return result

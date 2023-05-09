@@ -1,30 +1,34 @@
 import nltk
-from anlys import remove_stop_words
-import logging
 from torch import no_grad, argmax, softmax, device, cuda
-from transformers import RobertaTokenizerFast, RobertaForSequenceClassification
-
-class Main():
+from transformers import RobertaTokenizerFast, RobertaForSequenceClassification, logging
+from retriever import TextRetrieverV2
+logging.set_verbosity_error()
+class TextValidate():
     def __init__(self) -> None:
+        print(f"Loading text validator")
+        nltk.download('punkt')
         self.device = device("cuda" if cuda.is_available() else "cpu")
-        logging.info(f"Using device: {self.device}")
+        print(f"You are using {self.device}")
         self.tokenizer = RobertaTokenizerFast.from_pretrained('Dzeniks/roberta-fact-check', longest_first=True)
         self.model = RobertaForSequenceClassification.from_pretrained('Dzeniks/roberta-fact-check', return_dict=True, num_labels=2)
-        self.nei = RobertaForSequenceClassification.from_pretrained('Dzeniks/roberta-nei-fact-check', return_dict=True, num_labels=2)
-        self.device = device("cuda" if cuda.is_available() else "cpu")
         self.model.to(self.device)
+        self.nei = RobertaForSequenceClassification.from_pretrained('Dzeniks/roberta-nei-fact-check', return_dict=True, num_labels=2)
         self.nei.to(self.device)
+        self.retriever = TextRetrieverV2()
+        print(f"Loaded")
 
-    def main(self, text, retriever):
+    async def main(self, text):
         # Document retrieval
         results = []
         claims = nltk.sent_tokenize(text)
+        await self.retriever.create_database(claims)
         for claim in claims:
-            evidence, text, url = retriever.retrieve_data(claim, 3)
+            evidence = self.retriever.extract_passage(claim, 1)
             if evidence == "":
-                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None,"ei":None, "evidence" : None})
+                print("NOT ENOUGH INFO")
+                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
             elif evidence != "":
-                tokens = self.tokenizer.encode_plus(remove_stop_words(claim.lower()), evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
+                tokens = self.tokenizer.encode_plus(claim, evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
                 self.nei.eval()
                 with no_grad(): 
@@ -40,25 +44,34 @@ class Main():
                     with no_grad(): 
                         tokens = tokens.to(self.device)                    
                         prediction = self.model(**tokens)
+                    print(claim)
                     out = "SUPPORTS"
                     if argmax(prediction.logits) == 1: out = "REFUTES"
                     softMax = softmax(prediction.logits, dim=1)
                     supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
-                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence, "url": url})
+                    print(f"Claim is {out}\nSupports {100*supports:>0.1f} %, \tRefutes {100*refutes:>0.1f} %")
+                    print(f"Evidence:\n{evidence}")
+                    results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, "evidence" : evidence})
                 else:
-                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, 'ei': ei, "nei": nei, "evidence" : text, "url": url})
+                    print("NOT ENOUGH INFO")
+                    results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : ei, "refutes" : nei, "evidence" : evidence})
+
+        self.retriever.delete_database()
+        print(results)
         return results
 
 
-    def main_debug(self, text, retriever):
+    async def main_debug(self, text):
         # Document retrieval
         results = []
-        nltk.download('punkt')
-        claims = nltk.sent_tokenize(text)
+        claims = text.split(". ")
+        claims = [item for item in claims if item != ""]
+        await self.retriever.create_database(claims)
         for claim in claims:
-            evidence, text, url = retriever.retrieve_data(claim, 3)
+            evidence = self.retriever.extract_passage(claim, 1)
             if evidence == "":
-                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None,"nei": None, 'ei': None, "evidence" : None})
+                print("NOT ENOUGH INFO")
+                results.append({"claim": claim, "label" : "NOT ENOUGH INFO", "supports" : None, "refutes" : None, "evidence" : None})
             elif evidence != "":
                 tokens = self.tokenizer.encode_plus(claim, evidence, truncation="longest_first" , max_length=512, padding="max_length", return_tensors="pt")                                     
                 # NEI Classification
@@ -73,9 +86,15 @@ class Main():
                 with no_grad(): 
                     tokens = tokens.to(self.device)                    
                     prediction = self.model(**tokens)
+                print(claim)
                 out = "SUPPORTS"
                 if argmax(prediction.logits) == 1: out = "REFUTES"
                 softMax = softmax(prediction.logits, dim=1)
                 supports, refutes = float(softMax[0][0]), float(softMax[0][1]) 
-                results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : text, "url": url})
+                print(f"Claim is {out}\nSupports {100*supports:>0.1f} %, \tRefutes {100*refutes:>0.1f} %")
+                print(f"Evidence:\n{evidence}")
+                results.append({"claim": claim, "label" : out, "supports" : supports, "refutes" : refutes, 'ei': ei, "nei": nei, "evidence" : evidence})
+
+        self.retriever.delete_database()
+        print(results)
         return results
