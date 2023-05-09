@@ -6,6 +6,3 @@ farm-haystack
 transformers
 datasets
 yake
-openai
-python-dotenv
-requests

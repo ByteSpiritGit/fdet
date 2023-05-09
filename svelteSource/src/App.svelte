@@ -1,104 +1,257 @@
 <script lang="ts">
-   import Navbar from "./lib/Navbar.svelte";
-   import Footer from "./lib/Footer.svelte";
-   import WhatWeDo from "./lib/WhatWeDo.svelte";
-   import Notification from "./lib/notifications/Notification.svelte";
-   import NotificationBlock from "./lib/notifications/NotificationBlock.svelte";
+   // import Counter from './lib/Counter.svelte'
+   // import Navbar from './lib/MainNavbar.svelte'
 
-   import InputSection from "./lib/InputSection.svelte";
+   let output = false;
+   let evalued = [];
 
-   let toEvaluate;
-   
-   let textarea;
+   // Create a new XMLHttpRequest object
+   var xhr = new XMLHttpRequest();
 
-   let notifs;
-
-   function whenclk() {
-      toEvaluate = textarea.value;
-      
-      let urlText = "";
-      toEvaluate.split("\n").forEach(claim => {
-         urlText += claim + " ";
-      });
-
-      if (toEvaluate) {
-         window.location.href = "/evalOutput?text=" + encodeURIComponent(urlText);
-         return;
-      };
-
-      const notification = new Notification({
-         target: notifs,
-         props: {
-            name: 'Text missing',
-            description: 'There is nothing to evaluate',
-            iconType: 'Warning',
-            duration: 5000
+   // Set up a callback function to handle the response
+   xhr.onreadystatechange = function () {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+         if (xhr.status === 200) {
+            // Save the response text as a cookie
+            console.log(JSON.parse(xhr.responseText).csrf_token);
+            document.cookie =
+               "csrftoken=" +
+               encodeURIComponent(JSON.parse(xhr.responseText).csrf_token) +
+               "; path=/";
+         } else {
+            console.log("Request failed");
          }
+      }
+   };
+
+   // Open a new request with the GET method and a URL
+   xhr.open("GET", "http://127.0.0.1:8000/csrf_view");
+
+   // Send the request
+   xhr.send();
+
+   function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+         const cookies = document.cookie.split(";");
+         for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+               cookieValue = decodeURIComponent(
+                  cookie.substring(name.length + 1)
+               );
+               break;
+            }
+         }
+      }
+      return cookieValue;
+   }
+   const csrftoken = getCookie("csrftoken");
+
+   async function getEvaluated() {
+      let data = (<HTMLInputElement>document.getElementById("eval-input"))
+         .value;
+      let url = `/evaluation?text=${data}`;
+
+      console.log("Evaluating...");
+
+      const request = new Request(`${url}`, {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken,
+            mode: "same-origin",
+         },
       });
+
+      const response = await fetch(request);
+      const jsoned = await response.json();
+      return jsoned.validated;
+   }
+
+   async function evaluate(e) {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+
+      evalued = await getEvaluated();
+      console.log(evalued);
+
+      btn.disabled = false;
+
+      output = true;
    }
 </script>
 
+<!-- * HTML -->
 <main>
-   <Navbar />   
+   <section class="everything">
+      <h1 id="title">fDet beta0.1_noUI</h1>
 
-   <section class="content-section">
-      <section class="title-section">
-         <h1>Fake statement detector powered by AI</h1>
+      <section class="input-section">
+         <textarea id="eval-input" placeholder="Enter text to evaluate by AI" />
+         <input
+            type="submit"
+            id="eval-button"
+            value="Evaluate"
+            on:click={evaluate}
+         />
       </section>
-   
-      <WhatWeDo />
 
-      <InputSection bind:textarea={textarea} whenClk={whenclk} />
+      <section class="output-section">
+         <h2 id="output-title">Output test</h2>
+         <p id="output-text">
+            <!-- {@html output} -->
+            {#if output}
+               {#each evalued as ev}
+                  <b>Claim:</b>
+                  {ev.claim} (ID: {ev.id})<br />
+                  <b>Label:</b>
+                  {ev.label}<br />
+                  <b>Supports:</b>
+                  {(ev.supports * 100).toFixed(2)}%<br />
+                  <b>Refutes:</b>
+                  {(ev.refutes * 100).toFixed(2)}%<br />
+                  <b>Evidence:</b> <br />{ev.evidence}<br />
+               {/each}
+            {/if}
+         </p>
+      </section>
+
+      <!-- <section class="feedback-section">
+      <h2 id="feedback-title">Feedback</h2>
+      <input name="feedbackButton" type="checkbox" id="feedback-button">
+    </section> -->
    </section>
-
-   <Footer />
-
-   <NotificationBlock bind:theComponent={notifs} notificationNumber={1}  />
 </main>
 
+<!-- * css -->
 <style>
-   .title-section {
+   @import "./main.css";
+
+   .everything {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      width: fit-content;
+      height: fit-content;
+
+      min-height: 500px;
+      min-width: 500px;
+
+      max-width: 650px;
+
+      margin: 2% auto;
+      padding: 30px;
+
+      background-color: #1f1f20;
+
+      border-radius: 15px;
+   }
+
+   .input-section {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
 
-      height: 100px;
-      background-color: var(--color-secondary);
+      width: 100%;
+      height: fit-content;
 
-      margin-top: 125px;
+      margin: 0 auto;
    }
 
-   ::-webkit-scrollbar {
-      width: 7px;
-   }
+   .input-section > #eval-input {
+      margin: 0 0 10px 0;
+      padding: 5px;
 
-   ::-webkit-scrollbar-thumb {
-      background-color: var(--color-tertiary);
-      border-radius: 10px;
-   }
+      width: 400px;
+      max-width: 525px;
+      max-height: 250px;
 
-   ::-webkit-scrollbar-track {
-      background-color: var(--color-primary);
-      border-radius: 10px;
+      min-width: 400px;
+      min-height: 50px;
+
+      border-radius: 5px;
       border-width: 1px;
-      border-style: solid;
-      border-color: var(--color-primary);
+      border-color: #bd2c2c8c;
+
+      background-color: rgba(0, 0, 0, 0.295);
+
+      font-size: 18px;
+      outline: none;
+
+      color: #e1f1fe;
+      font-family: "roboto", sans-serif;
    }
 
-   ::-webkit-scrollbar-thumb:hover {
-      background-color: var(--color-tertiary-hover);
+   .input-section #eval-input::placeholder {
+      color: #8c9eac;
    }
 
-   @media (max-width: 680px) {
-      .title-section {
-         display: none;
-      }
+   .input-section > #eval-button {
+      margin: 0 0 10px 0;
+      padding: 5px;
+
+      width: 100px;
+
+      border-radius: 5px;
+      border: none;
+      font-size: 20px;
+
+      transition: 200ms;
+
+      /* background-image: linear-gradient(to right top, #2f40d8, #3444d9, #3848db, #3d4cdc, #4150dd, #4150dd, #4150dd, #4150dd, #3d4cdc, #3848db, #3444d9, #2f40d8); */
+      background-color: #2c36bd8c;
+      color: #e1f1fe;
+
+      box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
    }
 
-   @media (max-height: 560px) {
-      .title-section {
-         display: none;
-      }
+   .input-section > #eval-button:hover#eval-button:enabled {
+      color: rgb(255, 255, 255);
+      width: 104px;
+      letter-spacing: 1px;
+   }
+
+   .input-section > #eval-button:active#eval-button:enabled {
+      color: rgb(255, 255, 255);
+      width: 98px;
+      font-size: 19px;
+      letter-spacing: 0px;
+   }
+
+   .input-section > #eval-button:disabled {
+      background-color: #bd2c2c8c;
+      background-image: none;
+      color: #be4940;
+   }
+
+   #title {
+      margin: 0 auto 20px auto;
+      font-size: 30px;
+   }
+
+   .output-section,
+   .feedback-section {
+      margin: 0;
+      padding: 0;
+
+      width: 100%;
+   }
+
+   #output-text {
+      margin: 10px 0;
+   }
+
+   #feedback-button {
+      margin: 0;
+      padding: 0;
+   }
+
+   h2 {
+      margin: 0;
+      padding: 0;
    }
 </style>

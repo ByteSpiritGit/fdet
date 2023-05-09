@@ -32,8 +32,8 @@ def example():
     model.to(device)
     x = tokenizer.encode_plus(claim, evidence, truncation="longest_first",
                               max_length=512, padding="max_length", return_tensors="pt")
-   #  model.save_pretrained("../roberta-nei-fever")
-   #  tokenizer.save_pretrained("../roberta-nei-fever")
+    model.save_pretrained("../roberta-nei-fever")
+    tokenizer.save_pretrained("../roberta-nei-fever")
 
     model.eval()
     with torch.no_grad():
@@ -41,6 +41,7 @@ def example():
         prediction = model(**x)
     print(
         f"ArgMax: {torch.argmax(prediction.logits)}\nSoftMax: {torch.softmax(prediction.logits, dim=1)}")
+
 
 def test():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
