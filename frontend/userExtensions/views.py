@@ -7,9 +7,9 @@ from django.contrib.auth.models import User, auth
 import re
 import json
 
-email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-password_regex = re.compile(r'((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$')
-username_regex = re.compile(r'^[a-zA-Z0-9._\-+]{3,150}$')
+email_regex = re.compile(r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+password_regex = re.compile(r'^(?=.*\d|.*\W+)(?=.*[A-Z])(?=.*[a-z]).{8,}$')
+username_regex = re.compile(r'^[a-zA-Z0-9._-]{3,150}$')
 
 # Create your views here.
 def registration_view(request, *args, **kwargs):
