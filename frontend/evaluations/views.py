@@ -11,7 +11,7 @@ import time
 
 
 # input_text_regex = re.compile(r'^[\x20-\x7E\p{L}\p{N}]+$')
-request_queue = queue.Queue()
+# request_queue = queue.Queue()
 
 def create_evaluation_fnc(evaluation_block, evaluation_dict):
     new_evaluation = Evaluation.objects.create(
