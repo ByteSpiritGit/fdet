@@ -1,25 +1,39 @@
-# Backend api function guide
+# API Endpoints
 
-## FAST API start command
-```
-uvicorn api:app --reload
-```
-or
-```
-py api.py 
-```
+## Classification with Advanced Search
 
-Plain text <br>
-    "/backend"
+### `/backend/v1/dummy`
 
-Url for dummy function <br>
-    "/backend/dummy"
+Returns a dummy classification result.
 
-Url for evaluation <br>
-    "/backend/eval"
+### `/backend/v1/eval`
 
-Url for text input <br>
-    "/backend/eval_debug"
+Evaluates a given text and returns a classification result.
 
-When you call the function, append a parameter named text with text to check. <br>
-Example file in backend/test.py
+### `/backend/v1/eval_fast`
+
+Evaluates a given text and returns a classification result (faster version).
+
+## Retrieval-Augmented Generation - RAG
+
+### `/backend/rag/dummy`
+
+Returns a dummy RAG result.
+
+### `/backend/rag/eval_dpr`
+
+Evaluates a given text and returns a RAG result using DPR instances.
+
+### `/backend/rag/eval_ada`
+
+Evaluates a given text and returns a RAG result using ADA instances.
+
+### `/backend/rag/eval_bm25`
+
+Evaluates a given text and returns a RAG result using BM25 instances.
+
+## Miscellaneous
+
+### `/coffee`
+
+Returns an HTTP 418 response with the message "I'm a teapot".

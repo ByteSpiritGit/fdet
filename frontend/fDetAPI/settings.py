@@ -21,7 +21,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-@f*8z3_5t(nql!!n(73wa@^n_bgt85lks@^qmk@o_ds30y(-xd'
-# *superuser fDet : factchecking
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # in live server better turn it to False!
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     # my apps 
     'pages',
     'evaluations',
+    'userExtensions',
     'feedbacks'
 ]
 
@@ -111,7 +111,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Prague'
 
 USE_I18N = True
 
@@ -124,8 +124,13 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "templates/static",
+    BASE_DIR / 'templates/static',
 ]
+
+# Media files (user uploaded files)
+MEDIA_URL = 'media/'
+
+MEDIAFILES_DIR = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
