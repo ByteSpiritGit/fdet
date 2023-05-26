@@ -15,6 +15,7 @@ export default defineConfig(({ command, mode, ssrBuild }) => {
                evalOutput: './pages/evalOutput.html',
                login: './pages/login.html',
                register: './pages/register.html',
+               aboutUs: './pages/aboutUs.html',
             },
             output: {
                entryFileNames: 'static/js/[name]-[hash].js',

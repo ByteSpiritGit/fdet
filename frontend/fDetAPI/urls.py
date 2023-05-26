@@ -26,6 +26,7 @@ urlpatterns = [
 
     # *Pages
     path('', home_view, name="home"),
+    path('about_us', about_us_view, name="about_us"),
     path('evalOutput', evalOutput, name="eval_output"),
     path('users/register', registerPage, name="register_age"),
     path('users/login', loginPage, name="login_page"),
