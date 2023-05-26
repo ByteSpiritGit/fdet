@@ -12,6 +12,10 @@ def home_view(request, *args, **kwargs):
     models = {}
     return render(request, "./index.html", models)
 
+def about_us_view(request, *args, **kwargs):
+    models = {}
+    return render(request, "./pages/aboutUs.html", models)
+
 def evalOutput(request, *args, **kwargs):
     models = {}
     return render(request, "./pages/evalOutput.html", models)

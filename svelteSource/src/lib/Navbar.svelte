@@ -126,7 +126,7 @@
 <nav class="navbar">
    <section class="menu-section">
       <a href="/">Home</a>
-      <a href="/">About us</a>
+      <a href="/about_us">About us</a>
       <a href="/">Learn</a>
       <a href="https://github.com/fdet/fDet">Github</a>
    </section>
