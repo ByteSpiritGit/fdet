@@ -39,8 +39,7 @@ def create_evaluation_fnc(evaluation_block, evaluation_dict):
 def eval_fnc(request, input_text, backend_url):
     # # * Check for invalid characters
     # if not input_text_regex.match(input_text):
-    #     return JsonResponse({"error_msg": "Invalid input. The input contains invalid characters.", "status": 400})    
-    print(backend_url)
+    #     return JsonResponse({"error_msg": "Invalid input. The input contains invalid characters.", "status": 400})
     # * Check for authentication
     user = request.user
     if user.is_authenticated:

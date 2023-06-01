@@ -85,6 +85,30 @@ def eval_fnc_emb(retriever_instances, in_use, calc_instance, text: str) -> JSONR
             in_use.remove(retriever)
         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
+def eval_fnc_emb(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
+    with lock:
+        retriever = None
+        for instance in retriever_instances:
+            if instance not in in_use:
+                retriever = instance
+                in_use.add(instance)
+                break
+        if retriever is None:
+            return JSONResponse(status_code=503, content={"message": "All instances are in use"})
+    try:
+        retriever.create_database(text)
+        retriever.update_embed()
+        response = calc_instance.main(text, retriever)
+        retriever.delete_database()
+        with lock:
+            in_use.remove(retriever)
+        return JSONResponse(content=response)
+    except:
+        with lock:
+            in_use.remove(retriever)
+        return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+
+
 # TODO: repair main function Error in retriever in main
 def eval_fnc(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
     with lock:
@@ -146,3 +170,4 @@ async def root() -> str:
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8002)
+
