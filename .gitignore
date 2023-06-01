@@ -2,13 +2,13 @@
 *.local
 *.vscode
 templates
+.idea/
 
 # Custom Dzeniks
 *.pth
 *.bin
 *.json
 *.jsonl
-*.txt
 *.csv
 track.jsonl
 

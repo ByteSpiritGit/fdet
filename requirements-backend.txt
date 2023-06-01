@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+matplotlib
+farm-haystack
+transformers
+datasets
+yake
+openai
+python-dotenv
+requests

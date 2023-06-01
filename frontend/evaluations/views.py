@@ -13,6 +13,12 @@ import time
 # input_text_regex = re.compile(r'^[\x20-\x7E\p{L}\p{N}]+$')
 # request_queue = queue.Queue()
 
+# TODO:
+# Move to settings.py or .env
+backend_host = "http://172.18.0.2"
+backend_port = "8002"
+backend_base_url = backend_host + ":" + backend_port
+
 def create_evaluation_fnc(evaluation_block, evaluation_dict):
     new_evaluation = Evaluation.objects.create(
         evaluation_block=evaluation_block,
@@ -33,8 +39,7 @@ def create_evaluation_fnc(evaluation_block, evaluation_dict):
 def eval_fnc(request, input_text, backend_url):
     # # * Check for invalid characters
     # if not input_text_regex.match(input_text):
-    #     return JsonResponse({"error_msg": "Invalid input. The input contains invalid characters.", "status": 400})    
-
+    #     return JsonResponse({"error_msg": "Invalid input. The input contains invalid characters.", "status": 400})
     # * Check for authentication
     user = request.user
     if user.is_authenticated:
@@ -66,7 +71,7 @@ def v1_dummy_fnc_backend_view(request):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    validated_text = requests.get("http://127.0.0.1:8002/backend/v1/dummy").json()
+    validated_text = requests.get(f"{backend_base_url}/backend/v1/dummy").json()
 
     return JsonResponse({"validated" : validated_text})
 
@@ -74,13 +79,13 @@ def v1_evaluation_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    return eval_fnc(request, text, "http://127.0.0.1:8002/backend/v1/eval")
+    return eval_fnc(request, text, f"{backend_base_url}/backend/v1/eval")
 
 def v1_evaluation_fast_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    return eval_fnc(request, text, "http://127.0.0.1:8002/backend/v1/eval_fast")
+    return eval_fnc(request, text, f"{backend_base_url}/backend/v1/eval_fast")
 
 
 # ! RAG
@@ -88,7 +93,7 @@ def rag_dummy_fnc_backend_view(request):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    validated_text = requests.get("http://127.0.0.1:8002/backend/rag/dummy").json()
+    validated_text = requests.get(f"{backend_base_url}/backend/rag/dummy").json()
 
     return JsonResponse({"validated" : validated_text})
 
@@ -96,25 +101,25 @@ def rag_evaluation_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval")
+    return eval_fnc(request, text, f"{backend_base_url}/backend/rag/eval")
 
 def rag_evaluation_DPR_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval_DPR")
+    return eval_fnc(request, text, f"{backend_base_url}/backend/rag/eval_DPR")
 
 def rag_evaluation_Ada_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval_ada")
+    return eval_fnc(request, text, f"{backend_base_url}/backend/rag/eval_ada")
 
 def rag_evaluation_BM25_view(request, *args, **kwargs):
     body_unicode = request.body.decode('utf-8')
     data = json.loads(body_unicode)
     text = data.get("text")
-    return eval_fnc(request, text, "http://127.0.0.1:8002/backend/rag/eval_bm25")
+    return eval_fnc(request, text, f"{backend_base_url}/backend/rag/eval_bm25")
 
 
 

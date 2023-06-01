@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-@f*8z3_5t(nql!!n(73wa@^n_bgt85lks@^qmk@o_ds30y(-xd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True # in live server better turn it to False!
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition,
@@ -117,11 +117,17 @@ USE_I18N = True
 
 USE_TZ = True
 
+CSRF_TRUSTED_ORIGINS = ['https://www.fdet.eu', 'http://172.18.0.3', 'http://172.18.0.2',
+                        'http://localhost','http://127.0.0.1', 'http://*.127.0.0.1', 'https://*.127.0.0.1']
 
+CORS_ORIGIN_WHITELIST = ['https://www.fdet.eu', 'http://172.18.0.3', 'http://172.18.0.2',
+                        'http://localhost','http://127.0.0.1', 'http://*.127.0.0.1', 'https://*.127.0.0.1']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = BASE_DIR / 'static'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'templates/static',
