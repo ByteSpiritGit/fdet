@@ -1,0 +1,37 @@
+# Use the official Python image as the base
+FROM python:3.11.3
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements.txt file to the container
+COPY requirements-frontend.txt .
+
+# Install the Python dependencies
+RUN pip install --upgrade pip
+RUN pip install -r requirements-frontend.txt
+
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash -
+RUN apt-get install -y nodejs
+
+# Copy the Svelte source code
+COPY svelteSource /app/svelteSource
+
+# Install NPM packages and build
+WORKDIR /app/svelteSource
+RUN npm install
+RUN npm run build
+
+# Move back to the main directory
+WORKDIR /app
+
+COPY .env /app/.env
+COPY frontend /app/frontend
+
+
+EXPOSE 8001
+# Start the Django development server
+WORKDIR /app/frontend/
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8001"]
+

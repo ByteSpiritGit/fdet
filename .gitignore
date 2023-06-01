@@ -2,6 +2,7 @@
 *.local
 *.vscode
 templates
+.idea/
 
 # Custom Dzeniks
 *.pth

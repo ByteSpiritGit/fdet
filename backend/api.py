@@ -10,6 +10,7 @@ from rag import RAG
 from datetime import datetime
 import threading
 import nltk
+from fastapi.middleware.cors import CORSMiddleware
 
 logging.getLogger("haystack").setLevel(logging.CRITICAL)
 logging.getLogger("transformers").setLevel(logging.CRITICAL)
@@ -48,6 +49,17 @@ Main_instance = Main()
 
 logging.info(datetime.now().strftime("%H:%M:%S") + " - Loading server...")
 app = FastAPI()
+
+
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def eval_fnc_emb(retriever_instances, in_use, calc_instance, text: str) -> JSONResponse:
@@ -133,4 +145,4 @@ async def root() -> str:
     return JSONResponse(status_code=418, content={"message": "I'm a teapot"})
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8002)
+    uvicorn.run(app, host="0.0.0.0", port=8002)
