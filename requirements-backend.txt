@@ -1,10 +1,14 @@
+bitsandbytes
 fastapi
 uvicorn[standard]
 matplotlib
-farm-haystack
+farm-haystack[inference]
+sentence_transformers
 transformers
 datasets
 yake
 openai
 python-dotenv
 requests
+peft
+nltk

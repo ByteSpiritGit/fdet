@@ -9,3 +9,8 @@ yake
 openai
 python-dotenv
 requests
+nltk
+peft
+farm-haystack[inference]
+sentence_transformers
+bitsandbytes
