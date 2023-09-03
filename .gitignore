@@ -4,7 +4,7 @@
 templates
 .idea/
 
-# Custom Dzeniks
+.env
 *.pth
 *.bin
 *.json
