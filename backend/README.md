@@ -1,36 +1,22 @@
 # API Endpoints
 
-## Classification with Advanced Search
-
-### `/backend/v1/dummy`
-
-Returns a dummy classification result.
-
-### `/backend/v1/eval`
-
-Evaluates a given text and returns a classification result.
-
-### `/backend/v1/eval_fast`
-
-Evaluates a given text and returns a classification result (faster version).
-
-## Retrieval-Augmented Generation - RAG
+## Retrieval-Augmented Generation - RAG_GPT3
 
 ### `/backend/rag/dummy`
 
-Returns a dummy RAG result.
+Returns a dummy RAG_GPT3 result.
 
 ### `/backend/rag/eval_dpr`
 
-Evaluates a given text and returns a RAG result using DPR instances.
+Evaluates a given text and returns a RAG_GPT3 result using DPR instances.
 
 ### `/backend/rag/eval_ada`
 
-Evaluates a given text and returns a RAG result using ADA instances.
+Evaluates a given text and returns a RAG_GPT3 result using ADA instances.
 
 ### `/backend/rag/eval_bm25`
 
-Evaluates a given text and returns a RAG result using BM25 instances.
+Evaluates a given text and returns a RAG_GPT3 result using BM25 instances.
 
 ## Miscellaneous
 

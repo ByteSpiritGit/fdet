@@ -10,9 +10,8 @@ COPY requirements-backend.txt .
 # Install the Python dependencies
 RUN pip install --upgrade pip
 RUN pip install -r requirements-backend.txt
+RUN pip install nltk
 RUN pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-
-
 
 # Move back to the main directory
 WORKDIR /app
@@ -20,8 +19,12 @@ COPY backend /app/backend
 
 COPY .env /app/.env
 
+# Add your Hugging Face API token
+ARG HF_API_TOKEN
+RUN echo $HF_API_TOKEN
+RUN huggingface-cli login --token $HF_API_TOKEN
+
 EXPOSE 8002
 # Start the Django development server
 WORKDIR /app/backend/
 CMD ["python", "api.py"]
-

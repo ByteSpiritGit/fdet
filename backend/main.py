@@ -3,7 +3,7 @@ import logging
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification
 
-class Main():
+class Main:
     def __init__(self) -> None:
         self.device = device("cuda" if cuda.is_available() else "cpu")
         logging.info(f"Using device: {self.device}")
@@ -32,8 +32,8 @@ class Main():
                 with no_grad(): 
                     tokens = tokens.to(self.device)                    
                     prediction = self.nei(**tokens)
-                out = "SUPPORTS"
-                if argmax(prediction.logits) == 1: out = "REFUTES"
+                "SUPPORTS"
+                if argmax(prediction.logits) == 1: "REFUTES"
                 softMax = softmax(prediction.logits, dim=1)
                 ei, nei = float(softMax[0][0]), float(softMax[0][1]) 
                 # SUP,REF Classification

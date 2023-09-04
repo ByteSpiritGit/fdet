@@ -70,7 +70,7 @@
             console.log("Wrong password format")
          }
          return console.log("not logging in")
-      };
+      }
 
       console.log("logging in...");
 
@@ -151,7 +151,7 @@
          what.setAttribute("data-correct", "true")
          return true;
       }
-      if (changeCol) { what.style.borderBottom = "2px solid red" };
+      if (changeCol) { what.style.borderBottom = "2px solid red" }
       what.setAttribute("data-correct", "false")
       return false
    }

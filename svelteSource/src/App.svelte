@@ -24,7 +24,7 @@
       if (toEvaluate) {
          window.location.href = "/evalOutput?text=" + encodeURIComponent(urlText);
          return;
-      };
+      }
 
       const notification = new Notification({
          target: notifs,
