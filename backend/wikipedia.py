@@ -1,16 +1,16 @@
 import requests
-# from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 class Wikipedia:
 
     def __init__(self, lang='en') -> None:
         self.url = f'https://{lang}.wikipedia.org/w/api.php'
+        self.wiki_url = f'https://{lang}.wikipedia.org/wiki'
 
     def set_lang(self, lang):
         self.url = f'https://{lang}.wikipedia.org/w/api.php'
-
-    # TODO: get MOST revelant site via DPR/BM25
+        self.wiki_url = f'https://{lang}.wikipedia.org/wiki/'
 
     def search(self, title) -> list:
         params = {
@@ -21,10 +21,7 @@ class Wikipedia:
             'srsearch': title
         }
         data = requests.get(self.url, params=params).json()
-        # for i in data['query']['search']:
-            # , BeautifulSoup(i["snippet"], "html.parser").text, i["wordcount"]))
-            # results.append(i["title"])
-        return [i["title"] for i in data['query']['search']]
+        return [{"title": i["title"], "snippet":BeautifulSoup(i["snippet"], "html.parser").text} for i in data['query']['search']]
 
     def open_search(self, title) -> list:
         params = {
@@ -35,7 +32,7 @@ class Wikipedia:
             'search': title
         }
         response = requests.get(self.url, params=params).json()
-        return [(response[1][i], response[3][i]) for i in range(len(response[1]))]
+        return [{"keyword" :response[1][i], "url": response[3][i]} for i in range(len(response[1]))]
 
     def extract_page(self, title) -> str:
         params = {
