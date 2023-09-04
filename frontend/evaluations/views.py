@@ -59,8 +59,8 @@ def eval_fnc(request, input_text, backend_url):
 
             return JsonResponse({"validated" : validated_text.json()})
 
-        except:
-            return HttpResponse(status=409)
+        except Exception as e:
+            return HttpResponse(status=e)
         
     else:
         return HttpResponse(status=401)

@@ -31,7 +31,7 @@ class GPT3(RAG):
         async def process_claim(claim, retriever) -> dict[str, str | None | Any] | dict[str, str | Any]:
             try:
                 evidence, text, url = retriever.retrieve_RAG(claim)
-            except:
+            except Exception as e:
                 return {"claim": claim, "label": "NOT ENOUGH INFO", "supports": None, "refutes": None, "evidence": None}
             justify = await self.generate(claim, evidence)
             label, percent = await self.numerical_evaluation(justify)

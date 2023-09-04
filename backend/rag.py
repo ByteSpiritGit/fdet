@@ -9,6 +9,7 @@ class RAG:
     def main(self, text, retriever):
         ...
 
+    # noinspection PyRedeclaration
     def main(self, text, retriever):
         return asyncio.run(self.async_main(text, retriever))
 

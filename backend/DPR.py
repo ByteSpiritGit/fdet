@@ -19,7 +19,7 @@ class retriever_DPR(WikiDocumentStore):
             use_fast_tokenizers=True
         )
 
-    def create_database(self, text):
+    def create_database(self, text, **kwargs):
         super().create_database(text)
 
     def update_embed(self):

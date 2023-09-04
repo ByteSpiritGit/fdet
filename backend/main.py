@@ -3,7 +3,7 @@ import logging
 from torch import no_grad, argmax, softmax, device, cuda
 from transformers import RobertaTokenizerFast, RobertaForSequenceClassification
 
-class Main():
+class Main:
     def __init__(self) -> None:
         self.device = device("cuda" if cuda.is_available() else "cpu")
         logging.info(f"Using device: {self.device}")

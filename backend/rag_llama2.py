@@ -11,6 +11,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
 from rag import RAG
 
 
+# noinspection PyMethodMayBeStatic
 class Llama_2(RAG):
 
     def __init__(self):
@@ -41,7 +42,6 @@ class Llama_2(RAG):
         self.instruction = "Classify if the claim is supports, not enough info or refutes and justify." \
                            "Use evidence and knowledge base."
 
-
     def get_prompt(self, claim, evidence):
         INTRO_BLURB = "Below is an instruction that describes a task. Write a response that appropriately completes the request."
         INSTRUCTION_KEY = "### Instruction:"
@@ -56,6 +56,7 @@ class Llama_2(RAG):
         prompt = "\n\n".join(parts)
         return prompt
 
+    # noinspection PyMethodMayBeStatic
     def get_response(self, raw_response: str) -> str:
         substring = "justification:"
         response_part: list = raw_response.split("### Response:")
@@ -73,10 +74,10 @@ class Llama_2(RAG):
     async def async_main(self, text: str, retriever) -> tuple[Any]:
         claims = nltk.sent_tokenize(text)
 
-        async def process_claim(claim, retriever):
+        async def process_claim(claim, retriever) -> dict[str, str | None | Any] | dict[str, str | Any]:
             try:
                 evidence, text, url = retriever.retrieve_RAG(claim, top_k=6, max_len=300)
-            except:
+            except Exception as e:
                 return {"claim": claim, "label": "NOT ENOUGH INFO", "supports": None, "refutes": None, "evidence": None}
             justify = await self.generate(claim, evidence)
             label, percent = await self.numerical_evaluation(justify)
@@ -99,9 +100,11 @@ class Llama_2(RAG):
         return label_map[label], per
 
     async def generate(self, claim, evidence) -> str:
-        tokenized_prompt = self.tokenizer(self.get_prompt(claim, evidence) + "\n### Response: ", return_tensors="pt", padding=True,
-                                     truncation=True, max_length=1024)
+        tokenized_prompt = self.tokenizer(self.get_prompt(claim, evidence) + "\n### Response: ", return_tensors="pt",
+                                          padding=True,
+                                          truncation=True, max_length=1024)
         with torch.no_grad():
-            outputs = self.model.generate(input_ids=tokenized_prompt["input_ids"].to("cuda"), max_new_tokens=100, early_stopping=True)
+            outputs = self.model.generate(input_ids=tokenized_prompt["input_ids"].to("cuda"), max_new_tokens=100,
+                                          early_stopping=True)
             justify = self.tokenizer.batch_decode(outputs.detach().cpu().numpy(), skip_special_tokens=True)[0]
         return self.get_response(justify)

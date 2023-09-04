@@ -162,7 +162,7 @@
 
          window.sessionStorage.setItem("evalued", JSON.stringify(res));
       });
-   };
+   }
 </script>
 
 <output class="chat" bind:this={chat} />

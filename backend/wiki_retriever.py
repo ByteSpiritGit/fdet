@@ -1,7 +1,7 @@
 import asyncio
 import re
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import List, Dict
 from itertools import chain
 
 import torch
@@ -15,7 +15,7 @@ from transformers import AutoModel, AutoTokenizer, AutoModelForTokenClassificati
 from wikipedia import Wikipedia
 
 
-class WikiDocumentStore():
+class WikiDocumentStore:
     def __init__(self, embedding_model_name="sentence-transformers/all-MiniLM-L6-v2",
                  ner_model_name="51la5/roberta-large-NER"):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -23,7 +23,7 @@ class WikiDocumentStore():
         ner_model = ner_model.half()
         ner_tokenizer = AutoTokenizer.from_pretrained(ner_model_name, model_max_length=512)
         ner_model.eval()
-        self.ner_pipeline = pipeline("token-classification",model=ner_model, tokenizer=ner_tokenizer,
+        self.ner_pipeline = pipeline("token-classification", model=ner_model, tokenizer=ner_tokenizer,
                                      framework="pt", device=self.device)
 
         embed_model = AutoModel.from_pretrained(embedding_model_name).to(self.device)
@@ -39,11 +39,13 @@ class WikiDocumentStore():
             use_gpu=True
         )
 
+    # noinspection PyMethodMayBeStatic
     def get_cosine(self, tensor1: torch.Tensor, tensor2: torch.Tensor) -> float:
         return torch.nn.functional.cosine_similarity(tensor1, tensor2, dim=1).item()
 
     def text_to_vector(self, text):
-        text_tokenized = self.embed_tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=512).to(self.device)
+        text_tokenized = self.embed_tokenizer(text, return_tensors="pt", padding=True, truncation=True,
+                                              max_length=512).to(self.device)
         with torch.no_grad():
             model_output = self.embed_model(**text_tokenized)
         embeddings = model_output.last_hidden_state[:, 0, :]
@@ -71,10 +73,10 @@ class WikiDocumentStore():
                     'word': ''.join([e['word'] for e in group]).replace("▁", " ").strip(),
                     'score': sum([e['score'] for e in group]) / len(group)}
 
-
         # Iterate through the sorted data to group consecutive entities with the same entity type
         for entry in entities:
-            if not current_group or (entry['entity'] == current_group[0]['entity'] and entry['index'] == current_group[0]['index'] + 1):
+            if not current_group or (
+                    entry['entity'] == current_group[0]['entity'] and entry['index'] == current_group[0]['index'] + 1):
                 current_group.append(entry)
             else:
                 # If the entity type changes, add the previous group to the result and start a new group
@@ -113,9 +115,11 @@ class WikiDocumentStore():
         sorted_keywords = dict(sorted(keywords.items(), key=lambda item: item[1], reverse=True))
         return list(sorted_keywords.keys())[:n_keywords]
 
+    # noinspection PyMethodMayBeStatic
     def remove_stopwords(self, text, language='english'):
         """
         Remove stop words from a given text.
+        :param language:
         :param text: The input text.
         :return: str: The input text with stop words removed.
         """
@@ -165,12 +169,14 @@ class WikiDocumentStore():
         # Fetch snipets from wikipedia
         snippet_list = asyncio.run(self.__extract_wikipedia_snippets(keywords))
         # Choose the most relevant keyword and snipet
-        scored_snippet = list(chain.from_iterable(self.__score_snippets(text, item_list, n_pages) for item_list in snippet_list))
+        scored_snippet = list(
+            chain.from_iterable(self.__score_snippets(text, item_list, n_pages) for item_list in snippet_list))
         # return n titles
         return scored_snippet[:n_pages]
 
     async def __fetch_wikipedia_page(self, keyword):
-        return {"title": keyword['title'], "page_text": self.wiki.extract_page(title=keyword["title"]),"url": f"{self.wiki.wiki_url}/{keyword['title'].replace(' ', '_')}"}
+        return {"title": keyword['title'], "page_text": self.wiki.extract_page(title=keyword["title"]),
+                "url": f"{self.wiki.wiki_url}/{keyword['title'].replace(' ', '_')}"}
 
     async def __extract_wikipedia_pages(self, titles):
         tasks = [self.__fetch_wikipedia_page(title) for title in titles]
@@ -198,6 +204,7 @@ class WikiDocumentStore():
         self.document_store.write_documents(dicts)
         return self.document_store
 
+    # noinspection PyMethodMayBeStatic
     def format_docs_str(self, candidate_documents) -> tuple:
         evidence = ""
         text = []
@@ -235,4 +242,3 @@ class WikiDocumentStore():
 if __name__ == "__main__":
     wiki = WikiDocumentStore()
     wiki.create_database("The first president of the United States was George Washington.")
-
