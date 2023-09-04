@@ -1,11 +1,13 @@
 django==4.2.5
 fastapi==0.103.1
 uvicorn[standard]
+sentence_transformers
 matplotlib
 transformers==4.32.1
 datasets
 yake
 openai==0.28.0
+nltk
 python-dotenv
 requests
 nltk

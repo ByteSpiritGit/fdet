@@ -1,4 +1,5 @@
 @echo
+
 pip install -r requirements.txt
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
@@ -8,6 +9,7 @@ start cmd.exe /c "npm install", "npm run build"
 cd /d ".."
 
 cd /d "frontend"
+python manage.py migrate
 start cmd.exe /k "python manage.py runserver"
 cd /d ".."
 
