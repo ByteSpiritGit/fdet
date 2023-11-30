@@ -39,10 +39,6 @@ urlpatterns = [
     path('authentication', authentication_view, name="authentication"),
 
     # *Evaluations
-    # V1
-    path('v1/dummy_backend', v1_dummy_fnc_backend_view, name="v1_dummy_backend"),
-    path('v1/eval', v1_evaluation_view, name="v1_evaluation"),
-    path('v1/eval_fast', v1_evaluation_fast_view, name="v1_evaluation_fast"),
     # RAG
     path('rag/dummy_backend', rag_dummy_fnc_backend_view, name="rag_dummy_backend"),
     path('rag/eval', rag_evaluation_view, name="rag_evaluation"),

@@ -121,7 +121,7 @@
             console.log("confirmPassword wrong")
          }
          return console.log("not registering")
-      };
+      }
 
       console.log("registering...");
 
@@ -218,7 +218,7 @@
          what.setAttribute("data-correct", "true")
          return true;
       }
-      if (changeCol) { what.style.borderBottom = "2px solid red" };
+      if (changeCol) { what.style.borderBottom = "2px solid red" }
       what.setAttribute("data-correct", "false")
       return false
    }
